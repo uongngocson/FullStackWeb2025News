@@ -1300,6 +1300,8 @@
 
         <!-- Script link -->
         <script src="../../../../resources/assets/user/js/script.js"></script>
+        <script src="../../../../resources/assets/user/js/product.js"></script>
+
         <!-- end Js of HEADER and FOOTER -->
     </body>
 
