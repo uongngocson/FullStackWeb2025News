@@ -1,0 +1,16 @@
+
+.manageproduct{
+   width: calc(100% - 265px);
+   height: 100vh;
+   min-height: 100%;
+   float: right;
+   transition: all .3s;
+   display: flex;
+   flex-direction: column;
+   
+    .management-product{
+        min-height: 70px;
+        margin-top: calc(70px);   
+     }
+
+}

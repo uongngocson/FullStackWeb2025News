@@ -459,7 +459,7 @@ body {
 }
 
 .main-header {
-   background: #fff;
+   background: #1a2035;
    min-height: 60px;
    width: calc(100% - 250px);
    position: fixed;
@@ -493,6 +493,9 @@ body {
    float: right;
    transition: all .3s
 }
+.wrapper-cus{
+}
+
 
 .main-panel>.container {
    min-height: calc(100% - 123px);
@@ -863,7 +866,8 @@ body {
    overflow: auto;
    width: 100%;
    z-index: 4;
-   transition: all .3s
+   transition: all .3s;
+   border-right: 1px solid white;
 }
 
 .sidebar .sidebar-wrapper .sidebar-content,
@@ -1419,7 +1423,10 @@ body {
 .logo-header .logo .navbar-brand {
    padding-top: 0;
    padding-bottom: 0;
-   margin-right: 0
+   margin-right: 0;
+   margin-left: 25px;
+   transform: scale(2.2) !important;
+   
 }
 
 .logo-header .nav-toggle {
@@ -1537,7 +1544,7 @@ body {
 }
 
 .sidebar.sidebar-style-2 .nav.nav-secondary>.nav-item.active>a {
-   background: #6861ce !important;
+   /* background: #6861ce !important; */
    box-shadow: 4px 4px 10px 0 rgba(0, 0, 0, .1), 4px 4px 15px -5px rgba(104, 97, 206, .4)
 }
 
@@ -2134,7 +2141,10 @@ body[data-background-color=dark] .border-top {
 }
 
 .logo-header[data-background-color=dark] {
-   background: #1a2035 !important
+   background: #1a2035 !important;
+   border-right: 1px solid white;
+   border-bottom: 1px solid white;
+
 }
 
 .logo-header[data-background-color=dark2] {
@@ -2285,7 +2295,7 @@ body[data-background-color=dark] .border-top {
 .sidebar[data-background-color=dark].sidebar-style-2 .nav .nav-item.active>a:focus,
 .sidebar[data-background-color=dark].sidebar-style-2 .nav .nav-item.active>a:hover,
 .sidebar[data-background-color=dark].sidebar-style-2 .nav .nav-item.active>a[data-toggle=collapse][aria-expanded=true] {
-   background: #fff !important;
+   /* background: #fff !important; */
    color: #1a2035 !important
 }
 
@@ -2301,7 +2311,7 @@ body[data-background-color=dark] .border-top {
 .sidebar[data-background-color=dark].sidebar-style-2 .nav .nav-item.active>a[data-toggle=collapse][aria-expanded=true] .caret,
 .sidebar[data-background-color=dark].sidebar-style-2 .nav .nav-item.active>a[data-toggle=collapse][aria-expanded=true] i,
 .sidebar[data-background-color=dark].sidebar-style-2 .nav .nav-item.active>a[data-toggle=collapse][aria-expanded=true] p {
-   color: #1a2035 !important
+   color: #b9babf !important
 }
 
 .sidebar[data-background-color=dark] .scrollbar-inner>.scroll-element .scroll-bar {
@@ -5153,7 +5163,7 @@ label.error {
    padding: 0 8px;
    height: 44px;
    border-radius: 3px;
-   color: #000
+   color: #f8f9fa;
 }
 
 .navbar .navbar-nav .topbar-user .profile-pic:focus,
@@ -5458,7 +5468,7 @@ label.error {
 
 .nav-search .search-icon {
    font-size: 18px;
-   color: #4a4a4a
+   color: #1a2035
 }
 
 .nav-search .btn-search {
@@ -10726,4 +10736,11 @@ body[data-background-color=dark] .jvm-zoom-btn {
    .wrapper.not-found .desc {
       font-size: 18px !important
    }
+}
+
+.collapse {
+   display: none !important; /* Đảm bảo trạng thái ban đầu của Bootstrap */
+}
+.collapse.show {
+   display: block !important; /* Khi Bootstrap mở nó ra */
 }

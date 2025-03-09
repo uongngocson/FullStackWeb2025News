@@ -11,6 +11,16 @@
 
     <!-- Fonts and icons -->
     <script src="../../../../resources/assets/dashboard/js/plugin/webfont/webfont.min.js"></script>
+
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/plugins.min.css" />
+    <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/kaiadmin.min.css" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/demo.css" />
+
     <script>
       WebFont.load({
         google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -29,25 +39,21 @@
       });
     </script>
 
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/plugins.min.css" />
-    <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/kaiadmin.min.css" />
 
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/demo.css" />
   </head>
 
   <body>
     <div class="wrapper">
       <!-- Start Sidebar -->
-      <jsp:include page="../layout/sidebar.jsp" />
       <!-- End Sidebar -->
+      <jsp:include page="../layout/sidebarleft.jsp" />
+
 
       <div class="main-panel">
+        <jsp:include page="../layout/header.jsp" />
+
 
         <!-- Start Navbar -->
-        <jsp:include page="../layout/navbar.jsp" />
         <!-- End Navbar -->
 
         <div class="container">

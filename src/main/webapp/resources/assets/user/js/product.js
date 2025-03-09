@@ -233,6 +233,7 @@ var headerCatagoryItem = document.querySelectorAll('.header__sort-item');
 
 for (var i = 0; i < 4; i++) {
     headerCatagoryItem[i].onclick = function () {
+        alert('check 123');
         var headerCatagoryActive = document.querySelector('.header__sort-item--active');
         headerCatagoryActive.classList.remove('header__sort-item--active');
         this.classList.add('header__sort-item--active');

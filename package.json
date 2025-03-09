@@ -13,6 +13,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "sass": "^1.75.0"
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3",
+    "sass": "^1.75.0",
+    "tailwindcss": "^4.0.11"
   }
 }

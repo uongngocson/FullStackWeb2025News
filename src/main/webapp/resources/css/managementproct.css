@@ -1,0 +1,15 @@
+.manageproduct {
+  width: calc(100% - 265px);
+  height: 100vh;
+  min-height: 100%;
+  float: right;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.manageproduct .management-product {
+  min-height: 70px;
+  margin-top: 70px;
+}
+
+/*# sourceMappingURL=managementproct.css.map */

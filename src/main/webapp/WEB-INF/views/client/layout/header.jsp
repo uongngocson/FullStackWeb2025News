@@ -105,7 +105,7 @@
 
             <!-- Chọn khu vực trên di động -->
             <div class="nav-select-mobile">
-                <img src="../../../../resources/assets/user/img/nav-select-item.webp" alt="hình ảnh"
+                <img src="../../../../resources/assets/user/img/home/nav-select-item.webp" alt="hình ảnh"
                     class="sel-item-img">
                 <div class="nav-select-content">
                     <p id="select-p1">Bạn muốn nhận hàng như thế nào?</p>
