@@ -43,4 +43,11 @@ public class ProductManagementController {
                 return "admin/manageProduct/fashionMen/modelone";
         }
 
+        // nhập loại sản phẩm
+
+        @GetMapping("/admin/product/import")
+        public String importProductType(Model model) {
+                return "admin/manageProduct/nhaploaisp/importproduct";
+        }
+
 }

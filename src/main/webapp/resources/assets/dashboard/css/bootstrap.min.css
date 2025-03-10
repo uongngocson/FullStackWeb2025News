@@ -7129,6 +7129,20 @@ fieldset:disabled .btn {
 .offcanvas-xl,
 .offcanvas-xxl {
     --bs-offcanvas-zindex: 1045;
+    --bs-offcanvas-width: calc(100% - 265px);
+    --bs-offcanvas-height: 30vh;
+    --bs-offcanvas-padding-x: 1rem;
+    --bs-offcanvas-padding-y: 1rem;
+    --bs-offcanvas-color: var(--bs-body-color);
+    --bs-offcanvas-bg: var(--bs-body-bg);
+    --bs-offcanvas-border-width: var(--bs-border-width);
+    --bs-offcanvas-border-color: var(--bs-border-color-translucent);
+    --bs-offcanvas-box-shadow: var(--bs-box-shadow-sm);
+    --bs-offcanvas-transition: transform 0.3s ease-in-out;
+    --bs-offcanvas-title-line-height: 1.5
+}
+.offcanvascus{
+    --bs-offcanvas-zindex: 1045;
     --bs-offcanvas-width: 400px;
     --bs-offcanvas-height: 30vh;
     --bs-offcanvas-padding-x: 1rem;
@@ -7141,6 +7155,7 @@ fieldset:disabled .btn {
     --bs-offcanvas-transition: transform 0.3s ease-in-out;
     --bs-offcanvas-title-line-height: 1.5
 }
+
 
 @media (max-width:575.98px) {
     .offcanvas-sm {

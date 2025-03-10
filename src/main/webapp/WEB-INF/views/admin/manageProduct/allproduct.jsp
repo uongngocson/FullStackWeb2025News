@@ -255,10 +255,10 @@
 
 
                         <!-- delete product -->
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="drawerDeleteProduct"
-                            aria-labelledby="drawerCreateProductLabel">
+                        <div class="offcanvas offcanvas-end " style="--bs-offcanvas-width: 400px;" tabindex=" -1"
+                            id="drawerDeleteProduct" aria-labelledby="drawerCreateProductLabel">
                             <div class="offcanvas-header">
-                                <h5 id="drawer-label" class="text-uppercase text-secondary">Delete item</h5>
+                                <h5 id="drawer-label" class="text-uppercase text-secondary">Delete itemm</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
                                     aria-label="Close"></button>
                             </div>

@@ -115,7 +115,7 @@
                                                 Products</li>
                                         </ol>
                                     </nav>
-                                    <h1 class="h4">Thời trang nam</h1>
+                                    <h1 class="h4">Nhập loại sản phẩm</h1>
                                 </div>
                                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
                                     <div class="d-flex">
@@ -147,7 +147,7 @@
                                     <button id="createProductButton" class="btn btn-primary" type="button"
                                         data-bs-toggle="offcanvas" data-bs-target="#drawerCreateProduct"
                                         aria-controls="drawerCreateProduct">
-                                        Add new product
+                                        Add type SP
                                     </button>
                                 </div>
                             </div>
@@ -269,7 +269,7 @@
                         <div class="offcanvas offcanvas-end" tabindex="-1" id="drawerCreateProduct"
                             aria-labelledby="drawerCreateProductLabel">
                             <div class="offcanvas-header">
-                                <h5 id="drawerCreateProductLabel">Thêm sản phẩm mới</h5>
+                                <h5 id="drawerCreateProductLabel">Thêm loại sản phẩm mới</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
                                     aria-label="Close"></button>
                             </div>
@@ -391,7 +391,7 @@
                         <div class="offcanvas offcanvas-end" tabindex="-1" id="drawerUpdateProduct"
                             aria-labelledby="drawerCreateProductLabel">
                             <div class="offcanvas-header">
-                                <h5 id="drawerCreateProductLabel">Update New Product</h5>
+                                <h5 id="drawerCreateProductLabel">Cập nhập loại SP</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
                                     aria-label="Close"></button>
                             </div>
@@ -789,7 +789,63 @@
 
 
 
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const collapseItems = ["sub", "subnav1"]; // Danh sách các ID collapse
 
+                collapseItems.forEach(id => {
+                    let element = document.getElementById(id);
+                    if (element) {
+                        // Xóa class "show" mặc định
+                        element.classList.remove("show");
+
+                        // Nếu trong localStorage có lưu trạng thái mở => thêm class "show"
+                        if (localStorage.getItem(id) === "open") {
+                            element.classList.add("show");
+                        }
+                    }
+                });
+            });
+
+            function toggleCollapse(id) {
+                let element = document.getElementById(id);
+                if (!element) return;
+
+                let isCollapsed = element.classList.contains("show");
+
+                if (isCollapsed) {
+                    localStorage.removeItem(id); // Nếu đang mở, khi nhấn sẽ đóng
+                    element.classList.remove("show");
+                } else {
+                    localStorage.setItem(id, "open"); // Nếu đang đóng, khi nhấn sẽ mở
+                    element.classList.add("show");
+                }
+            }
+
+
+            $(document).ready(function () {
+                console.log("jQuery version:", $.fn.jquery);
+                console.log("Datepicker available:", $.fn.datepicker);
+
+                if ($.fn.datepicker) {
+                    let $input = $('#datepicker input');
+
+                    // Khởi tạo Datepicker chỉ trên input
+                    $input.datepicker({
+                        format: 'dd/mm/yyyy',
+                        autoclose: true,
+                        todayHighlight: true
+                    });
+
+                    // Khi bấm vào icon lịch thì mở Datepicker
+                    $('#datepicker .input-group-text').click(function () {
+                        $input.focus();
+                    });
+                } else {
+                    console.error("Bootstrap Datepicker chưa được tải!");
+                }
+            });
+        </script>
 
 
 

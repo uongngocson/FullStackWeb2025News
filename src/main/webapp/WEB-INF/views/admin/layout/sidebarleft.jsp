@@ -195,11 +195,11 @@
                                     </div>
                                 </li>
                                 <li>
-                                    <a data-bs-toggle="collapse" href="#subnav3">
+                                    <a data-bs-toggle="collapse" href="#subnav4">
                                         <span class="sub-item">Số sản phẩm tồn kho</span>
                                         <span class="caret"></span>
                                     </a>
-                                    <div class="collapse" id="subnav3">
+                                    <div class="collapse" id="subnav4">
                                         <ul class="nav nav-collapse subnav">
                                             <li>
                                                 <a href="#">
@@ -210,11 +210,11 @@
                                     </div>
                                 </li>
                                 <li>
-                                    <a data-bs-toggle="collapse" href="#subnav3">
+                                    <a data-bs-toggle="collapse" href="#subnav5">
                                         <span class="sub-item">Doanh thu sản phẩm bán ra</span>
                                         <span class="caret"></span>
                                     </a>
-                                    <div class="collapse" id="subnav3">
+                                    <div class="collapse" id="subnav5">
                                         <ul class="nav nav-collapse subnav">
                                             <li>
                                                 <a href="#">
@@ -228,9 +228,19 @@
 
 
                                 <li>
-                                    <a href="#">
-                                        <span class="sub-item">Level 1</span>
+                                    <a data-bs-toggle="collapse" href="#subnav6">
+                                        <span class="sub-item">Loại sản phẩm</span>
+                                        <span class="caret"></span>
                                     </a>
+                                    <div class="collapse" id="subnav6">
+                                        <ul class="nav nav-collapse subnav">
+                                            <li>
+                                                <a href="/admin/product/import">
+                                                    <span class="sub-item">Nhập liệu loại SP</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -472,12 +482,69 @@
                                 </li>
                                 <li>
                                     <a href="#">
+                                        <span class="sub-item">Phân quyền</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
                                         <span class="sub-item">Profile lock</span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
                     </li>
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#subbh">
+                            <i class="fas fa-bars"></i>
+                            <p>QUẢN LÝ BẢO HÀNH</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="subbh">
+                            <ul class="nav nav-collapse">
+                                <li>
+                                    <a data-bs-toggle="collapse" href="#subnav1">
+                                        <span class="sub-item">Level 1</span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <div class="collapse" id="subnav1">
+                                        <ul class="nav nav-collapse subnav">
+                                            <li>
+                                                <a href="#">
+                                                    <span class="sub-item">Level 2</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <span class="sub-item">Level 2</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a data-bs-toggle="collapse" href="#subnav2">
+                                        <span class="sub-item">Level 1</span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <div class="collapse" id="subnav2">
+                                        <ul class="nav nav-collapse subnav">
+                                            <li>
+                                                <a href="#">
+                                                    <span class="sub-item">Level 2</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="sub-item">Level 1</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#sub">
                             <i class="fas fa-bars"></i>
