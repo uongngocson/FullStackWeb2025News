@@ -1,0 +1,56 @@
+package local.example.demo.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.hibernate.TransientObjectException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import local.example.demo.model.entity.Customer;
+import local.example.demo.repository.CustomerRepository;
+
+@Service
+public class CustomerService {
+    @Autowired
+    private final CustomerRepository customerRepository;
+
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Customer> findAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Customer findCustomerById(Integer customerId) {
+        return customerRepository.findById(customerId).orElse(null);
+    }
+
+    @Transactional
+    public void saveCustomer(Customer customer) {
+        customerRepository.save(customer);
+    }
+
+    @Transactional
+    public void deleteCustomerById(Integer customerId) {
+        Optional<Customer> customerOpt = customerRepository.findById(customerId);
+
+        if (customerOpt.isEmpty()) {
+            throw new IllegalArgumentException("Không tìm thấy khách hàng có ID: " + customerId);
+        }
+
+        Customer customer = customerOpt.get();
+
+        try {
+            customerRepository.delete(customer);
+        } catch (TransientObjectException e) {
+            throw new RuntimeException("Lỗi Hibernate (TransientObjectException): " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi xóa khách hàng: " + e.getMessage(), e);
+        }
+    }
+}

@@ -45,6 +45,7 @@
   <body>
     <div class="wrapper">
       <!-- Start Sidebar -->
+
       <!-- End Sidebar -->
       <jsp:include page="../layout/sidebarleft.jsp" />
 
@@ -331,10 +332,6 @@
         <jsp:include page="../layout/footer.jsp" />
         <!-- End Footer -->
       </div>
-
-      <!-- Start Custom template | don't include it in your project! -->
-      <jsp:include page="../layout/custom-template.jsp" />
-      <!-- End Custom template -->
     </div>
 
     <!--   Core JS Files   -->
