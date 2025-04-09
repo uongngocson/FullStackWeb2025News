@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+
             <!DOCTYPE html>
             <html lang="en">
 
@@ -8,11 +9,13 @@
                 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
                 <title>${customer.customerId != null ? 'Edit' : 'Create'} Customer</title>
                 <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-                <link rel="icon" href="../../../../resources/assets/dashboard/img/kaiadmin/favicon.ico"
-                    type="image/x-icon" />
+                <!-- set path -->
+                <c:set var="ctx" value="${pageContext.request.contextPath}" />
+
+                <link rel="icon" href="${ctx}/resources/assets/user/img/home/walmart-logo.webp" type="image/x-icon" />
 
                 <!-- Fonts and icons -->
-                <script src="../../../../resources/assets/dashboard/js/plugin/webfont/webfont.min.js"></script>
+                <script src="${ctx}/resources/assets/dashboard/js/plugin/webfont/webfont.min.js"></script>
                 <script>
                     WebFont.load({
                         google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -23,7 +26,7 @@
                                 "Font Awesome 5 Brands",
                                 "simple-line-icons",
                             ],
-                            urls: ["../../../../resources/assets/dashboard/css/fonts.min.css"],
+                            urls: ["${ctx}/resources/assets/dashboard/css/fonts.min.css"],
                         },
                         active: function () {
                             sessionStorage.fonts = true;
@@ -32,10 +35,111 @@
                 </script>
 
                 <!-- CSS Files -->
-                <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/bootstrap.min.css" />
-                <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/plugins.min.css" />
-                <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/kaiadmin.min.css" />
-                <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/demo.css" />
+                <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/bootstrap.min.css" />
+                <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/plugins.min.css" />
+                <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/kaiadmin.min.css" />
+                <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/demo.css" />
+                <!-- Add Font Awesome for better icons -->
+                <link rel="stylesheet"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+                <style>
+                    .form-group label {
+                        font-weight: 600;
+                        color: #4a5568;
+                    }
+
+                    .form-control {
+                        border-radius: 8px;
+                        padding: 10px 15px;
+                        border: 1px solid #e2e8f0;
+                    }
+
+                    .form-control:focus {
+                        border-color: #4299e1;
+                        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+                    }
+
+                    .card {
+                        border-radius: 10px;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                        border: none;
+                    }
+
+                    .card-header {
+                        background-color: #fff;
+                        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                        padding: 20px 25px;
+                    }
+
+                    .card-title {
+                        font-weight: 600;
+                        color: #2d3748;
+                    }
+
+                    .card-body {
+                        padding: 25px;
+                    }
+
+                    .card-action {
+                        padding: 15px 25px;
+                        background-color: #f9fafb;
+                        border-top: 1px solid rgba(0, 0, 0, 0.05);
+                    }
+
+                    .btn {
+                        padding: 8px 16px;
+                        font-weight: 500;
+                        border-radius: 8px;
+                    }
+
+                    .btn-success {
+                        background-color: #48bb78;
+                        border-color: #48bb78;
+                    }
+
+                    .btn-primary {
+                        background-color: #4299e1;
+                        border-color: #4299e1;
+                    }
+
+                    .btn-danger {
+                        background-color: #f56565;
+                        border-color: #f56565;
+                    }
+
+                    .text-danger {
+                        color: #e53e3e !important;
+                    }
+
+                    .custom-radio,
+                    .custom-checkbox {
+                        margin-right: 15px;
+                    }
+
+                    .gender-options {
+                        display: flex;
+                        gap: 20px;
+                    }
+
+                    .gender-option {
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                    }
+
+                    .form-section {
+                        margin-bottom: 30px;
+                    }
+
+                    .form-section-title {
+                        font-weight: 600;
+                        color: #4a5568;
+                        margin-bottom: 15px;
+                        padding-bottom: 10px;
+                        border-bottom: 1px solid #e2e8f0;
+                    }
+                </style>
             </head>
 
             <body>
@@ -56,10 +160,10 @@
                                     </h3>
                                     <ul class="breadcrumbs mb-3">
                                         <li class="nav-home">
-                                            <a href="#"><i class="icon-home"></i></a>
+                                            <a href="/admin/dashboard/index"><i class="icon-home"></i></a>
                                         </li>
                                         <li class="separator"><i class="icon-arrow-right"></i></li>
-                                        <li class="nav-item"><a href="/customer-mgr/list">Customers</a></li>
+                                        <li class="nav-item"><a href="/admin/customer-mgr/list">Customers</a></li>
                                         <li class="separator"><i class="icon-arrow-right"></i></li>
                                         <li class="nav-item"><a href="#">${customer.customerId != null ? 'Edit' :
                                                 'Create'}</a>
@@ -72,138 +176,189 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <div class="card-header">
-                                                <div class="card-title">${customer.customerId != null ? 'Update
-                                                    Customer' : 'Create
-                                                    New Customer'}</div>
+                                                <div class="card-title">
+                                                    <i class="fas fa-user-edit mr-2 text-primary"></i>
+                                                    ${customer.customerId != null ? 'Update Customer' : 'Create New
+                                                    Customer'}
+                                                </div>
                                             </div>
-                                            <form:form action="/customer-mgr/save" method="post"
-                                                modelAttribute="customer">
+                                            <form:form action="/admin/customer-mgr/save" method="post"
+                                                modelAttribute="customer" enctype="multipart/form-data">
                                                 <div class="card-body">
                                                     <c:if test="${not empty customer.customerId}">
                                                         <form:hidden path="customerId" />
                                                     </c:if>
 
-                                                    <div class="row">
-                                                        <!-- First Name -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="firstName">First Name <span
-                                                                        class="text-danger">*</span></label>
-                                                                <form:input path="firstName" type="text"
-                                                                    class="form-control" id="firstName"
-                                                                    placeholder="Enter first name" required="true" />
-                                                                <form:errors path="firstName" cssClass="text-danger" />
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Last Name -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="lastName">Last Name <span
-                                                                        class="text-danger">*</span></label>
-                                                                <form:input path="lastName" type="text"
-                                                                    class="form-control" id="lastName"
-                                                                    placeholder="Enter last name" required="true" />
-                                                                <form:errors path="lastName" cssClass="text-danger" />
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Email -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="email">Email <span
-                                                                        class="text-danger">*</span></label>
-                                                                <form:input path="email" type="email"
-                                                                    class="form-control" id="email"
-                                                                    placeholder="Enter email address" required="true" />
-                                                                <form:errors path="email" cssClass="text-danger" />
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Phone Number -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="phoneNumber">Phone Number <span
-                                                                        class="text-danger">*</span></label>
-                                                                <form:input path="phoneNumber" type="tel"
-                                                                    class="form-control" id="phoneNumber"
-                                                                    placeholder="Enter phone number" required="true" />
-                                                                <form:errors path="phoneNumber"
-                                                                    cssClass="text-danger" />
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Date of Birth -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="dateOfBirth">Date of Birth <span
-                                                                        class="text-danger">*</span></label>
-                                                                <form:input path="dateOfBirth" type="date"
-                                                                    class="form-control" id="dateOfBirth"
-                                                                    required="true" />
-                                                                <form:errors path="dateOfBirth"
-                                                                    cssClass="text-danger" />
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Registration Date -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="registrationDate">Registration Date</label>
-                                                                <form:input path="registrationDate" type="date"
-                                                                    class="form-control" id="registrationDate" />
-                                                                <form:errors path="registrationDate"
-                                                                    cssClass="text-danger" />
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Gender -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label>Gender <span class="text-danger">*</span></label>
-                                                                <div>
-                                                                    <form:radiobutton path="gender" value="true"
-                                                                        id="male" /> <label for="male">Male</label>
-                                                                    <form:radiobutton path="gender" value="false"
-                                                                        id="female" /> <label
-                                                                        for="female">Female</label>
+                                                    <div class="form-section">
+                                                        <div class="row">
+                                                            <!-- First Name -->
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="firstName">
+                                                                        <i class="fas fa-user mr-1 text-primary"></i>
+                                                                        First Name <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <form:input path="firstName" type="text"
+                                                                        class="form-control" id="firstName"
+                                                                        placeholder="Enter first name" />
+                                                                    <form:errors path="firstName"
+                                                                        cssClass="text-danger" />
                                                                 </div>
-                                                                <form:errors path="gender" cssClass="text-danger" />
                                                             </div>
-                                                        </div>
 
-                                                        <!-- Profile Image -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="profileImage">Profile Image</label>
-                                                                <form:input path="profileImage" type="file"
-                                                                    class="form-control" id="profileImage" />
-                                                                <form:errors path="profileImage"
-                                                                    cssClass="text-danger" />
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Status -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="status">Status</label>
-                                                                <div>
-                                                                    <form:checkbox path="status" id="status" /> Active
+                                                            <!-- Last Name -->
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="lastName">
+                                                                        <i class="fas fa-user mr-1 text-primary"></i>
+                                                                        Last Name <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <form:input path="lastName" type="text"
+                                                                        class="form-control" id="lastName"
+                                                                        placeholder="Enter last name" />
+                                                                    <form:errors path="lastName"
+                                                                        cssClass="text-danger" />
                                                                 </div>
-                                                                <form:errors path="status" cssClass="text-danger" />
+                                                            </div>
+
+                                                            <!-- Email -->
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="email">
+                                                                        <i
+                                                                            class="fas fa-envelope mr-1 text-primary"></i>
+                                                                        Email <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <form:input path="email" type="email"
+                                                                        class="form-control" id="email"
+                                                                        placeholder="Enter email address" />
+                                                                    <form:errors path="email" cssClass="text-danger" />
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Phone Number -->
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="phoneNumber">
+                                                                        <i class="fas fa-phone mr-1 text-primary"></i>
+                                                                        Phone Number <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <form:input path="phoneNumber" type="tel"
+                                                                        class="form-control" id="phoneNumber"
+                                                                        placeholder="Enter phone number" />
+                                                                    <form:errors path="phoneNumber"
+                                                                        cssClass="text-danger" />
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Date of Birth -->
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="dateOfBirth">
+                                                                        <i
+                                                                            class="fas fa-birthday-cake mr-1 text-primary"></i>
+                                                                        Date of Birth <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <form:input path="dateOfBirth" type="date"
+                                                                        class="form-control" id="dateOfBirth" />
+                                                                    <form:errors path="dateOfBirth"
+                                                                        cssClass="text-danger" />
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Registration Date -->
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="registrationDate">
+                                                                        <i
+                                                                            class="fas fa-calendar-alt mr-1 text-primary"></i>
+                                                                        Registration Date
+                                                                    </label>
+                                                                    <form:input path="registrationDate" type="date"
+                                                                        class="form-control" id="registrationDate" />
+                                                                    <form:errors path="registrationDate"
+                                                                        cssClass="text-danger" />
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Gender -->
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>
+                                                                        <i
+                                                                            class="fas fa-venus-mars mr-1 text-primary"></i>
+                                                                        Gender <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <div class="gender-options">
+                                                                        <div class="gender-option">
+                                                                            <form:radiobutton path="gender" value="true"
+                                                                                id="male" /> <label
+                                                                                for="male">Male</label>
+                                                                            <div class="gender-option">
+                                                                                <form:radiobutton path="gender"
+                                                                                    value="false" id="female" /> <label
+                                                                                    for="female">Female</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <form:errors path="gender"
+                                                                            cssClass="text-danger" />
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Status -->
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <div class="custom-control custom-switch">
+                                                                            <form:checkbox path="status" id="status"
+                                                                                cssClass="custom-control-input" />
+                                                                            <label for="status">
+                                                                                Status
+                                                                            </label>
+                                                                        </div>
+                                                                        <form:errors path="status"
+                                                                            cssClass="text-danger" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Profile Image -->
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="profileImage">
+                                                                        <i class="fas fa-image mr-1 text-primary"></i>
+                                                                        Profile Image
+                                                                    </label>
+                                                                    <div class="custom-file">
+                                                                        <input type="file" class="custom-file-input"
+                                                                            id="profileImage" name="profileImageFile"
+                                                                            accept="image/*">
+                                                                        <form:hidden path="profileImage" />
+                                                                    </div>
+                                                                    <div class="mt-3">
+                                                                        <div id="imagePreview" class="img-preview">
+                                                                            <c:if
+                                                                                test="${not empty customer.profileImage}">
+                                                                                <img src="${customer.profileImage}"
+                                                                                    alt="Profile Image"
+                                                                                    class="img-fluid rounded"
+                                                                                    style="max-height: 150px;">
+                                                                            </c:if>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
 
-                                                <div class="card-action">
-                                                    <button type="submit" class="btn btn-success">${customer.customerId
-                                                        != null ? 'Update' : 'Add'}</button>
-                                                    <button type="reset" class="btn btn-primary">Reset</button>
-                                                    <a href="/customer-mgr/list" class="btn btn-danger">Cancel</a>
-                                                </div>
+                                                        <div class="card-action">
+                                                            <button type="submit" class="btn btn-success">
+                                                                <i class="fa fa-save mr-1"></i> ${customer.customerId
+                                                                != null ? 'Update' : 'Add'}</button>
+                                                            <button type="reset" class="btn btn-primary"><i
+                                                                    class="fa fa-redo mr-1"></i> Reset</button>
+                                                            <a href="/admin/customer-mgr/list" class="btn btn-danger"><i
+                                                                    class="fa fa-times mr-1"></i> Cancel</a>
+                                                        </div>
                                             </form:form>
-
                                         </div>
                                     </div>
                                 </div>
@@ -217,19 +372,57 @@
                 </div>
 
                 <!-- Core JS Files -->
-                <script src="../../../../resources/assets/dashboard/js/core/jquery-3.7.1.min.js"></script>
-                <script src="../../../../resources/assets/dashboard/js/core/popper.min.js"></script>
-                <script src="../../../../resources/assets/dashboard/js/core/bootstrap.min.js"></script>
+                <script src="${ctx}/resources/assets/dashboard/js/core/jquery-3.7.1.min.js"></script>
+                <script src="${ctx}/resources/assets/dashboard/js/core/popper.min.js"></script>
+                <script src="${ctx}/resources/assets/dashboard/js/core/bootstrap.min.js"></script>
 
                 <!-- jQuery Scrollbar -->
                 <script
-                    src="../../../../resources/assets/dashboard/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+                    src="${ctx}/resources/assets/dashboard/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 
                 <!-- Sweet Alert -->
-                <script src="../../../../resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
+                <script src="${ctx}/resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
 
                 <!-- Kaiadmin JS -->
-                <script src="../../../../resources/assets/dashboard/js/kaiadmin.min.js"></script>
+                <script src="${ctx}/resources/assets/dashboard/js/kaiadmin.min.js"></script>
+
+                <!-- Custom JS -->
+                <script>
+                    $(document).ready(function () {
+                        // Update file input label with selected filename
+                        $('.custom-file-input').on('change', function () {
+                            let fileName = $(this).val().split('\\').pop();
+                            $(this).next('.custom-file-label').html(fileName || 'Choose file');
+
+                            // Handle image preview
+                            if (this.files && this.files[0]) {
+                                const reader = new FileReader();
+
+                                reader.onload = function (e) {
+                                    // Clear previous preview
+                                    $('#imagePreview').html('');
+
+                                    // Create and append new image preview
+                                    const img = $('<img>')
+                                        .attr('src', e.target.result)
+                                        .addClass('img-fluid rounded')
+                                        .css('max-height', '150px');
+
+                                    $('#imagePreview').append(img);
+                                }
+
+                                reader.readAsDataURL(this.files[0]);
+                            }
+                        });
+
+                        // Show existing image on page load if available
+                        if ($('#imagePreview img').length === 0 && $('#profileImage').val()) {
+                            $('#imagePreview').html('<img src="' + $('#profileImage').val() + '" alt="Profile Image" class="img-fluid rounded" style="max-height: 150px;">');
+                        }
+                    });
+                </script>
+
+                <!-- Add Font Awesome for better icons -->
             </body>
 
             </html>

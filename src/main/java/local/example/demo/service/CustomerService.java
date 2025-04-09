@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.TransientObjectException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import local.example.demo.model.entity.Customer;
+import local.example.demo.model.entity.Order;
 import local.example.demo.repository.CustomerRepository;
+import local.example.demo.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Service
 public class CustomerService {
-    @Autowired
-    private final CustomerRepository customerRepository;
 
-    public CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
+    private final CustomerRepository customerRepository;
+    private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
     public List<Customer> findAllCustomers() {
@@ -53,4 +53,10 @@ public class CustomerService {
             throw new RuntimeException("Lỗi khi xóa khách hàng: " + e.getMessage(), e);
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<Order> findOrdersByCustomerId(Integer customerId) {
+        return orderRepository.findByCustomerId(customerId);
+    }
+
 }

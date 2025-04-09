@@ -50,9 +50,6 @@ public class Product {
     @NotBlank(message = "Product name cannot be blank")
     private String productName;
 
-    @Column(name = "ShortDescription")
-    private String shortDescription;
-
     @Column(name = "Description")
     private String description;
 
@@ -66,10 +63,6 @@ public class Product {
     @Column(name = "QuantityInStock")
     @Min(value = 0, message = "Quantity in stock must be greater than or equal to 0")
     private Integer quantityInStock;
-
-    @Column(name = "SoldQuantity")
-    @Min(value = 0, message = "Sold quantity must be greater than or equal to 0")
-    private Integer soldQuantity;
 
     @Column(name = "Views")
     @Min(value = 0, message = "Views must be greater than or equal to 0")

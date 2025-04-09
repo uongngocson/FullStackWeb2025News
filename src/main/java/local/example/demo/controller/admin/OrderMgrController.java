@@ -1,50 +1,86 @@
 package local.example.demo.controller.admin;
 
+import local.example.demo.model.entity.Address;
+import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
+import local.example.demo.model.entity.OrderDetail;
+import local.example.demo.model.entity.Payment;
+import local.example.demo.service.AddressService;
+import local.example.demo.service.CustomerService;
 import local.example.demo.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
+import local.example.demo.service.PaymentService;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Controller
-@RequestMapping("/admin/orders")
+@RequestMapping("/admin/order-mgr/")
 public class OrderMgrController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+    private final CustomerService customerService;
+    private final PaymentService paymentService;
 
-    @GetMapping
+    @GetMapping("list")
     public String getAllOrders(Model model) {
         List<Order> orders = orderService.getAllOrders();
         model.addAttribute("orders", orders);
         return "admin/order-mgr/all-orders";
     }
 
-    @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        model.addAttribute("order", new Order());
-        return "admin/order-mgr/form-order";
+    // find all customer
+    @ModelAttribute("customers")
+    public List<Customer> getAllCustomers() {
+        return customerService.findAllCustomers();
     }
 
-    @PostMapping("/save")
-    public String saveOrder(@ModelAttribute("order") Order order) {
-        orderService.saveOrder(order);
-        return "redirect:/admin/orders";
+    // find all payment
+    @ModelAttribute("payments")
+    public List<Payment> getAllPayments() {
+        return paymentService.getAllPayments();
     }
 
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Integer id, Model model) {
-        Order order = orderService.getOrderById(id);
+    @GetMapping("detail/{orderId}")
+    public String getOrderById(@PathVariable("orderId") String orderId, Model model) {
+        Order order = orderService.getOrderById(orderId);
+        List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(orderId);
         model.addAttribute("order", order);
+        model.addAttribute("orderDetails", orderDetails);
+        return "admin/order-mgr/detail-order";
+    }
+
+    @GetMapping("create")
+    public String showCreate(Model model) {
+        // Create a new order without setting an ID
+        // The ID will be automatically generated in the service layer
+        model.addAttribute("order", new Order());
+        model.addAttribute("isNewOrder", true);
         return "admin/order-mgr/form-order";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteOrder(@PathVariable Integer id) {
-        orderService.deleteOrder(id);
-        return "redirect:/admin/orders";
+    @GetMapping("update/{orderId}")
+    public String updateOrder(@PathVariable("orderId") String orderId, Model model) {
+        Order order = orderService.getOrderById(orderId);
+        model.addAttribute("order", order);
+        model.addAttribute("isNewOrder", false);
+        return "admin/order-mgr/form-order";
+    }
+
+    @PostMapping("save")
+    public String saveOrder(@ModelAttribute("order") Order order) {
+        // The service will handle generating an ID if this is a new order
+        orderService.saveOrder(order);
+        return "redirect:/admin/order-mgr/list";
+    }
+
+    @GetMapping("delete/{orderId}")
+    public String deleteOrder(@PathVariable("orderId") String orderId) {
+        orderService.deleteOrder(orderId);
+        return "redirect:/admin/order-mgr/list";
     }
 }

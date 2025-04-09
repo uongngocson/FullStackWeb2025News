@@ -14,7 +14,7 @@ import local.example.demo.service.AccountService;
 import local.example.demo.service.RoleService;
 
 @Controller
-@RequestMapping("/account-mgr/")
+@RequestMapping("/admin/account-mgr/")
 public class AccountMgrController {
 
     // Injecting the AccountService to handle account-related operations

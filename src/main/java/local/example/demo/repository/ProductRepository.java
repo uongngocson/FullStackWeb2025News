@@ -16,4 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.shop s WHERE p.productId = :productId")
     Product findProductById(Integer productId);
+
+    // get product by shopId
+    @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.shop s WHERE s.shopId = :shopId")
+    List<Product> findProductsByShopId(Integer shopId);
 }

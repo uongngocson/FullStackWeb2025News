@@ -1,13 +1,15 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
+
     <!-- Sidebar -->
     <div class="sidebar" data-background-color="dark">
         <div class="sidebar-logo">
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="dark">
-                <a href="index.html" class="logo">
-                    <img src="../../../../resources/assets/user/img/logo/logo-full-blue.png" alt="navbar brand"
+                <a href="admin/dashboard/index" class="logo">
+                    <img src="../../../../resources/assets/user/img/home/walmart-logo.webp" alt="navbar brand"
                         class="navbar-brand" height="20" />
                 </a>
+
                 <div class="nav-toggle">
                     <button class="btn btn-toggle toggle-sidebar">
                         <i class="gg-menu-right"></i>
@@ -27,7 +29,7 @@
                 <ul class="nav nav-secondary">
                     <!-- Dashboard -->
                     <li class="nav-item">
-                        <a href="/admin/dashboard/">
+                        <a href="/admin/dashboard/index">
                             <i class="fas fa-home"></i>
                             <p>Dashboard</p>
                         </a>
@@ -43,17 +45,17 @@
                         <div class="collapse" id="charts">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="/admin/charts/revenue/">
+                                    <a href="#">
                                         <span class="sub-item">Revenue Over Time</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/charts/order-status/">
+                                    <a href="#">
                                         <span class="sub-item">Order Status Breakdown</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/charts/top-products/">
+                                    <a href="#">
                                         <span class="sub-item">Top Selling Products</span>
                                     </a>
                                 </li>
@@ -63,25 +65,25 @@
 
                     <!-- Shop Management -->
                     <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#shop">
+                        <a data-bs-toggle="collapse" href="#shops">
                             <i class="fas fa-globe"></i>
                             <p>Shop Management</p>
                             <span class="caret"></span>
                         </a>
-                        <div class="collapse" id="shop">
+                        <div class="collapse" id="shops">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="/shop-mgr/list">
+                                    <a href="/admin/shop-mgr/list">
                                         <span class="sub-item">Shop List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/shop/employees/">
+                                    <a href="#">
                                         <span class="sub-item">Employee List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/shop/discounts/">
+                                    <a href="#">
                                         <span class="sub-item">Discounts</span>
                                     </a>
                                 </li>
@@ -99,32 +101,32 @@
                         <div class="collapse" id="products">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="/product-mgr/list">
+                                    <a href="/admin/product-mgr/list">
                                         <span class="sub-item">Product List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/product/brands/">
+                                    <a href="#">
                                         <span class="sub-item">Brand List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/product/sizes/">
+                                    <a href="/#">
                                         <span class="sub-item">Size List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/product/colors/">
+                                    <a href="/#">
                                         <span class="sub-item">Color List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/product/categories/">
+                                    <a href="#">
                                         <span class="sub-item">Category List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/product/inventory/">
+                                    <a href="#">
                                         <span class="sub-item">Inventory</span>
                                     </a>
                                 </li>
@@ -142,17 +144,17 @@
                         <div class="collapse" id="orders">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="/admin/order/list/">
+                                    <a href="/admin/order-mgr/list">
                                         <span class="sub-item">Order List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/order/shipping/">
+                                    <a href="#">
                                         <span class="sub-item">Shipping Status</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/order/shippers/">
+                                    <a href="#">
                                         <span class="sub-item">Shipper List</span>
                                     </a>
                                 </li>
@@ -170,13 +172,31 @@
                         <div class="collapse" id="customers">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="/admin/customer/list/">
+                                    <a href="/admin/customer-mgr/list">
                                         <span class="sub-item">Customer List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/customer/reviews/">
+                                    <a href="#">
                                         <span class="sub-item">Reviews</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Employee Management -->
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#employees">
+                            <i class="fas fa-users"></i>
+                            <p>Employee Management</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="employees">
+                            <ul class="nav nav-collapse">
+                                <li>
+                                    <a href="/admin/employee-mgr/list">
+                                        <span class="sub-item">Employee List</span>
                                     </a>
                                 </li>
                             </ul>
@@ -193,12 +213,12 @@
                         <div class="collapse" id="accounts">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="/account-mgr/list">
+                                    <a href="/admin/account-mgr/list">
                                         <span class="sub-item">Account List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/account/roles/">
+                                    <a href="#">
                                         <span class="sub-item">Role List</span>
                                     </a>
                                 </li>

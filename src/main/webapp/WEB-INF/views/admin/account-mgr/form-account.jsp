@@ -23,9 +23,10 @@
                                     <h3 class="fw-bold mb-3">${account.accountId != null ? 'Edit' : 'Create'} Account
                                     </h3>
                                     <ul class="breadcrumbs mb-3">
-                                        <li class="nav-home"><a href="#"><i class="icon-home"></i></a></li>
+                                        <li class="nav-home"><a href="/admin/dashboard/index"><i
+                                                    class="icon-home"></i></a></li>
                                         <li class="separator"><i class="icon-arrow-right"></i></li>
-                                        <li class="nav-item"><a href="/account-mgr/list">Accounts</a></li>
+                                        <li class="nav-item"><a href="/admin/account-mgr/list">Accounts</a></li>
                                         <li class="separator"><i class="icon-arrow-right"></i></li>
                                         <li class="nav-item"><a href="#">${account.accountId != null ? 'Edit' :
                                                 'Create'}</a></li>
@@ -38,7 +39,7 @@
                                                 <div class="card-title">${account.accountId != null ? 'Update Account' :
                                                     'Create New Account'}</div>
                                             </div>
-                                            <form:form action="/account-mgr/save" method="post"
+                                            <form:form action="/admin/account-mgr/save" method="post"
                                                 modelAttribute="account">
                                                 <div class="card-body">
                                                     <c:if test="${not empty account.accountId}">
@@ -79,7 +80,7 @@
                                                     <button type="submit" class="btn btn-success">${account.accountId !=
                                                         null ? 'Update' : 'Add'}</button>
                                                     <button type="reset" class="btn btn-primary">Reset</button>
-                                                    <a href="/account-mgr/list" class="btn btn-danger">Cancel</a>
+                                                    <a href="/admin/account-mgr/list" class="btn btn-danger">Cancel</a>
                                                 </div>
                                             </form:form>
                                         </div>

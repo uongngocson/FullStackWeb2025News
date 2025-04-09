@@ -7,7 +7,7 @@
 
             <head>
                 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <title>Customer Management</title>
+                <title>Employee Management</title>
                 <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
                 <!-- set path -->
                 <c:set var="ctx" value="${pageContext.request.contextPath}" />
@@ -42,26 +42,49 @@
                 </script>
 
                 <style>
-                    .customer-avatar {
-                        width: 40px;
-                        height: 40px;
+                    .employee-avatar {
+                        width: 45px;
+                        height: 45px;
                         border-radius: 50%;
                         object-fit: cover;
+                        margin-right: 15px;
+                        border: 2px solid #4e73df;
                     }
 
-                    .status-badge {
-                        padding: 5px 10px;
-                        border-radius: 30px;
-                        font-size: 12px;
+                    .employee-info {
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .employee-details {
+                        display: flex;
+                        flex-direction: column;
+                    }
+
+                    .employee-name {
                         font-weight: 600;
+                        color: #2d3748;
+                        font-size: 14px;
                     }
 
-                    .table-responsive {
-                        overflow-x: auto;
+                    .employee-position {
+                        font-size: 12px;
+                        color: #718096;
                     }
 
-                    .action-buttons .btn {
-                        padding: 5px 10px;
+                    .badge-success {
+                        background-color: #1cc88a;
+                    }
+
+                    .badge-danger {
+                        background-color: #e74a3b;
+                    }
+
+                    .badge {
+                        font-size: 12px;
+                        padding: 6px 12px;
+                        border-radius: 30px;
+                        font-weight: 500;
                         margin: 0 2px;
                     }
 
@@ -82,38 +105,46 @@
                         color: #2d3748;
                     }
 
-                    .card-body {
-                        padding: 25px;
+                    .btn-primary {
+                        background-color: #4e73df;
+                        border-color: #4e73df;
+                    }
+
+                    .btn-success {
+                        background-color: #1cc88a;
+                        border-color: #1cc88a;
+                    }
+
+                    .btn-danger {
+                        background-color: #e74a3b;
+                        border-color: #e74a3b;
+                    }
+
+                    .btn-info {
+                        background-color: #36b9cc;
+                        border-color: #36b9cc;
+                    }
+
+                    .btn-round {
+                        border-radius: 30px;
+                        padding: 8px 16px;
                     }
 
                     .table th {
                         font-weight: 600;
-                        color: #4a5568;
-                        border-top: none;
-                        background-color: #f9fafb;
+                        color: #4e73df;
                     }
 
-                    .table td {
-                        vertical-align: middle;
+                    .table-hover tbody tr:hover {
+                        background-color: #f8f9fc;
                     }
 
-                    .customer-info {
-                        display: flex;
-                        align-items: center;
-                    }
-
-                    .customer-details {
-                        margin-left: 15px;
-                    }
-
-                    .customer-name {
-                        font-weight: 600;
-                        margin-bottom: 3px;
-                    }
-
-                    .customer-email {
+                    .department-badge {
+                        background-color: #4e73df;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 15px;
                         font-size: 12px;
-                        color: #718096;
                     }
                 </style>
 
@@ -131,7 +162,7 @@
                         <div class="container">
                             <div class="page-inner">
                                 <div class="page-header">
-                                    <h3 class="fw-bold mb-3">Customer Management</h3>
+                                    <h3 class="fw-bold mb-3">Employee Management</h3>
                                     <ul class="breadcrumbs mb-3">
                                         <li class="nav-home">
                                             <a href="/admin/dashboard/index">
@@ -142,15 +173,15 @@
                                             <i class="icon-arrow-right"></i>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="/admin/customer-mgr/list">Customers</a>
+                                            <a href="#">Employees</a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div
                                     class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
                                     <div class="ms-md-auto py-2 py-md-0">
-                                        <a href="/admin/customer-mgr/create" class="btn btn-primary btn-round">
-                                            <i class="fas fa-plus"></i> Add New Customer
+                                        <a href="/admin/employee-mgr/create" class="btn btn-primary btn-round">
+                                            <i class="fas fa-plus"></i> Add New Employee
                                         </a>
                                     </div>
                                 </div>
@@ -161,77 +192,71 @@
                                             <div class="card-header">
                                                 <div class="card-title">
                                                     <i class="fas fa-users mr-2 text-primary"></i>
-                                                    Customer List
+                                                    Employee List
                                                 </div>
                                             </div>
                                             <div class="card-body">
                                                 <div class="table-responsive">
-                                                    <table id="customerTable" class="table table-hover">
+                                                    <table id="employee-table" class="table table-hover">
                                                         <thead>
                                                             <tr>
-                                                                <th width="5%">No.</th>
-                                                                <th width="25%">Customer</th>
-                                                                <th width="15%">Phone</th>
-                                                                <th width="15%">Date of Birth</th>
-                                                                <th width="15%">Registration Date</th>
-                                                                <th width="10%">Status</th>
-                                                                <th width="15%" class="text-center">Actions</th>
+                                                                <th>ID</th>
+                                                                <th>Employee</th>
+                                                                <th>Hire Date</th>
+                                                                <th>Salary</th>
+                                                                <th>Status</th>
+                                                                <th>Actions</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <c:forEach var="customer" items="${customers}"
-                                                                varStatus="status">
+                                                            <c:forEach var="employee" items="${employees}">
                                                                 <tr>
-                                                                    <td>${status.index + 1}</td>
+                                                                    <td>#${employee.employeeId}</td>
                                                                     <td>
-                                                                        <div class="customer-info">
-                                                                            <img src="${not empty customer.profileImage ? customer.profileImage : ctx.concat('/resources/assets/dashboard/img/profile.jpg')}"
-                                                                                class="customer-avatar"
-                                                                                alt="${customer.firstName}">
-                                                                            <div class="customer-details">
-                                                                                <div class="customer-name">
-                                                                                    ${customer.firstName}
-                                                                                    ${customer.lastName}</div>
-                                                                                <div class="customer-email">
-                                                                                    ${customer.email}</div>
+                                                                        <div class="employee-info">
+                                                                            <img src="${not empty employee.profileImage ? employee.profileImage : ctx.concat('/resources/assets/dashboard/img/profile.jpg')}"
+                                                                                class="employee-avatar"
+                                                                                alt="${employee.firstName}">
+                                                                            <div class="employee-details">
+                                                                                <div class="employee-name">
+                                                                                    ${employee.firstName}
+                                                                                    ${employee.lastName}</div>
+                                                                                <div class="employee-position">
+                                                                                    ${employee.email}</div>
                                                                             </div>
                                                                         </div>
                                                                     </td>
-                                                                    <td>${customer.phoneNumber}</td>
+
+
                                                                     <td>
                                                                         <fmt:formatDate
-                                                                            value="${customer.getDateOfBirthAsDate()}"
-                                                                            pattern="dd/MM/yyyy" />
+                                                                            value="${employee.getHireDateAsDate()}"
+                                                                            pattern="MMM dd, yyyy" />
                                                                     </td>
-                                                                    <td>
-                                                                        <fmt:formatDate
-                                                                            value="${customer.getRegistrationDateAsDate()}"
-                                                                            pattern="dd/MM/yyyy" />
-                                                                    </td>
+                                                                    <td>$${employee.salary}</td>
                                                                     <td>
                                                                         <span
-                                                                            class="status-badge ${customer.status ? 'bg-success' : 'bg-danger'}">
-                                                                            ${customer.status ? 'Active' : 'Inactive'}
+                                                                            class="badge badge-${employee.status ? 'success' : 'danger'}">
+                                                                            ${employee.status ? 'Active' : 'Inactive'}
                                                                         </span>
                                                                     </td>
                                                                     <td>
                                                                         <div class="btn-group">
-                                                                            <a href="/admin/customer-mgr/detail/${customer.customerId}"
+                                                                            <a href="/admin/employee-mgr/detail/${employee.employeeId}"
                                                                                 class="btn btn-sm btn-info">
                                                                                 <i class="fas fa-eye"></i>
                                                                             </a>
-                                                                            <a href="/admin/customer-mgr/update/${customer.customerId}"
+                                                                            <a href="/admin/employee-mgr/update/${employee.employeeId}"
                                                                                 class="btn btn-sm btn-primary">
                                                                                 <i class="fas fa-edit"></i>
                                                                             </a>
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-danger"
-                                                                                onclick="deleteCustomer('${customer.customerId}')">
+                                                                                onclick="deleteEmployee('${employee.employeeId}')">
                                                                                 <i class="fas fa-trash"></i>
                                                                             </button>
                                                                         </div>
                                                                     </td>
-
                                                                 </tr>
                                                             </c:forEach>
                                                         </tbody>
@@ -259,7 +284,7 @@
                 <script
                     src="${ctx}/resources/assets/dashboard/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 
-                <!-- Datatables -->
+                <!-- DataTables -->
                 <script src="${ctx}/resources/assets/dashboard/js/plugin/datatables/datatables.min.js"></script>
 
                 <!-- Sweet Alert -->
@@ -270,36 +295,50 @@
 
                 <script>
                     $(document).ready(function () {
-                        $('#customerTable').DataTable({
+                        $('#employee-table').DataTable({
                             "pageLength": 10,
-                            "responsive": true,
-                            "order": [[0, "asc"]],
-                            columnDefs: [
-                                {
-                                    targets: [5],
-                                    orderable: false,
-                                    searchable: false
-                                },
-                                {
-                                    targets: [6],
-                                    orderable: false,
-                                    searchable: false
-                                }
+                            "lengthMenu": [5, 10, 15, 20, 50, 100],
+                            "order": [[0, "desc"]],
+                            "columnDefs": [
+                                { "orderable": false, "targets": [7] }
                             ]
                         });
-
                     });
 
-                    function confirmDelete(customerId) {
+                    function deleteEmployee(employeeId) {
                         swal({
-                            title: "Are you sure?",
-                            text: "Once deleted, you will not be able to recover this customer!",
-                            icon: "warning",
-                            buttons: true,
-                            dangerMode: true,
+                            title: 'Are you sure?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            buttons: {
+                                cancel: {
+                                    visible: true,
+                                    text: 'Cancel',
+                                    className: 'btn btn-secondary'
+                                },
+                                confirm: {
+                                    text: 'Yes, delete it!',
+                                    className: 'btn btn-danger'
+                                }
+                            }
                         }).then((willDelete) => {
                             if (willDelete) {
-                                window.location.href = "/admin/customer-mgr/delete/" + customerId;
+                                $.ajax({
+                                    url: '/admin/employee-mgr/delete/' + employeeId,
+                                    type: 'POST',
+                                    success: function (result) {
+                                        swal({
+                                            title: 'Deleted!',
+                                            text: 'Employee has been deleted.',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    },
+                                    error: function (error) {
+                                        swal('Error!', 'Something went wrong.', 'error');
+                                    }
+                                });
                             }
                         });
                     }

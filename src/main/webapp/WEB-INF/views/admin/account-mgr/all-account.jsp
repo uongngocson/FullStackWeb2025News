@@ -44,7 +44,7 @@
                                 <h3 class="fw-bold mb-3">Accounts</h3>
                                 <ul class="breadcrumbs mb-3">
                                     <li class="nav-home">
-                                        <a href="#">
+                                        <a href="/admin/dashboard/index">
                                             <i class="icon-home"></i>
                                         </a>
                                     </li>
@@ -52,14 +52,14 @@
                                         <i class="icon-arrow-right"></i>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#">Accounts</a>
+                                        <a href="/admin/account-mgr/list">Accounts</a>
                                     </li>
                                 </ul>
                             </div>
                             <div
                                 class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
                                 <div class="ms-md-auto py-2 py-md-0">
-                                    <a href="/account-mgr/create" class="btn btn-primary btn-round">
+                                    <a href="/admin/account-mgr/create" class="btn btn-primary btn-round">
                                         <i class="fas fa-plus"></i> Add New Account
                                     </a>
                                 </div>
@@ -87,11 +87,11 @@
                                                                 <td>${account.role.roleName}</td>
                                                                 <td>
                                                                     <div class="btn-group">
-                                                                        <a href="/account-mgr/${account.accountId}"
+                                                                        <a href="/admin/account-mgr/${account.accountId}"
                                                                             class="btn btn-sm btn-info">
                                                                             <i class="fas fa-eye"></i>
                                                                         </a>
-                                                                        <a href="/account-mgr/update/${account.accountId}"
+                                                                        <a href="/admin/account-mgr/update/${account.accountId}"
                                                                             class="btn btn-sm btn-primary">
                                                                             <i class="fas fa-edit"></i>
                                                                         </a>
@@ -142,7 +142,7 @@
                     }).then((willDelete) => {
                         if (willDelete) {
                             $.ajax({
-                                url: '/account-mgr/delete/' + accountId,
+                                url: '/admin/account-mgr/delete/' + accountId,
                                 type: 'POST',
                                 success: function (response) {
                                     swal("Deleted!", "The account has been deleted.", {
