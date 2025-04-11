@@ -1,6 +1,5 @@
 package local.example.demo.model.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,13 +7,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Address")
+@Table(name = "Addresses")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,25 +22,26 @@ import lombok.Setter;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "AddressId")
     private Integer addressId;
 
-    @ManyToOne
-    @JoinColumn(name = "CustomerId")
-    private Customer customer;
+    // attributes
+    @NotBlank(message = "Street is required")
+    private String street;
 
-    @Column(name = "StreetAddress")
-    private String streetAddress;
-
-    @Column(name = "Ward")
+    @NotBlank(message = "Ward is required")
     private String ward;
 
-    @Column(name = "District")
+    @NotBlank(message = "District is required")
     private String district;
 
-    @Column(name = "Province")
+    @NotBlank(message = "Province is required")
     private String province;
 
-    @Column(name = "City")
+    @NotBlank(message = "City is required")
     private String city;
+
+    // relationship
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 }

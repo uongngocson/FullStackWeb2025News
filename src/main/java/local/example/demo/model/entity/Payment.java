@@ -1,18 +1,21 @@
 package local.example.demo.model.entity;
 
-import jakarta.persistence.Column;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Payment")
+@Table(name = "Payments")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,12 +23,16 @@ import lombok.Setter;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PaymentId")
     private Integer paymentId;
 
-    @Column(name = "NamePaymentMethod")
-    private String namePaymentMethod;
+    // attributes
+    @NotBlank(message = "Payment method cannot be blank")
+    private String paymentMethod;
 
-    @Column(name = "PaymentGateway")
+    @NotBlank(message = "Payment gateway cannot be blank")
     private String paymentGateway;
+
+    // relationships
+    @OneToMany(mappedBy = "payment")
+    private List<Order> orders;
 }

@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Employee")
+@Table(name = "Employees")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,66 +29,50 @@ import lombok.Setter;
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EmployeeId")
     private Integer employeeId;
 
-    @OneToOne
-    @JoinColumn(name = "AccountId")
-    private Account account;
-
-    @ManyToOne
-    @JoinColumn(name = "ShopId")
-    private Shop shop;
-
-    @Column(name = "FirstName")
+    // attributes
     @NotBlank(message = "First name cannot be blank")
     private String firstName;
 
-    @Column(name = "LastName")
     @NotBlank(message = "Last name cannot be blank")
     private String lastName;
 
-    @Column(name = "ProfileImage")
-    private String profileImage;
+    private String imageUrl;
 
-    @Column(name = "Address")
     private String address;
 
-    @Column(name = "DateOfBirth")
     @NotNull(message = "Date of birth cannot be null")
     private LocalDate dateOfBirth;
 
-    @Column(name = "Gender")
     private boolean gender;
 
-    @Column(name = "Email")
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
-    @Column(name = "PhoneNumber")
     @NotBlank(message = "Phone number cannot be blank")
-    private String phoneNumber;
+    private String phone;
 
-    @Column(name = "HireDate")
     private LocalDate hireDate = LocalDate.now();
 
-    @Column(name = "Salary")
     @NotNull(message = "Salary cannot be null")
     private BigDecimal salary;
 
-    @Column(name = "Status")
     private boolean status;
 
-    @ManyToOne
-    @JoinColumn(name = "ManagerId")
-    private Employee manager;
+    // relationships
+    @OneToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
-    @Column(length = 20)
-    private boolean employeeType = false;
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private Employee manager;
 
     public Date getHireDateAsDate() {
         if (this.hireDate == null)
             return null;
         return Date.from(this.hireDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
+
 }

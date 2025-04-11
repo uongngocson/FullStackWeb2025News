@@ -11,13 +11,13 @@ import local.example.demo.model.entity.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.shop s")
+    @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.supplier s")
     List<Product> findAllProducts();
 
-    @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.shop s WHERE p.productId = :productId")
+    @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.supplier s WHERE p.productId = :productId")
     Product findProductById(Integer productId);
 
-    // get product by shopId
-    @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.shop s WHERE s.shopId = :shopId")
-    List<Product> findProductsByShopId(Integer shopId);
+    // get product by supplierId
+    @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.supplier s WHERE s.supplierId = :supplierId")
+    List<Product> findProductsBySupplierId(Integer supplierId);
 }

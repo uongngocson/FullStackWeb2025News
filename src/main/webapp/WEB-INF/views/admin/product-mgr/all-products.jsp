@@ -83,7 +83,6 @@
                                                         <tr>
                                                             <th>No.</th>
                                                             <th>ID</th>
-                                                            <th>Image</th>
                                                             <th>Name</th>
                                                             <th>Category</th>
                                                             <th>Brand</th>
@@ -99,16 +98,11 @@
                                                                 <td><a href="/admin/product-mgr/${product.productId}"
                                                                         class="text-primary">#${product.productId}</a>
                                                                 </td>
-                                                                <td>
-                                                                    <img src="${product.imageUrl != null ? product.imageUrl : '../../../../resources/assets/dashboard/img/default-product.jpg'}"
-                                                                        alt="${product.productName}" class="rounded"
-                                                                        width="50">
-                                                                </td>
                                                                 <td>${product.productName}</td>
                                                                 <td>${product.category.categoryName}</td>
                                                                 <td>${product.brand.brandName}</td>
                                                                 <td>$${product.price}</td>
-                                                                <td>${product.quantityInStock}</td>
+                                                                <td>${product.quantitySold}</td>
 
                                                                 <td>
                                                                     <div class="btn-group">

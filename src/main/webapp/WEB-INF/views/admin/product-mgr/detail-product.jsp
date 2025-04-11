@@ -93,23 +93,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row mb-4">
-                                                <div class="col-md-4 text-center">
-                                                    <div class="product-image-container mb-3">
-                                                        <c:choose>
-                                                            <c:when test="${not empty product.imageUrl}">
-                                                                <c:set var="imageUrl"
-                                                                    value="${ctx}/${product.imageUrl}" />
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <c:set var="imageUrl"
-                                                                    value="${ctx}/resources/images-upload/images-is-empty.jpg" />
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                        <img src="${imageUrl}" alt="${product.productName}"
-                                                            class="img-fluid rounded shadow-sm"
-                                                            style="max-height: 250px; max-width: 100%;">
-                                                    </div>
-                                                </div>
+
                                                 <div class="col-md-8">
                                                     <div class="product-info">
                                                         <h4 class="fw-bold">${product.productName}</h4>
@@ -123,8 +107,8 @@
                                                             ${product.brand.brandName}
                                                         </p>
                                                         <p class="text-muted mb-2">
-                                                            <i class="fas fa-store me-2"></i>Shop:
-                                                            ${product.shop.shopName}
+                                                            <i class="fas fa-store me-2"></i>Supplier:
+                                                            ${product.supplier.supplierName}
                                                         </p>
                                                         <p class="text-muted mb-2">
                                                             <i class="fas fa-dollar-sign me-2"></i>Price:
@@ -132,7 +116,7 @@
                                                         </p>
                                                         <p class="text-muted mb-2">
                                                             <i class="fas fa-boxes me-2"></i>In Stock:
-                                                            ${product.quantityInStock}
+                                                            ${product.quantitySold}
                                                         </p>
 
                                                     </div>

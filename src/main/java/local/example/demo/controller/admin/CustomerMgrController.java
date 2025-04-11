@@ -1,5 +1,6 @@
 package local.example.demo.controller.admin;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -29,16 +30,19 @@ public class CustomerMgrController {
     private final FileService fileService;
 
     @GetMapping("list")
-    public String getCustomerList(Model model) {
-        List<Customer> customers = customerService.findAllCustomers();
-        model.addAttribute("customers", customers);
+    public String getCustomersList() {
         return "admin/customer-mgr/all-customers";
+    }
+
+    // get all customers
+    @ModelAttribute("customers")
+    public List<Customer> getAllCustomers() {
+        return customerService.findAllCustomers();
     }
 
     @GetMapping("detail/{customerId}")
     public String getCustomerDetail(Model model, @PathVariable("customerId") Integer customerId) {
         Customer customer = customerService.findCustomerById(customerId);
-
         if (customer == null) {
             return "redirect:/admin/customer-mgr/list";
         }
@@ -67,21 +71,23 @@ public class CustomerMgrController {
 
     @PostMapping("save")
     public String saveCustomer(@ModelAttribute("customer") @Valid Customer customer, BindingResult bindingResult,
-            @RequestParam(value = "profileImageFile", required = false) MultipartFile profileImage) throws Exception {
+            @RequestParam("imageFile") MultipartFile imageFile) {
 
         if (bindingResult.hasErrors()) {
             return "admin/customer-mgr/form-customer";
         }
-
-        if (fileService.isValidFile(profileImage)) {
-            String fileName = fileService.handleSaveUploadFile(profileImage, "customer");
-            customer.setProfileImage("/resources/images-upload/customer/" + fileName);
+        if (fileService.isValidFile(imageFile)) {
+            String nameImageFile = fileService.handleSaveUploadFile(imageFile, "customer");
+            customer.setImageUrl("/resources/images-upload/customer/" + nameImageFile);
+        }
+        if (customer.getCustomerId() == null) {
+            customer.setRegistrationDate(LocalDate.now());
         }
         customerService.saveCustomer(customer);
         return "redirect:/admin/customer-mgr/list";
     }
 
-    @PostMapping("delete/{customerId}")
+    @GetMapping("delete/{customerId}")
     public String deleteCustomer(@PathVariable("customerId") Integer customerId) {
         customerService.deleteCustomerById(customerId);
         return "redirect:/admin/customer-mgr/list";

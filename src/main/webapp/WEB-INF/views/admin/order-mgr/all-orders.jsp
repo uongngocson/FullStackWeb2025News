@@ -86,7 +86,6 @@
                                                                 <th>ID</th>
                                                                 <th>Customer</th>
                                                                 <th>Order Date</th>
-                                                                <th>Expected Delivery</th>
                                                                 <th>Total Amount</th>
                                                                 <th>Order Status</th>
                                                                 <th>Payment Status</th>
@@ -109,14 +108,7 @@
                                                                         <fmt:formatDate value="${parsedDate}"
                                                                             pattern="dd/MM/yyyy HH:mm" />
                                                                     </td>
-                                                                    <td>
-                                                                        <fmt:parseDate
-                                                                            value="${order.expectedDeliveryDate}"
-                                                                            pattern="yyyy-MM-dd"
-                                                                            var="parsedDeliveryDate" type="date" />
-                                                                        <fmt:formatDate value="${parsedDeliveryDate}"
-                                                                            pattern="dd/MM/yyyy" />
-                                                                    </td>
+
                                                                     <td>$${order.totalAmount}</td>
                                                                     <td>
                                                                         <span

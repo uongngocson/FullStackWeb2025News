@@ -215,18 +215,16 @@
                                                             </div>
                                                         </div>
 
-                                                        <!-- Phone Number -->
+                                                        <!-- Phone -->
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label for="phoneNumber">
+                                                                <label for="phone">
                                                                     <i class="fas fa-phone mr-1 text-primary"></i>
                                                                     Phone Number <span class="text-danger">*</span>
                                                                 </label>
-                                                                <form:input path="phoneNumber" type="tel"
-                                                                    class="form-control" id="phoneNumber"
-                                                                    placeholder="Enter phone number" />
-                                                                <form:errors path="phoneNumber"
-                                                                    cssClass="text-danger" />
+                                                                <form:input path="phone" type="tel" class="form-control"
+                                                                    id="phone" placeholder="Enter phone number" />
+                                                                <form:errors path="phone" cssClass="text-danger" />
                                                             </div>
                                                         </div>
 
@@ -288,22 +286,6 @@
                                                             </div>
                                                         </div>
 
-                                                        <!-- Shop Selection -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="shop">
-                                                                    <i class="fas fa-store mr-1 text-primary"></i>
-                                                                    Shop
-                                                                </label>
-                                                                <form:select path="shop" class="form-control" id="shop">
-                                                                    <form:option value="" label="-- Select Shop --" />
-                                                                    <form:options items="${shops}" itemValue="shopId"
-                                                                        itemLabel="shopName" />
-                                                                </form:select>
-                                                                <form:errors path="shop" cssClass="text-danger" />
-                                                            </div>
-                                                        </div>
-
                                                         <!-- Manager Selection -->
                                                         <div class="col-md-6">
                                                             <div class="form-group">
@@ -348,30 +330,6 @@
                                                             </div>
                                                         </div>
 
-                                                        <!-- Employee Type -->
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label>
-                                                                    <i class="fas fa-id-badge mr-1 text-primary"></i>
-                                                                    Employee Type
-                                                                </label>
-                                                                <div class="gender-options">
-                                                                    <div class="gender-option">
-                                                                        <form:radiobutton path="employeeType"
-                                                                            value="true" id="manager" />
-                                                                        <label for="manager">Manager</label>
-                                                                    </div>
-                                                                    <div class="gender-option">
-                                                                        <form:radiobutton path="employeeType"
-                                                                            value="false" id="staff" />
-                                                                        <label for="staff">Staff</label>
-                                                                    </div>
-                                                                </div>
-                                                                <form:errors path="employeeType"
-                                                                    cssClass="text-danger" />
-                                                            </div>
-                                                        </div>
-
                                                         <!-- Status -->
                                                         <div class="col-md-6">
                                                             <div class="form-group">
@@ -379,30 +337,29 @@
                                                                     <form:checkbox path="status" id="status"
                                                                         cssClass="custom-control-input" />
                                                                     <label class="custom-control-label" for="status">
-                                                                        Active Status
+                                                                        Active
                                                                     </label>
                                                                 </div>
                                                                 <form:errors path="status" cssClass="text-danger" />
                                                             </div>
                                                         </div>
 
-                                                        <!-- Profile Image -->
+                                                        <!-- imageUrl -->
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label for="profileImage">
+                                                                <label for="imageUrl">
                                                                     <i class="fas fa-image mr-1 text-primary"></i>
-                                                                    Profile Image
+                                                                    Image path
                                                                 </label>
                                                                 <div class="custom-file">
                                                                     <input type="file" class="custom-file-input"
-                                                                        id="profileImage" name="profileImageFile"
-                                                                        accept="image/*">
-                                                                    <form:hidden path="profileImage" />
+                                                                        id="imageUrl" name="imageFile" accept="image/*">
+                                                                    <form:hidden path="imageUrl" />
                                                                 </div>
                                                                 <div class="mt-3">
                                                                     <div id="imagePreview" class="img-preview">
-                                                                        <c:if test="${not empty employee.profileImage}">
-                                                                            <img src="${employee.profileImage}"
+                                                                        <c:if test="${not empty employee.imageUrl}">
+                                                                            <img src="${employee.imageUrl}"
                                                                                 alt="Profile Image"
                                                                                 class="img-fluid rounded"
                                                                                 style="max-height: 150px;">
@@ -532,8 +489,8 @@
                         });
 
                         // Show existing image on page load if available
-                        if ($('#imagePreview img').length === 0 && $('#profileImage').val()) {
-                            $('#imagePreview').html('<img src="' + $('#profileImage').val() + '" alt="Profile Image" class="img-fluid rounded" style="max-height: 150px;">');
+                        if ($('#imagePreview img').length === 0 && $('#imageUrl').val()) {
+                            $('#imagePreview').html('<img src="' + $('#imageUrl').val() + '" alt="Profile Image" class="img-fluid rounded" style="max-height: 150px;">');
                         }
                     });
                 </script>

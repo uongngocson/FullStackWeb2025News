@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Category")
+@Table(name = "Categories")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,13 +25,14 @@ import lombok.Setter;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CategoryId")
     private Integer categoryId;
 
+    // attributes
     @Column(name = "CategoryName")
     @NotBlank(message = "Category name cannot be blank")
     private String categoryName;
 
+    // relationships
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> products;
 }

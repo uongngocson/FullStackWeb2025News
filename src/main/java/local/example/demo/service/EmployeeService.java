@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import local.example.demo.model.entity.Employee;
-import local.example.demo.model.entity.Shop;
+import local.example.demo.model.entity.Supplier;
 import local.example.demo.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 

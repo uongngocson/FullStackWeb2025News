@@ -1,8 +1,8 @@
 package local.example.demo.model.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,45 +28,37 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Order {
     @Id
-    @Column(name = "OrderId")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String orderId;
 
-    @ManyToOne
-    @JoinColumn(name = "CustomerId")
-    @NotNull(message = "Customer is required")
-    private Customer customer;
-
-    @Column(name = "OrderDate", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    // attributes
     @NotNull(message = "Order date is required")
     private LocalDateTime orderDate;
 
-    @Column(name = "ExpectedDeliveryDate")
-    private LocalDate expectedDeliveryDate;
-
-    @Column(name = "TotalAmount")
     @NotNull(message = "Total amount is required")
+    @Min(value = 0, message = "Total amount must be non-negative")
     private BigDecimal totalAmount;
 
-    @Column(name = "DiscountAmount")
-    @Min(value = 0, message = "Discount amount must be non-negative")
-    private BigDecimal discountAmount;
-
-    @Column(name = "ShippingFee")
-    @NotNull(message = "Shipping fee is required")
-    private BigDecimal shippingFee;
-
-    @Column(name = "OrderStatus")
+    @NotBlank(message = "Order status is required")
     private String orderStatus;
 
+    // relationship
     @ManyToOne
-    @JoinColumn(name = "ShippingAddressID")
+    @JoinColumn(name = "shipping_address_id")
+    @NotNull(message = "Shipping address is required")
     private Address shippingAddress;
 
     @ManyToOne
-    @JoinColumn(name = "PaymentId")
+    @JoinColumn(name = "payment_id")
     @NotNull(message = "Payment is required")
     private Payment payment;
 
     @Column(name = "PaymentStatus")
     private String paymentStatus;
+
+    // relationship with Customer
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    @NotNull(message = "Customer is required")
+    private Customer customer;
 }

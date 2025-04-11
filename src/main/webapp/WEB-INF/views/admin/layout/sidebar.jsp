@@ -63,30 +63,62 @@
                         </div>
                     </li>
 
-                    <!-- Shop Management -->
+                    <!-- Customer Management -->
                     <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#shops">
-                            <i class="fas fa-globe"></i>
-                            <p>Shop Management</p>
+                        <a data-bs-toggle="collapse" href="#customers">
+                            <i class="fas fa-users"></i>
+                            <p>Customer Management</p>
                             <span class="caret"></span>
                         </a>
-                        <div class="collapse" id="shops">
+                        <div class="collapse" id="customers">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="/admin/shop-mgr/list">
-                                        <span class="sub-item">Shop List</span>
+                                    <a href="/admin/customer-mgr/list">
+                                        <span class="sub-item">Customer List</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="#">
+                                        <span class="sub-item">Reviews</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Employee Management -->
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#employees">
+                            <i class="fas fa-users"></i>
+                            <p>Employee Management</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="employees">
+                            <ul class="nav nav-collapse">
+                                <li>
+                                    <a href="/admin/employee-mgr/list">
                                         <span class="sub-item">Employee List</span>
                                     </a>
                                 </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Supplier Management -->
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#suppliers">
+                            <i class="fas fa-globe"></i>
+                            <p>Supplier Management</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="suppliers">
+                            <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="#">
-                                        <span class="sub-item">Discounts</span>
+                                    <a href="/admin/supplier-mgr/list">
+                                        <span class="sub-item">Supplier List</span>
                                     </a>
                                 </li>
+
                             </ul>
                         </div>
                     </li>
@@ -162,46 +194,9 @@
                         </div>
                     </li>
 
-                    <!-- Customer Management -->
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#customers">
-                            <i class="fas fa-users"></i>
-                            <p>Customer Management</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="customers">
-                            <ul class="nav nav-collapse">
-                                <li>
-                                    <a href="/admin/customer-mgr/list">
-                                        <span class="sub-item">Customer List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Reviews</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
 
-                    <!-- Employee Management -->
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#employees">
-                            <i class="fas fa-users"></i>
-                            <p>Employee Management</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="employees">
-                            <ul class="nav nav-collapse">
-                                <li>
-                                    <a href="/admin/employee-mgr/list">
-                                        <span class="sub-item">Employee List</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+
+
 
                     <!-- Account Management -->
                     <li class="nav-item">

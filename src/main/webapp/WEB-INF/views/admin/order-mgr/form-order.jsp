@@ -128,204 +128,153 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="row mb-4">
-                                                            <div class="col-md-6">
-                                                                <div class="mb-3">
-                                                                    <label class="fw-bold">Expected Delivery
-                                                                        Date</label>
-                                                                    <form:input path="expectedDeliveryDate" type="date"
-                                                                        class="form-control form-control-lg" />
-                                                                    <form:errors path="expectedDeliveryDate"
-                                                                        cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
 
-                                                            <div class="col-md-6">
-                                                                <div class="mb-3">
-                                                                    <label class="fw-bold">Shipping Address <span
-                                                                            class="text-danger">*</span></label>
-                                                                    <form:select path="shippingAddress"
-                                                                        class="form-control form-control-lg">
-                                                                        <form:option value=""
-                                                                            label="-- Select Shipping Address --" />
-                                                                        <c:forEach items="${addresses}" var="address">
-                                                                            <form:option value="${address.addressId}"
-                                                                                label="${address.streetAddress}, ${address.ward}, ${address.district}, ${address.province}, ${address.city}" />
-                                                                        </c:forEach>
-                                                                    </form:select>
-                                                                    <form:errors path="shippingAddress"
-                                                                        cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
 
-                                                        </div>
-
-                                                        <div class="row mb-4">
-                                                            <div class="col-md-4">
-                                                                <div class="mb-3">
-                                                                    <label class="fw-bold">Total Amount <span
-                                                                            class="text-danger">*</span></label>
-                                                                    <form:input path="totalAmount" type="number"
-                                                                        step="0.01" min="0"
-                                                                        class="form-control form-control-lg"
-                                                                        required="true" />
-                                                                    <form:errors path="totalAmount"
-                                                                        cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-4">
-                                                                <div class="mb-3">
-                                                                    <label class="fw-bold">Discount Amount</label>
-                                                                    <form:input path="discountAmount" type="number"
-                                                                        step="0.01" min="0"
-                                                                        class="form-control form-control-lg" />
-                                                                    <form:errors path="discountAmount"
-                                                                        cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-4">
-                                                                <div class="mb-3">
-                                                                    <label class="fw-bold">Shipping Fee <span
-                                                                            class="text-danger">*</span></label>
-                                                                    <form:input path="shippingFee" type="number"
-                                                                        step="0.01" min="0"
-                                                                        class="form-control form-control-lg"
-                                                                        required="true" />
-                                                                    <form:errors path="shippingFee"
-                                                                        cssClass="text-danger" />
-                                                                </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="fw-bold">Shipping Address <span
+                                                                        class="text-danger">*</span></label>
+                                                                <form:select path="shippingAddress"
+                                                                    class="form-control form-control-lg">
+                                                                    <form:option value=""
+                                                                        label="-- Select Shipping Address --" />
+                                                                    <c:forEach items="${addresses}" var="address">
+                                                                        <form:option value="${address.addressId}"
+                                                                            label="${address.street}, ${address.ward}, ${address.district}, ${address.province}, ${address.city}" />
+                                                                    </c:forEach>
+                                                                </form:select>
+                                                                <form:errors path="shippingAddress"
+                                                                    cssClass="text-danger" />
                                                             </div>
                                                         </div>
 
-                                                        <div class="row mb-4">
-                                                            <div class="col-md-6">
-                                                                <div class="mb-3">
-                                                                    <label class="fw-bold">Order Status</label>
-                                                                    <form:select path="orderStatus"
-                                                                        class="form-control form-control-lg">
-                                                                        <form:option value="Pending" label="Pending" />
-                                                                        <form:option value="Processing"
-                                                                            label="Processing" />
-                                                                        <form:option value="Shipped" label="Shipped" />
-                                                                        <form:option value="Delivered"
-                                                                            label="Delivered" />
-                                                                        <form:option value="Cancelled"
-                                                                            label="Cancelled" />
-                                                                    </form:select>
-                                                                    <form:errors path="orderStatus"
-                                                                        cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-6">
-                                                                <div class="mb-3">
-                                                                    <label class="fw-bold">Payment <span
-                                                                            class="text-danger">*</span></label>
-                                                                    <form:select path="payment"
-                                                                        class="form-control form-control-lg"
-                                                                        required="true">
-                                                                        <form:option value=""
-                                                                            label="-- Select Payment Method --" />
-                                                                        <form:options items="${payments}"
-                                                                            itemValue="paymentId"
-                                                                            itemLabel="namePaymentMethod" />
-                                                                    </form:select>
-                                                                    <form:errors path="payment"
-                                                                        cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row mb-4">
-                                                            <div class="col-md-6">
-                                                                <div class="mb-3">
-                                                                    <label class="fw-bold">Payment Status</label>
-                                                                    <form:select path="paymentStatus"
-                                                                        class="form-control form-control-lg">
-                                                                        <form:option value="Pending" label="Pending" />
-                                                                        <form:option value="Paid" label="Paid" />
-                                                                        <form:option value="Failed" label="Failed" />
-                                                                        <form:option value="Refunded"
-                                                                            label="Refunded" />
-                                                                    </form:select>
-                                                                    <form:errors path="paymentStatus"
-                                                                        cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="card-action">
-                                                            <button type="submit"
-                                                                class="btn btn-success">${order.orderId != null ?
-                                                                'Update' : 'Add'}</button>
-                                                            <button type="reset" class="btn btn-primary"
-                                                                id="btn-reset">Reset</button>
-                                                            <a href="/admin/order-mgr/list"
-                                                                class="btn btn-danger">Cancel</a>
-                                                        </div>
-                                                    </form:form>
                                                 </div>
+
+                                                <div class="row mb-4">
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label class="fw-bold">Total Amount <span
+                                                                    class="text-danger">*</span></label>
+                                                            <form:input path="totalAmount" type="number" step="0.01"
+                                                                min="0" class="form-control form-control-lg"
+                                                                required="true" />
+                                                            <form:errors path="totalAmount" cssClass="text-danger" />
+                                                        </div>
+                                                    </div>
+
+
+
+
+                                                </div>
+
+                                                <div class="row mb-4">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="fw-bold">Order Status</label>
+                                                            <form:select path="orderStatus"
+                                                                class="form-control form-control-lg">
+                                                                <form:option value="Pending" label="Pending" />
+                                                                <form:option value="Processing" label="Processing" />
+                                                                <form:option value="Shipped" label="Shipped" />
+                                                                <form:option value="Delivered" label="Delivered" />
+                                                                <form:option value="Cancelled" label="Cancelled" />
+                                                            </form:select>
+                                                            <form:errors path="orderStatus" cssClass="text-danger" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="fw-bold">Payment <span
+                                                                    class="text-danger">*</span></label>
+                                                            <form:select path="payment"
+                                                                class="form-control form-control-lg" required="true">
+                                                                <form:option value=""
+                                                                    label="-- Select Payment Method --" />
+                                                                <form:options items="${payments}" itemValue="paymentId"
+                                                                    itemLabel="namePaymentMethod" />
+                                                            </form:select>
+                                                            <form:errors path="payment" cssClass="text-danger" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-4">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="fw-bold">Payment Status</label>
+                                                            <form:select path="paymentStatus"
+                                                                class="form-control form-control-lg">
+                                                                <form:option value="Pending" label="Pending" />
+                                                                <form:option value="Paid" label="Paid" />
+                                                                <form:option value="Failed" label="Failed" />
+                                                                <form:option value="Refunded" label="Refunded" />
+                                                            </form:select>
+                                                            <form:errors path="paymentStatus" cssClass="text-danger" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="card-action">
+                                                    <button type="submit" class="btn btn-success">${order.orderId !=
+                                                        null ?
+                                                        'Update' : 'Add'}</button>
+                                                    <button type="reset" class="btn btn-primary"
+                                                        id="btn-reset">Reset</button>
+                                                    <a href="/admin/order-mgr/list" class="btn btn-danger">Cancel</a>
+                                                </div>
+                                                </form:form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Footer -->
-                                <jsp:include page="../layout/footer.jsp" />
-                                <!-- End Footer -->
                             </div>
+
+                            <!-- Footer -->
+                            <jsp:include page="../layout/footer.jsp" />
+                            <!-- End Footer -->
                         </div>
+                    </div>
 
-                        <!-- Core JS Files -->
-                        <script src="../../../../resources/assets/dashboard/js/core/jquery-3.7.1.min.js"></script>
-                        <script src="../../../../resources/assets/dashboard/js/core/popper.min.js"></script>
-                        <script src="../../../../resources/assets/dashboard/js/core/bootstrap.min.js"></script>
+                    <!-- Core JS Files -->
+                    <script src="../../../../resources/assets/dashboard/js/core/jquery-3.7.1.min.js"></script>
+                    <script src="../../../../resources/assets/dashboard/js/core/popper.min.js"></script>
+                    <script src="../../../../resources/assets/dashboard/js/core/bootstrap.min.js"></script>
 
-                        <!-- jQuery Scrollbar -->
-                        <script
-                            src="../../../../resources/assets/dashboard/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+                    <!-- jQuery Scrollbar -->
+                    <script
+                        src="../../../../resources/assets/dashboard/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 
-                        <!-- Sweet Alert -->
-                        <script
-                            src="../../../../resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
+                    <!-- Sweet Alert -->
+                    <script
+                        src="../../../../resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
 
-                        <!-- Kaiadmin JS -->
-                        <script src="../../../../resources/assets/dashboard/js/kaiadmin.min.js"></script>
+                    <!-- Kaiadmin JS -->
+                    <script src="../../../../resources/assets/dashboard/js/kaiadmin.min.js"></script>
 
-                        <script>
-                            // Hide reset button if editing an existing order
-                            var orderId = '<c:out value="${order.orderId}" />';
-                            if (orderId !== '') {
-                                document.getElementById('btn-reset').style.display = 'none';
+                    <script>
+                        // Hide reset button if editing an existing order
+                        var orderId = '<c:out value="${order.orderId}" />';
+                        if (orderId !== '') {
+                            document.getElementById('btn-reset').style.display = 'none';
+                        }
+
+                        // Format date fields for display
+                        $(document).ready(function () {
+                            // Format orderDate (datetime-local)
+                            var orderDate = '<c:out value="${order.orderDate}" />';
+                            if (orderDate) {
+                                // Convert to format required by datetime-local input
+                                var date = new Date(orderDate);
+                                if (!isNaN(date.getTime())) {
+                                    var formattedDate = date.toISOString().slice(0, 16);
+                                    $('#orderDate').val(formattedDate);
+                                }
                             }
 
-                            // Format date fields for display
-                            $(document).ready(function () {
-                                // Format orderDate (datetime-local)
-                                var orderDate = '<c:out value="${order.orderDate}" />';
-                                if (orderDate) {
-                                    // Convert to format required by datetime-local input
-                                    var date = new Date(orderDate);
-                                    if (!isNaN(date.getTime())) {
-                                        var formattedDate = date.toISOString().slice(0, 16);
-                                        $('#orderDate').val(formattedDate);
-                                    }
-                                }
 
-                                // Format expectedDeliveryDate (date)
-                                var expectedDeliveryDate = '<c:out value="${order.expectedDeliveryDate}" />';
-                                if (expectedDeliveryDate) {
-                                    // Convert to format required by date input
-                                    var date = new Date(expectedDeliveryDate);
-                                    if (!isNaN(date.getTime())) {
-                                        var formattedDate = date.toISOString().slice(0, 10);
-                                        $('#expectedDeliveryDate').val(formattedDate);
-                                    }
-                                }
-                            });
-                        </script>
+                        });
+                    </script>
                     </div>
                 </body>
 

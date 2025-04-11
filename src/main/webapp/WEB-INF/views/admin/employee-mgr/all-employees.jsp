@@ -214,7 +214,7 @@
                                                                     <td>#${employee.employeeId}</td>
                                                                     <td>
                                                                         <div class="employee-info">
-                                                                            <img src="${not empty employee.profileImage ? employee.profileImage : ctx.concat('/resources/assets/dashboard/img/profile.jpg')}"
+                                                                            <img src="${not empty employee.imageUrl ? employee.imageUrl : ctx.concat('/resources/assets/dashboard/img/profile.jpg')}"
                                                                                 class="employee-avatar"
                                                                                 alt="${employee.firstName}">
                                                                             <div class="employee-details">
@@ -252,7 +252,7 @@
                                                                             </a>
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-danger"
-                                                                                onclick="deleteEmployee('${employee.employeeId}')">
+                                                                                onclick="confirmDelete('${employee.employeeId}')">
                                                                                 <i class="fas fa-trash"></i>
                                                                             </button>
                                                                         </div>
@@ -300,12 +300,12 @@
                             "lengthMenu": [5, 10, 15, 20, 50, 100],
                             "order": [[0, "desc"]],
                             "columnDefs": [
-                                { "orderable": false, "targets": [7] }
+                                { "orderable": false, "targets": [5] } // Corrected target index for Actions column
                             ]
                         });
                     });
 
-                    function deleteEmployee(employeeId) {
+                    function confirmDelete(employeeId) {
                         swal({
                             title: 'Are you sure?',
                             text: "You won't be able to revert this!",

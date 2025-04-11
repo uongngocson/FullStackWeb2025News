@@ -2,7 +2,6 @@ package local.example.demo.model.entity;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Brand")
+@Table(name = "Brands")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,13 +24,13 @@ import lombok.Setter;
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BrandId")
     private Integer brandId;
 
-    @Column(name = "BrandName")
+    // attributes
     @NotBlank(message = "Brand name cannot be blank")
     private String brandName;
 
+    // relationships
     @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)
     private List<Product> products;
 }

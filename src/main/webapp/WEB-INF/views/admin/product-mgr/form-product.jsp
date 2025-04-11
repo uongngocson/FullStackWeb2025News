@@ -146,20 +146,22 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mb-4">
-                                                        <!-- product shop -->
+                                                        <!-- product supplier -->
                                                         <div class="col-md-6">
                                                             <div class="mb-3">
-                                                                <label class="fw-bold">Shop <span
+                                                                <label class="fw-bold">Supplier <span
                                                                         class="text-danger">*</span></label>
-                                                                <form:select path="shop.shopId"
-                                                                    class="form-control form-control-lg" id="shopId">
-                                                                    <form:option value="" label="-- Select Shop --" />
-                                                                    <c:forEach var="shop" items="${shops}">
-                                                                        <form:option value="${shop.shopId}"
-                                                                            label="${shop.shopName}" />
+                                                                <form:select path="supplier.supplierId"
+                                                                    class="form-control form-control-lg"
+                                                                    id="supplierId">
+                                                                    <form:option value=""
+                                                                        label="-- Select Supplier --" />
+                                                                    <c:forEach var="supplier" items="${suppliers}">
+                                                                        <form:option value="${supplier.supplierId}"
+                                                                            label="${supplier.supplierName}" />
                                                                     </c:forEach>
                                                                 </form:select>
-                                                                <form:errors path="shop.shopId"
+                                                                <form:errors path="supplier.supplierId"
                                                                     cssClass="text-danger" />
                                                             </div>
                                                         </div>
@@ -180,105 +182,72 @@
                                                         <!-- product quantity in stock -->
                                                         <div class="col-md-6">
                                                             <div class="mb-3">
-                                                                <label class="fw-bold">Quantity in Stock <span
+                                                                <label class="fw-bold">Quantity in Sold <span
                                                                         class="text-danger">*</span></label>
-                                                                <form:input path="quantityInStock" type="number" min="0"
+                                                                <form:input path="quantitySold" type="number" min="0"
                                                                     class="form-control form-control-lg"
-                                                                    id="quantityInStock"
+                                                                    id="quantitySold"
                                                                     placeholder="Enter quantity in stock" />
-                                                                <form:errors path="quantityInStock"
+                                                                <form:errors path="quantitySold"
                                                                     cssClass="text-danger" />
                                                             </div>
                                                         </div>
                                                     </div>
 
-                                                    <div class="row mb-4">
-                                                        <div class="col-md-6">
-                                                            <div class="mb-3">
-                                                                <label class="fw-bold">Product Image</label>
-                                                                <div class="file-upload-wrapper">
-                                                                    <input type="file" id="imageFile" name="imageFile"
-                                                                        class="file-upload-input"
-                                                                        data-preview="#imagePreview" accept="image/*">
-                                                                    <form:hidden path="imageUrl" />
-                                                                </div>
-                                                                <div class="mt-2">
-                                                                    <div id="imagePreview" class="img-preview">
-                                                                        <c:if test="${not empty product.imageUrl}">
-                                                                            <img src="${ctx}/${product.imageUrl}"
-                                                                                alt="Product Image"
-                                                                                class="img-fluid rounded"
-                                                                                style="max-height: 150px;">
-                                                                        </c:if>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
 
                                                 </div>
 
 
-                                                <div class="row mb-4">
-                                                    <div class="col-md-4">
-                                                        <div class="mb-3">
-                                                            <label class="fw-bold">View <span
-                                                                    class="text-danger">*</span></label>
-                                                            <form:input path="views" type="number" min="0"
-                                                                class="form-control form-control-lg" id="views"
-                                                                placeholder="Enter views" />
-                                                            <form:errors path="views" cssClass="text-danger" />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="mb-3">
-                                                            <label class="fw-bold">Warranty <span
-                                                                    class="text-danger">*</span></label>
-                                                            <form:input path="warranty" type="text"
-                                                                class="form-control form-control-lg" id="warranty"
-                                                                placeholder="Enter warranty" />
-                                                            <form:errors path="warranty" cssClass="text-danger" />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="mb-3">
-                                                            <label class="fw-bold">Return policy <span
-                                                                    class="text-danger">*</span></label>
-                                                            <form:input path="returnPolicy" type="text"
-                                                                class="form-control form-control-lg" id="returnPolicy"
-                                                                placeholder="Enter return policy" />
-                                                            <form:errors path="returnPolicy" cssClass="text-danger" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-4">
-                                                    <label class="fw-bold">Description <span
-                                                            class="text-danger">*</span></label>
-                                                    <form:textarea path="description"
-                                                        class="form-control form-control-lg" id="description" rows="5"
-                                                        placeholder="Enter full description" />
-                                                    <form:errors path="description" cssClass="text-danger" />
-                                                </div>
-
-                                                <div class="card-action">
-                                                    <button type="submit" class="btn btn-success">${product.productId !=
-                                                        null ? 'Update' : 'Add'}</button>
-                                                    <button type="reset" class="btn btn-primary"
-                                                        id="btn-reset">Reset</button>
-                                                    <a href="/admin/product-mgr/list" class="btn btn-danger">Cancel</a>
-                                                </div>
-                                            </form:form>
                                         </div>
+
+
+                                        <div class="row mb-4">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="fw-bold">Warranty <span
+                                                            class="text-danger">*</span></label>
+                                                    <form:input path="warranty" type="text"
+                                                        class="form-control form-control-lg" id="warranty"
+                                                        placeholder="Enter warranty" />
+                                                    <form:errors path="warranty" cssClass="text-danger" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="fw-bold">Return policy <span
+                                                            class="text-danger">*</span></label>
+                                                    <form:input path="returnPolicy" type="text"
+                                                        class="form-control form-control-lg" id="returnPolicy"
+                                                        placeholder="Enter return policy" />
+                                                    <form:errors path="returnPolicy" cssClass="text-danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="fw-bold">Description <span
+                                                    class="text-danger">*</span></label>
+                                            <form:textarea path="description" class="form-control form-control-lg"
+                                                id="description" rows="5" placeholder="Enter full description" />
+                                            <form:errors path="description" cssClass="text-danger" />
+                                        </div>
+
+                                        <div class="card-action">
+                                            <button type="submit" class="btn btn-success">${product.productId !=
+                                                null ? 'Update' : 'Add'}</button>
+                                            <button type="reset" class="btn btn-primary" id="btn-reset">Reset</button>
+                                            <a href="/admin/product-mgr/list" class="btn btn-danger">Cancel</a>
+                                        </div>
+                                        </form:form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Footer -->
-                        <jsp:include page="../layout/footer.jsp" />
-                        <!-- End Footer -->
                     </div>
+
+                    <!-- Footer -->
+                    <jsp:include page="../layout/footer.jsp" />
+                    <!-- End Footer -->
+                </div>
                 </div>
 
                 <!-- Core JS Files -->
@@ -341,9 +310,9 @@
                         }
 
                         // Attach event listeners to file inputs
-                        $('#imageFile').change(function () {
-                            handleFileInputChange(this);
-                        });
+                        // $('#imageFile').change(function () {
+                        //     handleFileInputChange(this);
+                        // });
                     });
                 </script>
 

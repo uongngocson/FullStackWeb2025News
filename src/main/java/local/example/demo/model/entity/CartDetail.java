@@ -1,8 +1,7 @@
 package local.example.demo.model.entity;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 
 import lombok.Getter;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Cart_Detail")
+@Table(name = "CartDetails")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,20 +26,22 @@ import lombok.Setter;
 public class CartDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CartDetailId")
     private Integer cartDetailId;
 
-    @ManyToOne
-    @JoinColumn(name = "cartId")
-    private Cart cart;
-
-    @ManyToOne
-    @JoinColumn(name = "productId")
-    private Product product;
-
-    @Column(nullable = false)
+    // attributes
+    @NotBlank(message = "Quantity is required")
     private Integer quantity;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @NotNull(message = "Add date is required")
+    private Date addedDate;
+
+    // relationships with cart
+    @ManyToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+    // relationships with product variant
+    @ManyToOne
+    @JoinColumn(name = "product_variant_id")
+    private ProductVariant productVariant;
 }

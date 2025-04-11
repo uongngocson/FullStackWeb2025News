@@ -6,7 +6,7 @@
 
         <head>
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-            <title>Shop Management</title>
+            <title>Supplier Management</title>
             <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
             <link rel="icon" href="../../../../resources/assets/user/img/home/walmart-logo.webp" type="image/x-icon" />
             <script src="../../../../resources/assets/dashboard/js/plugin/webfont/webfont.min.js"></script>
@@ -47,7 +47,7 @@
                     <div class="container">
                         <div class="page-inner">
                             <div class="page-header">
-                                <h3 class="fw-bold mb-3">Shops</h3>
+                                <h3 class="fw-bold mb-3">Suppliers</h3>
                                 <ul class="breadcrumbs mb-3">
                                     <li class="nav-home">
                                         <a href="/admin/dashboard/index">
@@ -58,20 +58,20 @@
                                         <i class="icon-arrow-right"></i>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/admin/shop-mgr/list">Shops</a>
+                                        <a href="/admin/supplier-mgr/list">Suppliers</a>
                                     </li>
                                 </ul>
                             </div>
-                            <!-- start shop datatable -->
+                            <!-- start supplier datatable -->
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="d-flex align-items-center">
-                                                <h4 class="card-title">Shops list</h4>
-                                                <a href="/admin/shop-mgr/create"
+                                                <h4 class="card-title">Suppliers list</h4>
+                                                <a href="/admin/supplier-mgr/create"
                                                     class="btn btn-primary btn-round ms-auto">
-                                                    <i class="fas fa-plus"></i> Add New Shop
+                                                    <i class="fas fa-plus"></i> Add New Supplier
                                                 </a>
 
                                             </div>
@@ -89,43 +89,43 @@
                                                                 <th>Phone</th>
                                                                 <th>Email</th>
                                                                 <th>Address</th>
-                                                                <th>Rating</th>
                                                                 <th>Active</th>
                                                                 <th>Actions</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <c:forEach var="shop" items="${shops}" varStatus="status">
+                                                            <c:forEach var="supplier" items="${suppliers}"
+                                                                varStatus="status">
                                                                 <tr>
                                                                     <td>${status.index+1}</td>
-                                                                    <td><a href="/shop/${shop.shopId}"
-                                                                            class="text-primary">#${shop.shopId}</a>
+                                                                    <td>
+                                                                        <a href="/supplier/${supplier.supplierId}"
+                                                                            class="text-primary">#${supplier.supplierId}</a>
                                                                     </td>
-
-                                                                    <td>${shop.shopName}</td>
-                                                                    <td>${shop.contactPerson}</td>
-                                                                    <td>${shop.phoneNumber}</td>
-                                                                    <td>${shop.email}</td>
-                                                                    <td>${shop.shopAddress}</td>
-                                                                    <td>${shop.rating}</td>
+                                                                    <td>${supplier.supplierName}</td>
+                                                                    <td>${supplier.contactPerson}</td>
+                                                                    <td>${supplier.phone}</td>
+                                                                    <td>${supplier.email}</td>
+                                                                    <td>${supplier.address}</td>
                                                                     <td>
                                                                         <span
-                                                                            class="badge badge-${shop.isActive ? 'success' : 'danger'}">
-                                                                            ${shop.isActive ? 'Active' : 'Inactive'}
+                                                                            class="badge badge-${supplier.status ? 'success' : 'danger'}">
+                                                                            ${supplier.status ? 'Active' : 'Inactive'}
                                                                         </span>
+                                                                    </td>
                                                                     <td>
                                                                         <div class="btn-group">
-                                                                            <a href="/admin/shop-mgr/detail/${shop.shopId}"
+                                                                            <a href="/admin/supplier-mgr/detail/${supplier.supplierId}"
                                                                                 class="btn btn-sm btn-info">
                                                                                 <i class="fas fa-eye"></i>
                                                                             </a>
-                                                                            <a href="/admin/shop-mgr/update/${shop.shopId}"
+                                                                            <a href="/admin/supplier-mgr/update/${supplier.supplierId}"
                                                                                 class="btn btn-sm btn-primary">
                                                                                 <i class="fas fa-edit"></i>
                                                                             </a>
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-danger"
-                                                                                onclick="deleteShop('${shop.shopId}')">
+                                                                                onclick="confirmDelete('${supplier.supplierId}')">
                                                                                 <i class="fas fa-trash"></i>
                                                                             </button>
                                                                         </div>
@@ -140,7 +140,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- end shop datatable -->
+                            <!-- end supplier datatable -->
                         </div>
                     </div>
                     <jsp:include page="../layout/footer.jsp" />
@@ -166,18 +166,18 @@
             <script src="../../../../resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
 
             <script>
-                function deleteShop(shopId) {
+                function confirmDelete(supplierId) {
                     swal({
-                        title: "Are you sure you want to delete this shop?",
+                        title: "Are you sure you want to delete this supplier?",
                         text: "This action cannot be undone.",
                         icon: "warning",
                         buttons: ["Cancel", "Delete"],
                         dangerMode: true,
                     }).then((confirmed) => {
                         if (confirmed) {
-                            $.post(`/admin/shop-mgr/delete/${shopId}`)
+                            $.post(`/admin/supplier-mgr/delete/${supplierId}`)
                                 .done(() => {
-                                    swal("Deleted!", "The shop has been successfully deleted.", "success")
+                                    swal("Deleted!", "The supplier has been successfully deleted.", "success")
                                         .then(() => location.reload());
                                 })
                                 .fail(() => {
@@ -197,12 +197,12 @@
                         lengthMenu: [5, 10, 25, 50, 100],
                         columnDefs: [
                             {
-                                targets: [8],
+                                targets: [7],
                                 orderable: false,
                                 searchable: false
                             },
                             {
-                                targets: [9],
+                                targets: [8],
                                 orderable: false,
                                 searchable: false
                             }

@@ -33,8 +33,8 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    // get product by shopId
-    public List<Product> findProductsByShopId(Integer shopId) {
-        return productRepository.findProductsByShopId(shopId);
+    // get product by supplierId
+    public List<Product> findProductsBySupplierId(Integer supplierId) {
+        return productRepository.findProductsBySupplierId(supplierId);
     }
 }

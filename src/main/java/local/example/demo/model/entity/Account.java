@@ -1,6 +1,5 @@
 package local.example.demo.model.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,13 +7,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Account")
+@Table(name = "Accounts")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,16 +22,18 @@ import lombok.Setter;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "AccountId")
     private Integer accountId;
 
-    @ManyToOne
-    @JoinColumn(name = "RoleId")
-    private Role role;
-
-    @Column(name = "LoginName")
+    // attributes
+    @NotBlank(message = "Login name is required")
     private String loginName;
 
-    @Column(name = "Password")
+    @NotBlank(message = "Password is required")
     private String password;
+
+    // relationships
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
 }

@@ -1,6 +1,7 @@
 package local.example.demo.model.entity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Product")
+@Table(name = "Products")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,45 +30,20 @@ import lombok.Setter;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ProductId")
     private Integer productId;
 
-    @ManyToOne
-    @JoinColumn(name = "ShopId")
-    @NotNull(message = "Shop cannot be null")
-    private Shop shop;
-
-    @ManyToOne
-    @JoinColumn(name = "CategoryId")
-    @NotNull(message = "Category cannot be null")
-    private Category category;
-
-    @ManyToOne
-    @JoinColumn(name = "BrandId")
-    @NotNull(message = "Brand cannot be null")
-    private Brand brand;
-
-    @Column(name = "ProductName")
     @NotBlank(message = "Product name cannot be blank")
     private String productName;
 
-    @Column(name = "Description")
     private String description;
 
-    @Column(name = "Price")
+    @NotNull(message = "Price cannot be null")
     @DecimalMin(value = "0.0", message = "Price must be greater than or equal to 0")
     private BigDecimal price;
 
-    @Column(name = "ImageUrl")
-    private String imageUrl;
-
-    @Column(name = "QuantityInStock")
-    @Min(value = 0, message = "Quantity in stock must be greater than or equal to 0")
-    private Integer quantityInStock;
-
-    @Column(name = "Views")
-    @Min(value = 0, message = "Views must be greater than or equal to 0")
-    private Integer views;
+    @NotNull(message = "Quantity in stock cannot be null")
+    @Min(value = 0, message = "Quantity sold must be greater than or equal to 0")
+    private Integer quantitySold;
 
     @Column(name = "Warranty")
     @NotBlank(message = "Warranty cannot be blank")
@@ -75,4 +52,23 @@ public class Product {
     @Column(name = "ReturnPolicy")
     @NotBlank(message = "Return policy cannot be blank")
     private String returnPolicy;
+
+    // relationships
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    @NotNull(message = "Supplier cannot be null")
+    private Supplier supplier;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @NotNull(message = "Category cannot be null")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    @NotNull(message = "Brand cannot be null")
+    private Brand brand;
+
+    @OneToMany(mappedBy = "product")
+    private List<Review> review;
 }

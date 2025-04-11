@@ -1,45 +1,45 @@
 package local.example.demo.model.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Discount_Shop")
+@Table(name = "Discounts")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiscountShop {
+public class Discount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DiscountId")
     private Integer discountId;
 
-    @ManyToOne
-    @JoinColumn(name = "ShopId")
-    private Shop shop;
-
-    @Column(name = "DiscountName")
+    // attributes
+    @NotBlank(message = "Discount name cannot be blank")
     private String discountName;
 
-    @Column(name = "Description")
     private String description;
 
-    @Column(name = "StartDate")
-    private LocalDateTime startDate;
+    @NotNull(message = "start date cannot blank")
+    private Date startDate;
 
-    @Column(name = "EndDate")
-    private LocalDateTime endDate;
+    @NotNull(message = "end date cannot blank")
+    private Date endDate;
+
+    // relationships
+    @OneToMany(mappedBy = "discount")
+    private List<ProductDiscount> productDiscounts;
 }

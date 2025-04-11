@@ -15,10 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import local.example.demo.model.entity.Employee;
-import local.example.demo.model.entity.Shop;
+import local.example.demo.model.entity.Supplier;
 import local.example.demo.service.EmployeeService;
 import local.example.demo.service.FileService;
-import local.example.demo.service.ShopService;
+import local.example.demo.service.SupplierService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -26,44 +26,40 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/employee-mgr/")
 public class EmployeeMgrController {
     private final EmployeeService employeeService;
-    private final ShopService shopService;
     private final FileService fileService;
 
     @GetMapping("list")
-    public String index() {
+    public String getEmployeesList() {
         return "admin/employee-mgr/all-employees";
     }
 
+    // get all employees
     @ModelAttribute("employees")
     public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
+    // get maneger
     @ModelAttribute("managers")
-    public List<Employee> getAllManagers() {
+    public List<Employee> getManager() {
         return employeeService.getAllEmployees();
     }
 
-    @ModelAttribute("shops")
-    public List<Shop> getAllShops() {
-        return shopService.findAllShops();
-    }
-
     @GetMapping("detail/{employeeId}")
-    public String detail(@PathVariable("employeeId") Integer employeeId, Model model) {
+    public String detailEmployee(@PathVariable("employeeId") Integer employeeId, Model model) {
         Employee employee = employeeService.getEmployeeById(employeeId);
         model.addAttribute("employee", employee);
         return "admin/employee-mgr/detail-employee";
     }
 
     @GetMapping("create")
-    public String create(Model model) {
+    public String createEmployee(Model model) {
         model.addAttribute("employee", new Employee());
         return "admin/employee-mgr/form-employee";
     }
 
     @GetMapping("update/{employeeId}")
-    public String update(@PathVariable("employeeId") Integer employeeId, Model model) {
+    public String updateEmployee(@PathVariable("employeeId") Integer employeeId, Model model) {
         Employee employee = employeeService.getEmployeeById(employeeId);
         model.addAttribute("employee", employee);
         return "admin/employee-mgr/form-employee";
@@ -71,23 +67,24 @@ public class EmployeeMgrController {
 
     // save employee
     @PostMapping("save")
-    public String save(@ModelAttribute("employee") @Valid Employee employee, BindingResult bindingResult,
-            @RequestParam("profileImageFile") MultipartFile profileImageFile, Model model) {
+    public String saveEmployee(@ModelAttribute("employee") @Valid Employee employee, BindingResult bindingResult,
+            @RequestParam("imageFile") MultipartFile imageFile, Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/employee-mgr/form-employee";
         }
 
-        if (fileService.isValidFile(profileImageFile)) {
-            String imageUrl = fileService.handleSaveUploadFile(profileImageFile, "employee");
-            employee.setProfileImage("/resources/images-upload/employee/" + imageUrl);
+        if (fileService.isValidFile(imageFile)) {
+            String imageUrl = fileService.handleSaveUploadFile(imageFile, "employee");
+            employee.setImageUrl("/resources/images-upload/employee/" + imageUrl);
         }
 
         employeeService.saveEmployee(employee);
         return "redirect:/admin/employee-mgr/list";
     }
 
-    @GetMapping("delete/{employeeId}")
-    public String delete(@PathVariable("employeeId") Integer employeeId) {
+    // delete employee
+    @PostMapping("delete/{employeeId}")
+    public String deleteEmployee(@PathVariable("employeeId") Integer employeeId) {
         employeeService.deleteEmployee(employeeId);
         return "redirect:/admin/employee-mgr/list";
     }

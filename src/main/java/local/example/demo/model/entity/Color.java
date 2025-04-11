@@ -2,7 +2,6 @@ package local.example.demo.model.entity;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Color")
+@Table(name = "Colors")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,13 +24,14 @@ import lombok.Setter;
 public class Color {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ColorId")
     private Integer colorId;
 
-    @Column(name = "ColorName")
+    // attributes
     @NotBlank(message = "Color name cannot be blank")
     private String colorName;
 
+    // relationship with ProductVariant
     @OneToMany(mappedBy = "color")
-    private List<ProductColor> productColors;
+    private List<ProductVariant> productVariants;
+
 }

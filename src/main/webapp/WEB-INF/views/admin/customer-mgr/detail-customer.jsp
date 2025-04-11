@@ -209,7 +209,7 @@
 
                                 <!-- Profile Header -->
                                 <div class="profile-header">
-                                    <img src="${not empty customer.profileImage ? customer.profileImage : ctx.concat('/resources/assets/dashboard/img/profile.jpg')}"
+                                    <img src="${not empty customer.imageUrl ? customer.imageUrl : ctx.concat('/resources/assets/dashboard/img/profile.jpg')}"
                                         class="profile-image" alt="${customer.firstName}">
                                     <div class="profile-name">${customer.firstName} ${customer.lastName}</div>
                                     <div class="profile-email">${customer.email}</div>
@@ -312,7 +312,7 @@
                                                     </div>
                                                     <div class="info-content">
                                                         <div class="info-label">Phone Number</div>
-                                                        <div class="info-value">${customer.phoneNumber}</div>
+                                                        <div class="info-value">${customer.phone}</div>
                                                     </div>
                                                 </div>
 

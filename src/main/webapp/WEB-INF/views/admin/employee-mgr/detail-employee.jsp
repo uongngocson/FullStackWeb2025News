@@ -205,8 +205,8 @@
                                             <div class="profile-position">${employee.employeeType ? 'Manager' : 'Staff'}
                                             </div>
                                             <div>
-                                                <span class="profile-department">${not empty employee.shop ?
-                                                    employee.shop.shopName : 'No Shop Assigned'}</span>
+                                                <span class="profile-department">${not empty employee.supplier ?
+                                                    employee.supplier.supplierName : 'No Supplier Assigned'}</span>
                                                 <span
                                                     class="profile-status ${employee.status ? '' : 'inactive'}">${employee.status
                                                     ? 'Active' : 'Inactive'}</span>
@@ -289,14 +289,14 @@
                                                 <div class="info-label">
                                                     <i class="fas fa-phone info-icon"></i> Phone
                                                 </div>
-                                                <div class="info-value">${employee.phoneNumber}</div>
+                                                <div class="info-value">${employee.phone}</div>
                                             </div>
                                             <div class="info-item">
                                                 <div class="info-label">
-                                                    <i class="fas fa-store info-icon"></i> Shop
+                                                    <i class="fas fa-store info-icon"></i> Supplier
                                                 </div>
-                                                <div class="info-value">${not empty employee.shop ?
-                                                    employee.shop.shopName : 'Not assigned'}</div>
+                                                <div class="info-value">${not empty employee.supplier ?
+                                                    employee.supplier.supplierName : 'Not Supplier assigned'}</div>
                                             </div>
                                             <div class="info-item">
                                                 <div class="info-label">

@@ -245,17 +245,7 @@
                                                                     pattern="dd/MM/yyyy HH:mm" />
                                                             </div>
                                                         </div>
-                                                        <div class="mb-4">
-                                                            <div class="info-label">Expected Delivery</div>
-                                                            <div class="info-value">
-                                                                <i class="fas fa-truck mr-2 text-muted"></i>
-                                                                <fmt:parseDate value="${order.expectedDeliveryDate}"
-                                                                    pattern="yyyy-MM-dd" var="parsedDeliveryDate"
-                                                                    type="date" />
-                                                                <fmt:formatDate value="${parsedDeliveryDate}"
-                                                                    pattern="dd/MM/yyyy" />
-                                                            </div>
-                                                        </div>
+
                                                         <div class="mb-4">
                                                             <div class="info-label">Order Status</div>
                                                             <div class="info-value">
@@ -292,7 +282,7 @@
                                                             <div class="info-label">Shipping Address</div>
                                                             <div class="info-value">
                                                                 <i class="fas fa-map-marker-alt mr-2 text-muted"></i>
-                                                                ${order.shippingAddress.streetAddress}
+                                                                ${order.shippingAddress.street}
                                                             </div>
                                                             <div class="mt-2">
                                                                 <div>${order.shippingAddress.ward},
@@ -357,13 +347,11 @@
                                                                     <td>${status.index + 1}</td>
                                                                     <td>
                                                                         <div class="product-item">
-                                                                            <img src="${orderDetail.product.imageUrl}"
-                                                                                alt="" class="product-image">
+
                                                                             <div class="product-details">
                                                                                 <div class="product-name">
                                                                                     ${orderDetail.product.productName}
                                                                                 </div>
-
                                                                             </div>
                                                                         </div>
                                                                     </td>
@@ -381,20 +369,6 @@
                                                             </c:forEach>
                                                         </tbody>
                                                         <tfoot>
-                                                            <tr class="table-footer">
-                                                                <td colspan="4" class="text-right">Subtotal</td>
-                                                                <td class="text-right">$${order.totalAmount -
-                                                                    order.shippingFee + order.discountAmount}</td>
-                                                            </tr>
-                                                            <tr class="table-footer">
-                                                                <td colspan="4" class="text-right">Discount</td>
-                                                                <td class="text-right text-danger">
-                                                                    -$${order.discountAmount}</td>
-                                                            </tr>
-                                                            <tr class="table-footer">
-                                                                <td colspan="4" class="text-right">Shipping Fee</td>
-                                                                <td class="text-right">$${order.shippingFee}</td>
-                                                            </tr>
                                                             <tr class="table-footer">
                                                                 <td colspan="4" class="text-right h5">Total</td>
                                                                 <td class="text-right h5 text-primary">
@@ -467,55 +441,6 @@
                                                         </div>
                                                     </c:if>
 
-                                                    <c:if
-                                                        test="${order.orderStatus == 'Shipped' || order.orderStatus == 'Delivered' || order.orderStatus == 'Completed'}">
-                                                        <div class="timeline-item">
-                                                            <div class="timeline-badge bg-info">
-                                                                <i class="fas fa-shipping-fast"></i>
-                                                            </div>
-                                                            <div class="timeline-panel">
-                                                                <div class="timeline-heading">
-                                                                    <h4 class="timeline-title">Order Shipped</h4>
-                                                                    <p><small class="text-muted"><i
-                                                                                class="far fa-clock mr-1"></i> After
-                                                                            processing</small></p>
-                                                                </div>
-                                                                <div class="timeline-body">
-                                                                    <p>Order has been shipped and is on its way to the
-                                                                        customer</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </c:if>
-
-                                                    <c:if
-                                                        test="${order.orderStatus == 'Delivered' || order.orderStatus == 'Completed'}">
-                                                        <div class="timeline-item">
-                                                            <div class="timeline-badge bg-success">
-                                                                <i class="fas fa-check"></i>
-                                                            </div>
-                                                            <div class="timeline-panel">
-                                                                <div class="timeline-heading">
-                                                                    <h4 class="timeline-title">Order Delivered</h4>
-                                                                    <p>
-                                                                        <small class="text-muted">
-                                                                            <i class="far fa-clock mr-1"></i>
-                                                                            <fmt:parseDate
-                                                                                value="${order.expectedDeliveryDate}"
-                                                                                pattern="yyyy-MM-dd"
-                                                                                var="parsedDeliveryDate" type="date" />
-                                                                            <fmt:formatDate
-                                                                                value="${parsedDeliveryDate}"
-                                                                                pattern="dd/MM/yyyy" />
-                                                                        </small>
-                                                                    </p>
-                                                                </div>
-                                                                <div class="timeline-body">
-                                                                    <p>Order has been delivered to the customer</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </c:if>
 
                                                     <c:if test="${order.orderStatus == 'Cancelled'}">
                                                         <div class="timeline-item">

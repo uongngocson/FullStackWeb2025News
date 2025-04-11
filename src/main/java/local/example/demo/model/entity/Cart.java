@@ -1,6 +1,5 @@
 package local.example.demo.model.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Cart")
+@Table(name = "Carts")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,10 +21,10 @@ import lombok.Setter;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CartId")
     private Integer cartId;
 
+    // relation with customer
     @OneToOne
-    @JoinColumn(name = "CustomerId")
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 }

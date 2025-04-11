@@ -185,9 +185,11 @@
                                                                     <td>${status.index + 1}</td>
                                                                     <td>
                                                                         <div class="customer-info">
-                                                                            <img src="${not empty customer.profileImage ? customer.profileImage : ctx.concat('/resources/assets/dashboard/img/profile.jpg')}"
-                                                                                class="customer-avatar"
-                                                                                alt="${customer.firstName}">
+                                                                            <img src="${not empty customer.imageUrl 
+                                                                                        ? customer.imageUrl 
+                                                                                        : ctx.concat(customer.gender ? '/resources/images-upload/customer/avatar-default-male.jpg' 
+                                                                                                                     : '/resources/images-upload/customer/avatar-default-female.jpg')}"
+                                                                                class="customer-avatar" alt="">
                                                                             <div class="customer-details">
                                                                                 <div class="customer-name">
                                                                                     ${customer.firstName}
@@ -197,7 +199,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </td>
-                                                                    <td>${customer.phoneNumber}</td>
+                                                                    <td>${customer.phone}</td>
                                                                     <td>
                                                                         <fmt:formatDate
                                                                             value="${customer.getDateOfBirthAsDate()}"
@@ -226,7 +228,7 @@
                                                                             </a>
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-danger"
-                                                                                onclick="deleteCustomer('${customer.customerId}')">
+                                                                                onclick="confirmDelete('${customer.customerId}')">
                                                                                 <i class="fas fa-trash"></i>
                                                                             </button>
                                                                         </div>
