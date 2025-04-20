@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
     <!DOCTYPE html>
     <html lang="vi">
 
@@ -41,69 +43,77 @@
                 <div class="form-two">
                     <div class="form-two--item2">
                         <div class="form-two--item2--list1">
-                            <div class="form-two--item2--list1-con">
-
+                            <form:form action="/client/auth/register" class="form-two--item2--list1-con" method="post" modelAttribute="registerDTO">
                                 <div class="form-two-icon1">
-                                    <div class="">Đăng ký</div>
-                                    <div class="form-two-icon1-cus">Đăng nhập với mã QR</div>
+                                    <div>Đăng ký</div>
                                     <div class="form-two-icon1-item3"><i class="fa-solid fa-qrcode"></i></div>
                                 </div>
+                                <!-- first name -->
                                 <div class="form-two-icon2">
-                                    <input placeholder="Số điện thoại" class="form-two-icon2">
-
-                                    </input>
+                                    <form:input placeholder="Họ" class="form-two-icon2" path="firstName"/>
+                                    <form:errors path="firstName" cssClass="text-danger"/>
+                                    <c:if test="${not empty errors.firstName}">
+                                        <div class="text-danger">${errors.firstName}</div>
+                                    </c:if>
                                 </div>
-                                <!-- <div class=" form-two-icon3">
-
-                                    <input class="form-two-icon2">
-
-                                    </input>
-                                </div> -->
-                                <div class=" form-two-icon4">
-                                    <div class="form-two-icon4-icon1">TIẾP THEO</div>
-                                    <!-- <div class="form-two-icon4-icon2">
-                                        <div class="">Quên mật khẩu</div>
-                                        <div class="">Đăng nhập với SMS</div>
-                                    </div> -->
+                                <!-- last name -->
+                                <div class="form-two-icon2">
+                                    <form:input placeholder="Tên" class="form-two-icon2" path="lastName"/>
+                                    <form:errors path="lastName" cssClass="text-danger"/>
+                                    <c:if test="${not empty errors.lastName}">
+                                        <div class="text-danger">${errors.lastName}</div>
+                                    </c:if>
                                 </div>
-                                <div class="form-two-icon5">
-                                    <div class="underscore"></div>
-                                    <div>HOẶC</div>
-                                    <div class="underscore"></div>
-
+                                <!-- email -->
+                                <div class="form-two-icon2">
+                                    <form:input placeholder="Email" class="form-two-icon2" path="email"/>
+                                    <form:errors path="email" cssClass="text-danger"/>
+                                    <c:if test="${not empty errors.email}">
+                                        <div class="text-danger">${errors.email}</div>
+                                    </c:if>
                                 </div>
-                                <div class="form-two-icon6">
-                                    <div class="form-two-icon6-item1"><i class="form-custom fa-brands fa-facebook"></i>
-                                        Facebook
-                                    </div>
-                                    <div class="form-two-icon6-item2">
-                                        <i class="form-custom2 fa-brands fa-google"></i> Google
-                                    </div>
+                                <!-- phone number -->
+                                <div class="form-two-icon2">
+                                    <form:input placeholder="Số điện thoại" class="form-two-icon2" path="phoneNumber"/>
+                                    <form:errors path="phoneNumber" cssClass="text-danger"/>
+                                    <c:if test="${not empty errors.phoneNumber}">
+                                        <div class="text-danger">${errors.phoneNumber}</div>
+                                    </c:if>
                                 </div>
-
-                                <div class="form-two-icon8">
-                                    <div class="form-two-icon7-item1">Bằng việc đăng kí, bạn đã đồng ý với DsDmart về
-                                    </div>
-                                    <div class="form-two-icon7-item2">Điều khoản dịch vụ & chính sách bảo mật</div>
+                                <!-- login name -->
+                                <div class="form-two-icon2">
+                                    <form:input placeholder="Tên đăng nhập" class="form-two-icon2" path="loginName"/>
+                                    <form:errors path="loginName" cssClass="text-danger"/>
+                                    <c:if test="${not empty errors.loginName}">
+                                        <div class="text-danger">${errors.loginName}</div>
+                                    </c:if>
                                 </div>
-
+                                <!-- password -->
+                                <div class="form-two-icon3">
+                                    <form:input placeholder="Mật khẩu" class="form-two-icon2" path="password" type="password"/>
+                                    <form:errors path="password" cssClass="text-danger"/>
+                                </div>
+                                <!-- confirm password -->
+                                <div class="form-two-icon4">
+                                    <form:input placeholder="Nhập lại mật khẩu" class="form-two-icon2" path="confirmPassword" type="password"/>
+                                    <form:errors path="confirmPassword" cssClass="text-danger"/>
+                                    <c:if test="${not empty errors.confirmPassword}">
+                                        <div class="text-danger">${errors.confirmPassword}</div>
+                                    </c:if>
+                                </div>
+                                
+                                <!-- btn register -->
+                                <div class="form-two-icon4">
+                                    <button type="submit" class="form-two-icon4-icon1">Đăng kí</button>
+                                </div>
+                                <!-- btn login -->
                                 <div class="form-two-icon7">
-                                    <div class="form-two-icon7-item1">Bạn đã có tài khoản?
-                                    </div>
-                                    <a class="form-two-icon7-item2" href="/login">Đăng nhập</a>
+                                    <div class="form-two-icon7-item1">Bạn đã có tài khoản?</div>
+                                    <a class="form-two-icon7-item2" href="/client/auth/login">Đăng nhập</a>
                                 </div>
-                                <div class="form-two-icon8"></div>
-                                <div class="form-two-icon9"></div>
-
-
-
-                            </div>
-
-
+                            </form:form>
 
                         </div>
-
-
                     </div>
 
                 </div>

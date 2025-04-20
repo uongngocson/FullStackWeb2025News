@@ -8,4 +8,6 @@ import local.example.demo.model.entity.Customer;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
+    boolean existsByEmail(String email);
+
 }

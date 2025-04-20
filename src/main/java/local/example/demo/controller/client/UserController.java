@@ -11,14 +11,4 @@ public class UserController {
         return "client/home";
     }
 
-    @GetMapping("/login")
-    public String getLoginPage() {
-        return "client/auth/login";
-    }   
-
-    @GetMapping("/register")
-    public String getRegisterPage() {
-        return "client/auth/register";
-    }
-
 }

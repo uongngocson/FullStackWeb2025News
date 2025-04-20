@@ -23,4 +23,8 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
+    public Role getRoleById(Integer id) {
+        return roleRepository.findById(id).orElse(null);
+    }
+
 }

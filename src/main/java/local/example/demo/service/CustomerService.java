@@ -7,6 +7,7 @@ import org.hibernate.TransientObjectException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import local.example.demo.model.dto.RegisterDTO;
 import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
 import local.example.demo.repository.CustomerRepository;
@@ -57,6 +58,20 @@ public class CustomerService {
     @Transactional(readOnly = true)
     public List<Order> findOrdersByCustomerId(Integer customerId) {
         return orderRepository.findByCustomerId(customerId);
+    }
+
+    public boolean existsByEmail(String email) {
+        return customerRepository.existsByEmail(email);
+    }
+
+    // mapper registerDTO to customer
+    public Customer mapRegisterDTOToCustomer(RegisterDTO registerDTO) {
+        Customer customer = new Customer();
+        customer.setFirstName(registerDTO.getFirstName());
+        customer.setLastName(registerDTO.getLastName());
+        customer.setEmail(registerDTO.getEmail());
+        customer.setPhone(registerDTO.getPhoneNumber());
+        return customer;
     }
 
 }

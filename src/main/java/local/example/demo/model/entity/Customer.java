@@ -19,6 +19,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import local.example.demo.validator.RegisterCheck;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,13 +50,13 @@ public class Customer {
     @Email(message = "Invalid email format")
     private String email;
 
-    @Past(message = "Date of birth must be in the past")
-    @NotNull(message = "Date of birth is required")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    // @Past(message = "Date of birth must be in the past")
+    // @NotNull(message = "Date of birth is required")
+    // @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate registrationDate;
+    private LocalDate registrationDate = LocalDate.now();
 
     private boolean gender;
 

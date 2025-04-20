@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import local.example.demo.model.dto.RegisterDTO;
 import local.example.demo.model.entity.Account;
 import local.example.demo.repository.AccountRepository;
 
@@ -33,6 +34,22 @@ public class AccountService {
 
     public void deleteAccountById(Integer id) {
         accountRepository.deleteById(id);
+    }
+
+    public boolean existsByLoginName(String loginName) {
+        return accountRepository.existsByLoginName(loginName);
+    }
+
+    public Account getAccountByLoginName(String loginName) {
+        return accountRepository.findByLoginName(loginName);
+    }
+
+    // mapper registerDTO to account
+    public Account mapRegisterDTOToAccount(RegisterDTO registerDTO) {
+        Account account = new Account();
+        account.setLoginName(registerDTO.getLoginName());
+        account.setPassword(registerDTO.getPassword());
+        return account;
     }
 
 }
