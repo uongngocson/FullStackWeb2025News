@@ -1,0 +1,78 @@
+package local.example.demo.config;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import local.example.demo.model.entity.Account;
+import local.example.demo.model.entity.Customer;
+import local.example.demo.service.AccountService;
+import local.example.demo.service.CustomerService;
+
+public class CustomSuccessHandler implements AuthenticationSuccessHandler {
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private CustomerService customerService;
+
+    protected String determineTargetUrl(final Authentication authentication) {
+
+        Map<String, String> roleTargetUrlMap = new HashMap<>();
+        roleTargetUrlMap.put("ROLE_CUSTOMER", "/");
+        roleTargetUrlMap.put("ROLE_EMPLOYEE", "/employee/dashboard/index");
+        roleTargetUrlMap.put("ROLE_ADMIN", "admin/dashboard/index");
+
+        final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        for (final GrantedAuthority grantedAuthority : authorities) {
+            String authorityName = grantedAuthority.getAuthority();
+            if (roleTargetUrlMap.containsKey(authorityName)) {
+                return roleTargetUrlMap.get(authorityName);
+            }
+        }
+
+        throw new IllegalStateException();
+    }
+
+    protected void clearAuthenticationAttributes(HttpServletRequest request, Authentication authentication) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return;
+        }
+        Account account = accountService.getAccountByLoginName(authentication.getName());
+        Customer customer = customerService.getCustomerByAccount(account);
+        session.setAttribute("email", customer.getEmail());
+        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+    }
+
+    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+            Authentication authentication) throws IOException, ServletException {
+
+        String targetUrl = determineTargetUrl(authentication);
+
+        if (response.isCommitted()) {
+
+            return;
+        }
+
+        redirectStrategy.sendRedirect(request, response, targetUrl);
+        clearAuthenticationAttributes(request, authentication);
+
+    }
+
+}

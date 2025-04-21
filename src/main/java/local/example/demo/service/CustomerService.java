@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import local.example.demo.model.dto.RegisterDTO;
+import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
 import local.example.demo.repository.CustomerRepository;
@@ -62,6 +63,11 @@ public class CustomerService {
 
     public boolean existsByEmail(String email) {
         return customerRepository.existsByEmail(email);
+    }
+
+    // find customer by account
+    public Customer getCustomerByAccount(Account account) {
+        return customerRepository.findByAccount(account);
     }
 
     // mapper registerDTO to customer
