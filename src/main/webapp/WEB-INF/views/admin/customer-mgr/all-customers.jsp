@@ -173,7 +173,7 @@
                                                                 <th width="25%">Customer</th>
                                                                 <th width="15%">Phone</th>
                                                                 <th width="15%">Date of Birth</th>
-                                                                <th width="15%">Registration Date</th>
+                                                                <th width="15%">Register Date</th>
                                                                 <th width="10%">Status</th>
                                                                 <th width="15%" class="text-center">Actions</th>
                                                             </tr>

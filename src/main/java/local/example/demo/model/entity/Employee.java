@@ -75,4 +75,10 @@ public class Employee {
         return Date.from(this.hireDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
+    public Date getDateOfBirthAsDate() {
+        if (this.dateOfBirth == null)
+            return null;
+        return Date.from(this.dateOfBirth.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
 }

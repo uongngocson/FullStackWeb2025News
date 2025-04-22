@@ -257,6 +257,12 @@
                                                                     cssClass="text-danger" />
                                                             </div>
                                                         </div>
+                                                        <script>
+                                                            document.addEventListener("DOMContentLoaded", function () {
+                                                                const today = new Date().toISOString().split("T")[0];
+                                                                document.getElementById("dateOfBirth").setAttribute("max", today);
+                                                            });
+                                                        </script>
 
                                                         <!-- Hire Date -->
                                                         <div class="col-md-6">

@@ -7,7 +7,7 @@
 
             <head>
                 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <title>${customer.customerId != null ? 'Edit' : 'Create'} Customer</title>
+                <title>${customer.customerId != null ? 'Update' : 'Create'} Customer</title>
                 <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
                 <!-- set path -->
                 <c:set var="ctx" value="${pageContext.request.contextPath}" />
@@ -232,7 +232,8 @@
                                                                     </label>
                                                                     <form:input path="firstName" type="text"
                                                                         class="form-control" id="firstName"
-                                                                        placeholder="Enter first name" />
+                                                                        placeholder="Enter first name"
+                                                                        required="true" />
                                                                     <form:errors path="firstName"
                                                                         cssClass="invalid-feedback d-block" />
                                                                 </div>
@@ -247,7 +248,7 @@
                                                                     </label>
                                                                     <form:input path="lastName" type="text"
                                                                         class="form-control" id="lastName"
-                                                                        placeholder="Enter last name" />
+                                                                        placeholder="Enter last name" required="true" />
                                                                     <form:errors path="lastName"
                                                                         cssClass="invalid-feedback d-block" />
                                                                 </div>
@@ -278,7 +279,8 @@
                                                                     </label>
                                                                     <form:input path="phone" type="tel"
                                                                         class="form-control" id="phone"
-                                                                        placeholder="Enter phone number" />
+                                                                        placeholder="Enter phone number"
+                                                                        required="true" />
                                                                     <form:errors path="phone"
                                                                         cssClass="invalid-feedback d-block" />
                                                                 </div>
@@ -293,11 +295,20 @@
                                                                         Date of Birth <span class="text-danger">*</span>
                                                                     </label>
                                                                     <form:input path="dateOfBirth" type="date"
-                                                                        class="form-control" id="dateOfBirth" />
+                                                                        class="form-control" id="dateOfBirth"
+                                                                        required="true" />
                                                                     <form:errors path="dateOfBirth"
                                                                         cssClass="invalid-feedback d-block" />
                                                                 </div>
                                                             </div>
+
+                                                            <script>
+                                                                document.addEventListener("DOMContentLoaded", function () {
+                                                                    const today = new Date().toISOString().split("T")[0];
+                                                                    document.getElementById("dateOfBirth").setAttribute("max", today);
+                                                                });
+                                                            </script>
+
 
                                                             <!-- Gender -->
                                                             <div class="col-md-6 mb-3">
@@ -404,6 +415,26 @@
                 <!-- Custom JS -->
                 <script>
                     $(document).ready(function () {
+                        // Format date for HTML5 date input (YYYY-MM-DD)
+                        const dateOfBirth = '${customer.dateOfBirth}';
+                        if (dateOfBirth) {
+                            const formattedDate = new Date(dateOfBirth).toISOString().split('T')[0];
+                            $('#dateOfBirth').val(formattedDate);
+                        }
+
+                        // Set max date to today
+                        const today = new Date().toISOString().split('T')[0];
+                        $('#dateOfBirth').attr('max', today);
+                        // Prevent future dates from being selected
+                        $('#dateOfBirth').on('change', function () {
+                            const selectedDate = new Date(this.value);
+                            const today = new Date();
+                            if (selectedDate > today) {
+                                alert('Date of birth cannot be in the future');
+                                this.value = '';
+                            }
+                        });
+
                         // Update file input label with selected filename
                         $('.custom-file-input').on('change', function () {
                             let fileName = $(this).val().split('\\').pop();

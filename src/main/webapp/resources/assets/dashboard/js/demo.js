@@ -193,7 +193,7 @@ Circles.create({
 $.notify({
 	icon: 'icon-bell',
 	title: 'Welcome',
-	message: 'Chào mừng bạn đến với Admin',
+	message: 'Welcome to Admin page',
 }, {
 	type: 'secondary',
 	placement: {

@@ -193,186 +193,137 @@
                                     </ul>
                                 </div>
 
-                                <!-- Profile Header -->
+                                <!-- Profile Header (simplified) -->
                                 <div class="profile-header">
                                     <div class="row align-items-center">
-                                        <div class="col-md-3 text-center">
-                                            <img src="${not empty employee.profileImage ? employee.profileImage : ctx.concat('/resources/assets/dashboard/img/profile.jpg')}"
+                                        <div class="col-md-2 text-center">
+                                            <img src="${not empty employee.imageUrl ? employee.imageUrl : ctx.concat('/resources/images-upload/logo-is-empty.jpg')}"
                                                 alt="${employee.firstName}" class="profile-img">
                                         </div>
-                                        <div class="col-md-9">
-                                            <div class="profile-name">${employee.firstName} ${employee.lastName}</div>
-                                            <div class="profile-position">${employee.employeeType ? 'Manager' : 'Staff'}
-                                            </div>
-                                            <div>
-                                                <span class="profile-department">${not empty employee.supplier ?
-                                                    employee.supplier.supplierName : 'No Supplier Assigned'}</span>
-                                                <span
-                                                    class="profile-status ${employee.status ? '' : 'inactive'}">${employee.status
-                                                    ? 'Active' : 'Inactive'}</span>
-                                            </div>
-                                            <div class="action-buttons">
-                                                <a href="/admin/employee-mgr/update/${employee.employeeId}"
-                                                    class="btn btn-primary btn-round">
-                                                    <i class="fas fa-edit mr-2"></i> Edit
-                                                </a>
-                                                <button class="btn btn-danger btn-round"
-                                                    onclick="deleteEmployee('${employee.employeeId}')">
-                                                    <i class="fas fa-trash mr-2"></i> Delete
-                                                </button>
-                                                <a href="/admin/employee-mgr/list" class="btn btn-secondary btn-round">
-                                                    <i class="fas fa-arrow-left mr-2"></i> Back to List
-                                                </a>
+                                        <div class="col-md-10">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h1 class="profile-name">${employee.firstName} ${employee.lastName}
+                                                    </h1>
+                                                    <div class="profile-position">Employee ID: #${employee.employeeId}
+                                                    </div>
+                                                </div>
+                                                <div class="profile-status ${employee.status ? '' : 'inactive'}">
+                                                    ${employee.status ? 'Active' : 'Inactive'}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                <!-- Main Content Area -->
                                 <div class="row">
-                                    <!-- Personal Information -->
-                                    <div class="col-md-6">
-                                        <div class="info-card">
-                                            <div class="info-title">
-                                                <i class="fas fa-user-circle mr-2"></i> Personal Information
+                                    <!-- Left Column - Personal Info -->
+                                    <div class="col-lg-4">
+                                        <div class="card">
+                                            <div class="card-header bg-primary text-white">
+                                                <h4 class="mb-0"><i class="fas fa-user mr-2"></i>Personal Information
+                                                </h4>
                                             </div>
-                                            <div class="info-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-id-card info-icon"></i> Employee ID
-                                                </div>
-                                                <div class="info-value">#${employee.employeeId}</div>
+                                            <div class="card-body">
+                                                <ul class="list-group list-group-flush">
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <span><i class="fas fa-venus-mars mr-2"></i>Gender</span>
+                                                        <span>${employee.gender ? 'Male' : 'Female'}</span>
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <span><i class="fas fa-birthday-cake mr-2"></i>Date of
+                                                            Birth</span>
+                                                        <span>
+                                                            <fmt:formatDate value="${employee.getDateOfBirthAsDate()}"
+                                                                pattern="dd/MM/yyyy" />
+                                                        </span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <div><i class="fas fa-map-marker-alt mr-2"></i>Address</div>
+                                                        <div class="text-muted mt-1">${not empty employee.address ?
+                                                            employee.address : 'Not provided'}</div>
+                                                    </li>
+                                                </ul>
                                             </div>
-                                            <div class="info-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-user info-icon"></i> Full Name
-                                                </div>
-                                                <div class="info-value">${employee.firstName} ${employee.lastName}</div>
+                                        </div>
+
+                                        <!-- Contact Card -->
+                                        <div class="card mt-4">
+                                            <div class="card-header bg-info text-white">
+                                                <h4 class="mb-0"><i class="fas fa-address-book mr-2"></i>Contact</h4>
                                             </div>
-                                            <div class="info-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-venus-mars info-icon"></i> Gender
-                                                </div>
-                                                <div class="info-value">${employee.gender ? 'Male' : 'Female'}</div>
-                                            </div>
-                                            <div class="info-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-birthday-cake info-icon"></i> Date of Birth
-                                                </div>
-                                                <div class="info-value">
-                                                    <fmt:parseDate value="${employee.dateOfBirth}" pattern="yyyy-MM-dd"
-                                                        var="parsedDate" type="date" />
-                                                    <fmt:formatDate value="${parsedDate}" pattern="MMMM dd, yyyy" />
-                                                </div>
-                                            </div>
-                                            <div class="info-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-map-marker-alt info-icon"></i> Address
-                                                </div>
-                                                <div class="info-value">${not empty employee.address ? employee.address
-                                                    : 'Not provided'}</div>
+                                            <div class="card-body">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item">
+                                                        <div><i class="fas fa-envelope mr-2"></i>Email</div>
+                                                        <div class="text-muted mt-1">${employee.email}</div>
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <span><i class="fas fa-phone mr-2"></i>Phone</span>
+                                                        <span>${employee.phone}</span>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Contact Information -->
-                                    <div class="col-md-6">
-                                        <div class="info-card">
-                                            <div class="info-title">
-                                                <i class="fas fa-address-card mr-2"></i> Contact Information
+                                    <!-- Right Column - Employment Details -->
+                                    <div class="col-lg-8">
+                                        <div class="card">
+                                            <div class="card-header bg-success text-white">
+                                                <h4 class="mb-0"><i class="fas fa-briefcase mr-2"></i>Employment Details
+                                                </h4>
                                             </div>
-                                            <div class="info-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-envelope info-icon"></i> Email
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <h6><i class="fas fa-calendar-day mr-2"></i>Hire Date</h6>
+                                                            <p class="text-muted">
+                                                                <fmt:formatDate value="${employee.getHireDateAsDate()}"
+                                                                    pattern="dd/MM/yyyy" />
+                                                            </p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <h6><i class="fas fa-user-tie mr-2"></i>Manager</h6>
+                                                            <p class="text-muted">${not empty employee.manager ?
+                                                                employee.manager.firstName.concat('
+                                                                ').concat(employee.manager.lastName) : 'No manager'}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <h6><i class="fas fa-dollar-sign mr-2"></i>Salary</h6>
+                                                            <p class="text-muted">
+                                                                <fmt:formatNumber value="${employee.salary}"
+                                                                    type="currency" currencySymbol="$" />
+                                                            </p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <h6><i class="fas fa-user-shield mr-2"></i>Account</h6>
+                                                            <p class="text-muted">${not empty employee.account ?
+                                                                employee.account.username : 'No account linked'}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="info-value">${employee.email}</div>
-                                            </div>
-                                            <div class="info-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-phone info-icon"></i> Phone
-                                                </div>
-                                                <div class="info-value">${employee.phone}</div>
-                                            </div>
-                                            <div class="info-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-store info-icon"></i> Supplier
-                                                </div>
-                                                <div class="info-value">${not empty employee.supplier ?
-                                                    employee.supplier.supplierName : 'Not Supplier assigned'}</div>
-                                            </div>
-                                            <div class="info-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-user-tie info-icon"></i> Manager
-                                                </div>
-                                                <div class="info-value">${not empty employee.manager ?
-                                                    employee.manager.firstName.concat('
-                                                    ').concat(employee.manager.lastName) : 'No manager'}</div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <!-- Employment Information -->
-                                    <div class="col-md-12">
-                                        <div class="info-card">
-                                            <div class="info-title">
-                                                <i class="fas fa-briefcase mr-2"></i> Employment Information
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="info-item">
-                                                        <div class="info-label">
-                                                            <i class="fas fa-id-badge info-icon"></i> Employee Type
-                                                        </div>
-                                                        <div class="info-value">${employee.employeeType ? 'Manager' :
-                                                            'Staff'}</div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="info-item">
-                                                        <div class="info-label">
-                                                            <i class="fas fa-calendar-alt info-icon"></i> Hire Date
-                                                        </div>
-                                                        <div class="info-value">
-                                                            <fmt:parseDate value="${employee.hireDate}"
-                                                                pattern="yyyy-MM-dd" var="hireDate" type="date" />
-                                                            <fmt:formatDate value="${hireDate}"
-                                                                pattern="MMMM dd, yyyy" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="info-item">
-                                                        <div class="info-label">
-                                                            <i class="fas fa-dollar-sign info-icon"></i> Salary
-                                                        </div>
-                                                        <div class="info-value">
-                                                            <fmt:formatNumber value="${employee.salary}" type="currency"
-                                                                currencySymbol="$" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="info-item">
-                                                        <div class="info-label">
-                                                            <i class="fas fa-toggle-on info-icon"></i> Status
-                                                        </div>
-                                                        <div class="info-value">
-                                                            <span
-                                                                class="badge badge-${employee.status ? 'success' : 'danger'}">
-                                                                ${employee.status ? 'Active' : 'Inactive'}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="info-item">
-                                                        <div class="info-label">
-                                                            <i class="fas fa-user-shield info-icon"></i> Account
-                                                        </div>
-                                                        <div class="info-value">
-                                                            ${not empty employee.account ? employee.account.username :
-                                                            'No account linked'}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                        <!-- Action Buttons -->
+                                        <div class="card mt-4">
+                                            <div class="card-body text-center">
+                                                <a href="/admin/employee-mgr/update/${employee.employeeId}"
+                                                    class="btn btn-primary btn-lg mr-3">
+                                                    <i class="fas fa-edit mr-2"></i>Update Employee
+                                                </a>
+                                                <button onclick="deleteEmployee('${employee.employeeId}')"
+                                                    class="btn btn-danger btn-lg">
+                                                    <i class="fas fa-trash-alt mr-2"></i>Delete Employee
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

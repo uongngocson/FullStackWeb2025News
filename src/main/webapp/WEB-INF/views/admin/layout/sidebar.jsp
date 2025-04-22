@@ -36,7 +36,7 @@
                     </li>
 
                     <!-- Charts -->
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#charts">
                             <i class="fas fa-chart-bar"></i>
                             <p>Charts</p>
@@ -61,7 +61,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li> -->
 
                     <!-- Customer Management -->
                     <li class="nav-item">
@@ -75,11 +75,6 @@
                                 <li>
                                     <a href="/admin/customer-mgr/list">
                                         <span class="sub-item">Customer List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Reviews</span>
                                     </a>
                                 </li>
                             </ul>

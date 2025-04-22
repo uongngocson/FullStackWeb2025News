@@ -300,6 +300,7 @@
                             "lengthMenu": [5, 10, 15, 20, 50, 100],
                             "order": [[0, "desc"]],
                             "columnDefs": [
+                                { "orderable": false, "targets": [4] },
                                 { "orderable": false, "targets": [5] } // Corrected target index for Actions column
                             ]
                         });

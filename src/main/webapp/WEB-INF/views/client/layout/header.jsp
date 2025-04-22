@@ -5,7 +5,7 @@
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Alpha Mart</title>
+                <title>Clothes Shop</title>
                 <!-- Fav-Icon link -->
                 <link rel="shortcut icon" href="Images/favicon-16x16.webp" type="image/x-icon">
                 <!-- Font-Awesome link -->
