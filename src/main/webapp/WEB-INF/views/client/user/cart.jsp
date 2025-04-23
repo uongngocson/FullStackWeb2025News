@@ -14,7 +14,7 @@
                 <link
                     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap"
                     rel="stylesheet">
-                <link href="${ctx}/resources/assets/clientcss/cart.css" rel="stylesheet">
+
             </head>
 
             <body class="bg-white">
@@ -36,21 +36,22 @@
                         <!-- Left Column - Cart Items -->
                         <div class="lg:w-2/3">
                             <!-- Cart Header -->
-                            <div class="hidden md:grid grid-cols-12 gap-4 pb-4 mb-4 border-b border-gray-100">
-                                <div class="col-span-6 text-xs uppercase tracking-wider text-gray-500">Product</div>
+                            <div class="hidden md:grid grid-cols-12 gap-4 pb-4 mb-4 border-b border-gray-200">
+                                <div class="col-span-5 text-xs uppercase tracking-wider text-gray-500">Product</div>
                                 <div class="col-span-2 text-xs uppercase tracking-wider text-gray-500">Color</div>
                                 <div class="col-span-1 text-xs uppercase tracking-wider text-gray-500">Size</div>
                                 <div class="col-span-2 text-xs uppercase tracking-wider text-gray-500">Quantity</div>
                                 <div class="col-span-1 text-xs uppercase tracking-wider text-gray-500 text-right">Price
                                 </div>
+                                <div class="col-span-1 text-xs uppercase tracking-wider text-gray-500 text-right"></div>
                             </div>
 
                             <!-- Cart Items -->
-                            <div class="space-y-8">
+                            <div class="space-y-6">
                                 <!-- Item 1 -->
                                 <div
-                                    class="cart-item grid grid-cols-12 gap-4 items-center py-4 border-b border-gray-100">
-                                    <div class="col-span-6 flex items-center">
+                                    class="cart-item grid grid-cols-12 gap-4 items-center py-6 border-b border-gray-200">
+                                    <div class="col-span-5 flex items-center">
                                         <div class="w-24 h-24 bg-gray-50 mr-4">
                                             <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80"
                                                 alt="Oversized Blazer" class="w-full h-full object-cover">
@@ -60,23 +61,27 @@
                                             <p class="text-gray-500 text-sm mt-1">MONOCHROME</p>
                                         </div>
                                     </div>
-                                    <div class="col-span-2">
-                                        <div class="w-4 h-4 rounded-full bg-black"></div>
-                                        <span class="text-xs text-gray-500 ml-2">Black</span>
+                                    <div class="col-span-2 flex items-center">
+                                        <div class="w-4 h-4 rounded-full bg-black mr-2"></div>
+                                        <span class="text-sm">Black</span>
                                     </div>
                                     <div class="col-span-1">
                                         <span class="text-sm">M</span>
                                     </div>
                                     <div class="col-span-2">
-                                        <div class="quantity-selector flex items-center w-20">
-                                            <button class="px-2 py-1 text-gray-500">-</button>
-                                            <span class="flex-1 text-center">1</span>
-                                            <button class="px-2 py-1 text-gray-500">+</button>
+                                        <div class="quantity-selector flex items-center border border-gray-200 w-20">
+                                            <button class="px-2 py-1 text-gray-500 hover:bg-gray-100"
+                                                onclick="updateQuantity(this, -1)">-</button>
+                                            <span class="flex-1 text-center quantity-value">1</span>
+                                            <button class="px-2 py-1 text-gray-500 hover:bg-gray-100"
+                                                onclick="updateQuantity(this, 1)">+</button>
                                         </div>
                                     </div>
                                     <div class="col-span-1 text-right">
                                         <span class="font-medium">$89.99</span>
-                                        <button class="remove-btn block text-xs text-gray-400 mt-1 hover:text-gray-600">
+                                    </div>
+                                    <div class="col-span-1 text-right">
+                                        <button class="remove-btn text-gray-400 hover:text-gray-600 text-sm">
                                             <i class="far fa-trash-alt mr-1"></i> Remove
                                         </button>
                                     </div>
@@ -84,8 +89,8 @@
 
                                 <!-- Item 2 -->
                                 <div
-                                    class="cart-item grid grid-cols-12 gap-4 items-center py-4 border-b border-gray-100">
-                                    <div class="col-span-6 flex items-center">
+                                    class="cart-item grid grid-cols-12 gap-4 items-center py-6 border-b border-gray-200">
+                                    <div class="col-span-5 flex items-center">
                                         <div class="w-24 h-24 bg-gray-50 mr-4">
                                             <img src="https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80"
                                                 alt="Silk Slip Dress" class="w-full h-full object-cover">
@@ -95,23 +100,27 @@
                                             <p class="text-gray-500 text-sm mt-1">MONOCHROME</p>
                                         </div>
                                     </div>
-                                    <div class="col-span-2">
-                                        <div class="w-4 h-4 rounded-full bg-stone-200"></div>
-                                        <span class="text-xs text-gray-500 ml-2">Ivory</span>
+                                    <div class="col-span-2 flex items-center">
+                                        <div class="w-4 h-4 rounded-full bg-stone-200 mr-2"></div>
+                                        <span class="text-sm">Ivory</span>
                                     </div>
                                     <div class="col-span-1">
                                         <span class="text-sm">S</span>
                                     </div>
                                     <div class="col-span-2">
-                                        <div class="quantity-selector flex items-center w-20">
-                                            <button class="px-2 py-1 text-gray-500">-</button>
-                                            <span class="flex-1 text-center">1</span>
-                                            <button class="px-2 py-1 text-gray-500">+</button>
+                                        <div class="quantity-selector flex items-center border border-gray-200 w-20">
+                                            <button class="px-2 py-1 text-gray-500 hover:bg-gray-100"
+                                                onclick="updateQuantity(this, -1)">-</button>
+                                            <span class="flex-1 text-center quantity-value">1</span>
+                                            <button class="px-2 py-1 text-gray-500 hover:bg-gray-100"
+                                                onclick="updateQuantity(this, 1)">+</button>
                                         </div>
                                     </div>
                                     <div class="col-span-1 text-right">
                                         <span class="font-medium">$129.99</span>
-                                        <button class="remove-btn block text-xs text-gray-400 mt-1 hover:text-gray-600">
+                                    </div>
+                                    <div class="col-span-1 text-right">
+                                        <button class="remove-btn text-gray-400 hover:text-gray-600 text-sm">
                                             <i class="far fa-trash-alt mr-1"></i> Remove
                                         </button>
                                     </div>
@@ -119,8 +128,8 @@
 
                                 <!-- Item 3 -->
                                 <div
-                                    class="cart-item grid grid-cols-12 gap-4 items-center py-4 border-b border-gray-100">
-                                    <div class="col-span-6 flex items-center">
+                                    class="cart-item grid grid-cols-12 gap-4 items-center py-6 border-b border-gray-200">
+                                    <div class="col-span-5 flex items-center">
                                         <div class="w-24 h-24 bg-gray-50 mr-4">
                                             <img src="https://images.unsplash.com/photo-1595341888016-a392ef81b7de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80"
                                                 alt="Wide Leg Trousers" class="w-full h-full object-cover">
@@ -130,23 +139,27 @@
                                             <p class="text-gray-500 text-sm mt-1">MONOCHROME</p>
                                         </div>
                                     </div>
-                                    <div class="col-span-2">
-                                        <div class="w-4 h-4 rounded-full bg-black"></div>
-                                        <span class="text-xs text-gray-500 ml-2">Black</span>
+                                    <div class="col-span-2 flex items-center">
+                                        <div class="w-4 h-4 rounded-full bg-black mr-2"></div>
+                                        <span class="text-sm">Black</span>
                                     </div>
                                     <div class="col-span-1">
                                         <span class="text-sm">M</span>
                                     </div>
                                     <div class="col-span-2">
-                                        <div class="quantity-selector flex items-center w-20">
-                                            <button class="px-2 py-1 text-gray-500">-</button>
-                                            <span class="flex-1 text-center">1</span>
-                                            <button class="px-2 py-1 text-gray-500">+</button>
+                                        <div class="quantity-selector flex items-center border border-gray-200 w-20">
+                                            <button class="px-2 py-1 text-gray-500 hover:bg-gray-100"
+                                                onclick="updateQuantity(this, -1)">-</button>
+                                            <span class="flex-1 text-center quantity-value">1</span>
+                                            <button class="px-2 py-1 text-gray-500 hover:bg-gray-100"
+                                                onclick="updateQuantity(this, 1)">+</button>
                                         </div>
                                     </div>
                                     <div class="col-span-1 text-right">
                                         <span class="font-medium">$79.99</span>
-                                        <button class="remove-btn block text-xs text-gray-400 mt-1 hover:text-gray-600">
+                                    </div>
+                                    <div class="col-span-1 text-right">
+                                        <button class="remove-btn text-gray-400 hover:text-gray-600 text-sm">
                                             <i class="far fa-trash-alt mr-1"></i> Remove
                                         </button>
                                     </div>
@@ -163,7 +176,7 @@
 
                         <!-- Right Column - Order Summary -->
                         <div class="lg:w-1/3">
-                            <div class="summary-card bg-white p-6">
+                            <div class="summary-card border border-gray-200 bg-white p-6">
                                 <h2 class="heading-font text-xl font-light mb-6">Order Summary</h2>
 
                                 <!-- Order Details -->
@@ -181,7 +194,7 @@
                                         <span class="text-sm">$26.40</span>
                                     </div>
 
-                                    <div class="divider border-t my-4"></div>
+                                    <div class="border-t border-gray-200 my-4"></div>
 
                                     <div class="flex justify-between">
                                         <span class="font-medium">Total</span>
@@ -202,24 +215,16 @@
                                 </div>
 
                                 <!-- Checkout Button -->
-                                <button class="btn-checkout w-full bg-black text-white py-3 mt-6 font-medium">
+                                <button
+                                    class="btn-checkout w-full bg-black text-white py-3 mt-6 font-medium hover:bg-gray-800 transition-colors">
                                     PROCEED TO CHECKOUT
                                 </button>
 
-                                <!-- Payment Methods -->
-                                <div class="mt-6 text-center">
-                                    <p class="text-xs text-gray-500 mb-2">We accept</p>
-                                    <div class="flex justify-center space-x-4">
-                                        <i class="fab fa-cc-visa text-gray-400"></i>
-                                        <i class="fab fa-cc-mastercard text-gray-400"></i>
-                                        <i class="fab fa-cc-amex text-gray-400"></i>
-                                        <i class="fab fa-cc-paypal text-gray-400"></i>
-                                    </div>
-                                </div>
+
                             </div>
 
                             <!-- Customer Service -->
-                            <div class="mt-6 p-6 bg-gray-50">
+                            <div class="mt-6 p-6 bg-gray-50 border border-gray-200">
                                 <h3 class="heading-font font-medium text-sm mb-3">NEED HELP?</h3>
                                 <p class="text-xs text-gray-500 mb-3">Our customer service is available to assist you
                                     with any questions about your order.</p>
@@ -233,6 +238,35 @@
 
                 <!-- Footer -->
                 <jsp:include page="../layout/footer.jsp" />
+
+                <script>
+                    // Function to update quantity
+                    function updateQuantity(button, change) {
+                        const quantityContainer = button.closest('.quantity-selector');
+                        const quantityElement = quantityContainer.querySelector('.quantity-value');
+                        let currentQuantity = parseInt(quantityElement.textContent);
+                        currentQuantity += change;
+
+                        // Ensure quantity doesn't go below 1
+                        if (currentQuantity < 1) currentQuantity = 1;
+
+                        quantityElement.textContent = currentQuantity;
+
+                        // Here you would typically update the cart total via AJAX
+                        // updateCartTotal();
+                    }
+
+                    // Function to remove item
+                    document.querySelectorAll('.remove-btn').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const item = this.closest('.cart-item');
+                            item.remove();
+
+                            // Here you would typically update the cart via AJAX
+                            // updateCartAfterRemoval();
+                        });
+                    });
+                </script>
             </body>
 
             </html>

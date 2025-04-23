@@ -28,7 +28,15 @@ body {
 .nav-link:hover::after {
     width: 100%;
 }
+.dropdown-toggle::after {
+    display: none !important; /* Ẩn mũi tên dropdown mặc định */
+}
 
+.dropdown-menu {
+    margin-top: 10px !important;
+    border: 1px solid rgba(0,0,0,.15) !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
 
 
 .collection-hover:hover .collection-overlay {

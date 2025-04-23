@@ -20,7 +20,7 @@
 
             <body class="h-screen flex flex-col">
                 <!-- Main Content -->
-                <div class="flex flex-1">
+                <div class="flex flex-1 flex-row min-h-screen w-full overflow-hidden">
                     <!-- Left Side - Fashion Image -->
                     <div class="hidden md:block w-1/2 h-full overflow-hidden">
                         <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1924&q=80"
@@ -77,14 +77,14 @@
                                         <span class="px-2 bg-white text-gray-500">OR</span>
                                     </div>
                                 </div>
-
                                 <button type="button"
-                                    class="google-btn w-full py-3 border border-gray-200 rounded-sm flex items-center justify-center transition-all duration-300">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                                    class="google-btn w-full py-3 border border-gray-200 rounded-sm flex items-center justify-center transition-all duration-300 bg-red-500 text-white">
+                                    <img src="../../../../resources/assets/client/images/google-brands.svg"
                                         alt="Google Logo" class="w-4 h-4 mr-2">
                                     <a href="/oauth2/authorization/google"><span class="text-sm">Sign in with
                                             Google</span></a>
                                 </button>
+
                                 <div class="text-center mt-6">
                                     <p class="text-xs text-gray-500">Don't have an account? <a href="/register"
                                             class="text-black hover:underline">Sign Up</a></p>

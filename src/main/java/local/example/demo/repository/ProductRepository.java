@@ -20,4 +20,12 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     // get product by supplierId
     @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.supplier s WHERE s.supplierId = :supplierId")
     List<Product> findProductsBySupplierId(Integer supplierId);
+
+    // get product type=1 - men
+    @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.supplier s WHERE p.type = true")
+    List<Product> findProductsByTypeMen();
+
+    // get product type=0 - women
+    @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.supplier s WHERE p.type = false")
+    List<Product> findProductsByTypeWomen();
 }

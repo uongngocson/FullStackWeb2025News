@@ -53,6 +53,10 @@ public class Product {
     @NotBlank(message = "Return policy cannot be blank")
     private String returnPolicy;
 
+    private String imageUrl;
+    private boolean type;
+    private Integer rating;
+
     // relationships
     @ManyToOne
     @JoinColumn(name = "supplier_id")

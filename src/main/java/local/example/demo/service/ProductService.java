@@ -14,7 +14,7 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     // get all product
-    public List<Product> findAllProduct() {
+    public List<Product> findAllProducts() {
         return productRepository.findAllProducts();
     }
 
@@ -36,5 +36,15 @@ public class ProductService {
     // get product by supplierId
     public List<Product> findProductsBySupplierId(Integer supplierId) {
         return productRepository.findProductsBySupplierId(supplierId);
+    }
+
+    // get product type men
+    public List<Product> findProductsByTypeMen() {
+        return productRepository.findProductsByTypeMen();
+    }
+
+    // get product type women
+    public List<Product> findProductsByTypeWomen() {
+        return productRepository.findProductsByTypeWomen();
     }
 }

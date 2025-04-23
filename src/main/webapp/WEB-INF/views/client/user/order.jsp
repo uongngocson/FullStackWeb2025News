@@ -29,7 +29,7 @@
                 <!-- Main Content Grid -->
                 <div class="grid checkout-grid gap-12 md:grid-cols-2">
                     <!-- Left Column - Billing & Shipping -->
-                    <div class="space-y-8">
+                    <div class="space-y-8 p-[40px]">
                         <!-- Contact Information -->
                         <section>
                             <h2 class="serif text-xl font-medium mb-6 pb-2 border-b border-gray-200">Contact Information

@@ -41,7 +41,7 @@ public class ProductMgrController {
     // get all product
     @ModelAttribute("products")
     public List<Product> populateProducts() {
-        return productService.findAllProduct();
+        return productService.findAllProducts();
     }
 
     // get all category
