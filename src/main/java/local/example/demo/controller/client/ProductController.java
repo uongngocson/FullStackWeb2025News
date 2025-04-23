@@ -5,15 +5,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/product/")
 public class ProductController {
 
-    @GetMapping("/item")
-    public String getProductItemPage() {
-        return "client/product/item";
+    @GetMapping("category")
+    public String getProductCategoryPage() {
+        return "client/product/category";
+    }
+    
+    @GetMapping("item-male")
+    public String getProductItemMalePage() {
+        return "client/product/item-male";
     }
 
-    @GetMapping("/detail")
+    @GetMapping("item-female")
+    public String getProductItemFemalePage() {
+        return "client/product/item-female";
+    }
+
+
+
+    @GetMapping("detail")
     public String getProductDetailPage() {
         return "client/product/detail";
     }
