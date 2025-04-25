@@ -9,8 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import local.example.demo.model.dto.RegisterDTO;
 import local.example.demo.model.entity.Account;
+import local.example.demo.model.entity.Cart;
 import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
+import local.example.demo.repository.CartDetailRepository;
+import local.example.demo.repository.CartRepository;
 import local.example.demo.repository.CustomerRepository;
 import local.example.demo.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
+    private final CartDetailRepository cartDetailRepository;
+    private final CartRepository cartRepository;
 
     @Transactional(readOnly = true)
     public List<Customer> findAllCustomers() {
@@ -69,6 +74,17 @@ public class CustomerService {
     public Customer getCustomerByAccount(Account account) {
         return customerRepository.findByAccount(account);
     }
+
+    // get cart detail count by cart
+    public int getCartDetailCountByCart(Customer customer) {
+        return cartDetailRepository.countByCart(customer.getCart());
+    }
+
+        // get cart by customer
+    public Cart getCartByCustomer(Customer customer) {
+        return cartRepository.findByCustomer(customer);
+    }
+
 
     // mapper registerDTO to customer
     public Customer mapRegisterDTOToCustomer(RegisterDTO registerDTO) {

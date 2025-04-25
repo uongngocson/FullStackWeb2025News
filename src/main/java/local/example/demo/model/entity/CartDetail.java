@@ -1,6 +1,6 @@
 package local.example.demo.model.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 
@@ -29,11 +29,15 @@ public class CartDetail {
     private Integer cartDetailId;
 
     // attributes
-    @NotBlank(message = "Quantity is required")
+    @NotNull(message = "Quantity cannot be null")
     private Integer quantity;
 
+    @NotNull(message = "Price cannot be null")
+    @Min(value = 0, message = "Price must be greater than or equal to 0")
+    private Double price;
+
     @NotNull(message = "Add date is required")
-    private Date addedDate;
+    private LocalDateTime addedDate;
 
     // relationships with cart
     @ManyToOne

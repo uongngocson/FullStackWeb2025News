@@ -53,8 +53,12 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         }
         Account account = accountService.getAccountByLoginName(authentication.getName());
         Customer customer = customerService.getCustomerByAccount(account);
+        session.setAttribute("customerId", customer.getCustomerId());
+        session.setAttribute("fullName", customer.getFirstName() + " " + customer.getLastName());
         session.setAttribute("email", customer.getEmail());
         session.setAttribute("avatar", customer.getImageUrl());
+        session.setAttribute("sum", customerService.getCartDetailCountByCart(customer));
+
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
 

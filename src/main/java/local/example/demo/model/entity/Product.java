@@ -1,6 +1,5 @@
 package local.example.demo.model.entity;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -12,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -38,8 +36,8 @@ public class Product {
     private String description;
 
     @NotNull(message = "Price cannot be null")
-    @DecimalMin(value = "0.0", message = "Price must be greater than or equal to 0")
-    private BigDecimal price;
+    @Min(value = 0, message = "Price must be greater than or equal to 0")
+    private Double price;
 
     @NotNull(message = "Quantity in stock cannot be null")
     @Min(value = 0, message = "Quantity sold must be greater than or equal to 0")
@@ -75,4 +73,5 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<Review> review;
+
 }

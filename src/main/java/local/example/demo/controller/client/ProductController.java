@@ -6,8 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import local.example.demo.model.entity.Brand;
 import local.example.demo.model.entity.Category;
 import local.example.demo.model.entity.Color;
@@ -28,7 +32,6 @@ public class ProductController {
     private final SizeService sizeService;
     private final ColorService colorService;
     private final BrandService brandService;
-
 
     @GetMapping("category")
     public String getProductCategoryPage(Model model) {
@@ -63,7 +66,7 @@ public class ProductController {
     public List<Brand> getAllBrands() {
         return brandService.findAllBrands();
     }
-      
+
     @GetMapping("item-male")
     public String getProductItemMalePage(Model model) {
         model.addAttribute("products", productService.findProductsByTypeMen());
@@ -83,8 +86,6 @@ public class ProductController {
         model.addAttribute("brands", brandService.findAllBrands());
         return "client/product/item-female";
     }
-
-
 
     @GetMapping("detail")
     public String getProductDetailPage() {

@@ -134,10 +134,13 @@
 
                             <!-- Action Buttons -->
                             <div class="flex flex-col sm:flex-row gap-3 mb-8">
-                                <button
-                                    class="btn-primary flex-1 bg-black text-white py-3 font-medium hover:bg-gray-800">
-                                    <a href="cart.html"><i class="fas fa-shopping-cart mr-2"></i> ADD TO CART</a>
-                                </button>
+                                <form action="/product-variant/add-to-cart/${2}" method="post">
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                    <button
+                                        class="btn-primary flex-1 bg-black text-white py-3 font-medium hover:bg-gray-800">
+                                        <i class="fas fa-shopping-cart mr-2"></i> ADD TO CART
+                                    </button>
+                                </form>
                                 <button
                                     class="btn-secondary flex-1 bg-red-600 text-white py-3 font-medium hover:bg-red-700">
                                     BUY NOW

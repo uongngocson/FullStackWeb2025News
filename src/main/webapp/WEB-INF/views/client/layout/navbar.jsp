@@ -40,7 +40,7 @@
                                     class="text-sm ${pageContext.response.locale == 'vi' ? 'font-bold text-blue-600' : 'text-gray-600'}">VI</a>
                             </div>
                             <c:if test="${not empty pageContext.request.userPrincipal}">
-                                <a href="/cart" class="relative me-4 my-auto">
+                                <a href="/user/cart" class="relative me-4 my-auto">
                                     <i class="fa fa-shopping-bag fa-lg"></i>
                                     <span
                                         class="absolute -top-1 -right-2 bg-blue-200 rounded-full flex items-center justify-center text-dark px-1 h-5 w-5 text-xs"

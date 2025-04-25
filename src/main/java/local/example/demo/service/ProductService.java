@@ -3,6 +3,7 @@ package local.example.demo.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
 import local.example.demo.model.entity.Product;
 import local.example.demo.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
 
     private final ProductRepository productRepository;
+
 
     // get all product
     public List<Product> findAllProducts() {
@@ -47,4 +49,7 @@ public class ProductService {
     public List<Product> findProductsByTypeWomen() {
         return productRepository.findProductsByTypeWomen();
     }
+
+
+
 }
