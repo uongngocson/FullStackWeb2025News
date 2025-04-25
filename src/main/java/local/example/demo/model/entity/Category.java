@@ -25,10 +25,11 @@ import lombok.Setter;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Integer categoryId;
 
     // attributes
-    @Column(name = "CategoryName")
+    @Column(name = "category_name")
     @NotBlank(message = "Category name cannot be blank")
     private String categoryName;
 

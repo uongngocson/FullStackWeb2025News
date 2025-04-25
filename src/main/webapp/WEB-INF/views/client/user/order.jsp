@@ -14,6 +14,8 @@
                 <link rel="stylesheet"
                     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap">
                 <link rel="stylesheet" href="${ctx}/resources/assets/client/css/order.css">
+                <link rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
             </head>
 
             <body class="min-h-screen">
@@ -36,7 +38,12 @@
                             </h2>
                             <div class="space-y-4">
                                 <div>
-                                    <label for="fullName" class="block text-sm text-gray-600 mb-1">Full Name</label>
+                                    <label for="fullName" class="block text-sm text-gray-600 mb-1">First Name</label>
+                                    <input type="text" id="fullName" class="input-field w-full py-2 px-1 bg-transparent"
+                                        placeholder="John Smith">
+                                </div>
+                                <div>
+                                    <label for="fullName" class="block text-sm text-gray-600 mb-1">Last Name</label>
                                     <input type="text" id="fullName" class="input-field w-full py-2 px-1 bg-transparent"
                                         placeholder="John Smith">
                                 </div>
@@ -77,12 +84,6 @@
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="postalCode" class="block text-sm text-gray-600 mb-1">Postal
-                                            Code</label>
-                                        <input type="text" id="postalCode"
-                                            class="input-field w-full py-2 px-1 bg-transparent" placeholder="10001">
-                                    </div>
                                     <div>
                                         <label for="country" class="block text-sm text-gray-600 mb-1">Country</label>
                                         <select id="country" class="input-field w-full py-2 px-1 bg-transparent">
@@ -182,28 +183,22 @@
 
                             <!-- Cart Items -->
                             <div class="space-y-4 mb-6">
-                                <div class="flex items-center py-3 border-b border-gray-100">
-                                    <div class="w-16 h-16 bg-gray-100 mr-4"></div>
-                                    <div class="flex-1">
-                                        <h3 class="text-sm font-medium">Cashmere Sweater</h3>
-                                        <p class="text-xs text-gray-500">Black / L</p>
+                                <c:forEach var="item" items="${items}">
+                                    <div class="flex items-center py-3 border-b border-gray-100">
+                                        <div class="w-16 h-16 bg-gray-100 mr-4">
+                                            <img src="${item.variant.imageUrl}" alt="" />
+                                        </div>
+                                        <div class="flex-1">
+                                            <h3 class="text-sm font-medium">${item.variant.product.productName}</h3>
+                                            <p class="text-xs text-gray-500">${item.variant.color.colorName} / ${item.variant.size.sizeName}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm">${item.variant.product.price}</p>
+                                            <p class="text-xs text-gray-500">Qty: ${item.quantity}</p>
+                                        </div>
                                     </div>
-                                    <div class="text-right">
-                                        <p class="text-sm">$295.00</p>
-                                        <p class="text-xs text-gray-500">Qty: 1</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center py-3 border-b border-gray-100">
-                                    <div class="w-16 h-16 bg-gray-100 mr-4"></div>
-                                    <div class="flex-1">
-                                        <h3 class="text-sm font-medium">Silk Scarf</h3>
-                                        <p class="text-xs text-gray-500">Navy Blue</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-sm">$125.00</p>
-                                        <p class="text-xs text-gray-500">Qty: 2</p>
-                                    </div>
-                                </div>
+                                </c:forEach>
+
                             </div>
 
                             <!-- Promo Code -->

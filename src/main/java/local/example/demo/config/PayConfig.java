@@ -14,7 +14,7 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import jakarta.servlet.http.HttpServletRequest;
+
 
 public class PayConfig {
     

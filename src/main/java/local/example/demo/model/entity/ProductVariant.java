@@ -2,6 +2,7 @@ package local.example.demo.model.entity;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,19 +26,25 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class ProductVariant {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_variant_id")
     private Integer productVariantId;
 
     // attributes
     @NotBlank(message = "SKU is required")
+    @Column(name = "sku") // Matches the column name "sku" from the table
     private String SKU;
 
+    @Column(name = "image_url")
     private String imageUrl;
 
     @NotNull(message = "Size is required")
     @Min(value = 0, message = "Size must be greater than or equal to 0")
+    @Column(name = "quantity_stock") // Matches the column name "quantity_stock" from the table
     private Integer quantityStock;
 
     // relationships
@@ -61,5 +68,4 @@ public class ProductVariant {
     @JoinColumn(name = "color_id")
     @NotNull(message = "Color is required")
     private Color color;
-
 }

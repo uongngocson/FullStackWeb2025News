@@ -1,21 +1,31 @@
 package local.example.demo.controller.client;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import local.example.demo.model.entity.Brand;
-import local.example.demo.model.entity.Category;
-import local.example.demo.model.entity.Color;
-import local.example.demo.model.entity.Size;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import local.example.demo.model.entity.*;
+
 import local.example.demo.service.BrandService;
 import local.example.demo.service.CategoryService;
 import local.example.demo.service.ColorService;
 import local.example.demo.service.ProductService;
+import local.example.demo.service.ProductVariantService;
 import local.example.demo.service.SizeService;
 import lombok.RequiredArgsConstructor;
 
@@ -86,9 +96,61 @@ public class ProductController {
 
 
 
+    @Autowired
+    private ProductVariantService productVariantService;
+
     @GetMapping("detail")
-    public String getProductDetailPage() {
+    public String showProductDetail(@RequestParam("id") Integer productId, Model model) {
+        Product product = productService.findProductById(productId);
+        List<ProductVariant> variants = productVariantService.findVariantsByProductId(product.getProductId());
+
+        // Lọc các variant có hình ảnh
+        variants = variants.stream()
+                .filter(v -> v.getImageUrl() != null && !v.getImageUrl().isEmpty())
+                .collect(Collectors.toList());
+        System.out.println("variants size = " + variants.size());
+                for (ProductVariant v : variants) {
+                    System.out.println("Variant: " + v.getProductVariantId() + ", Color: " + v.getColor() + ", Size: " + v.getSize());
+                }
+                
+        Set<Color> colors = variants.stream()
+                .map(ProductVariant::getColor)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        Set<Size> sizes = variants.stream()
+                .map(ProductVariant::getSize)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+                List<Map<String, Object>> variantDTOs = variants.stream().map(v -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("productVariantId", v.getProductVariantId());
+                map.put("color", Map.of(
+                        "colorId", v.getColor().getColorId(),
+                        "name", v.getColor().getColorName(),
+                        "hex", v.getColor().getColorHex()
+                ));
+                map.put("size", Map.of(
+                        "sizeId", v.getSize().getSizeId(),
+                        "name", v.getSize().getSizeName()
+                ));
+                return map;
+            }).collect(Collectors.toList());
+            ObjectMapper mapper = new ObjectMapper();
+            String variantsJson = "";
+            try {
+                variantsJson = mapper.writeValueAsString(variantDTOs);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+        model.addAttribute("product", product);
+        model.addAttribute("variants", variants);
+        model.addAttribute("colors", colors);
+        model.addAttribute("sizes", sizes);
+        model.addAttribute("variantsJson", variantsJson); // Add this line
+
         return "client/product/detail";
     }
-
 }

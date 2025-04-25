@@ -86,7 +86,7 @@
                                         </button>
                                     </div>
                                 </div>
-
+                                
                                 <!-- Item 2 -->
                                 <div
                                     class="cart-item grid grid-cols-12 gap-4 items-center py-6 border-b border-gray-200">

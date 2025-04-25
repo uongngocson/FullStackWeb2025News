@@ -2,9 +2,12 @@ package local.example.demo.service;
 
 import java.util.List;
 
+
 import org.springframework.stereotype.Service;
 import local.example.demo.model.entity.Product;
+import local.example.demo.model.entity.ProductVariant;
 import local.example.demo.repository.ProductRepository;
+import local.example.demo.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -12,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductVariantRepository productVariantRepository ;
+
 
     // get all product
     public List<Product> findAllProducts() {
@@ -47,4 +52,9 @@ public class ProductService {
     public List<Product> findProductsByTypeWomen() {
         return productRepository.findProductsByTypeWomen();
     }
+    public List<ProductVariant> findVariantsByProductId(Integer productId) {
+        return productVariantRepository.findByProduct_ProductId(productId);
+    }
+
+    
 }

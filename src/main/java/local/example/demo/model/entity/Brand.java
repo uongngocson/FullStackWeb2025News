@@ -2,6 +2,7 @@ package local.example.demo.model.entity;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,10 +25,12 @@ import lombok.Setter;
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "brand_id")
     private Integer brandId;
 
     // attributes
     @NotBlank(message = "Brand name cannot be blank")
+    @Column(name = "brand_name")
     private String brandName;
 
     // relationships

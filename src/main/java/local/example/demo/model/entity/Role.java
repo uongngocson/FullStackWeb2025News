@@ -2,6 +2,7 @@ package local.example.demo.model.entity;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,10 +24,12 @@ import lombok.Setter;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="role_id")
     private Integer roleId;
 
     // attributes
     @NotBlank(message = "Role name is required")
+    @Column(name="role_name")
     private String roleName;
 
     // relationships

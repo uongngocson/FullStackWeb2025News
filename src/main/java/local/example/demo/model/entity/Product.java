@@ -30,32 +30,36 @@ import lombok.Setter;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id") 
     private Integer productId;
-
+    @Column(name = "product_name")
     @NotBlank(message = "Product name cannot be blank")
     private String productName;
-
+    @Column(name = "description")
     private String description;
-
+    @Column(name = "price")
     @NotNull(message = "Price cannot be null")
     @DecimalMin(value = "0.0", message = "Price must be greater than or equal to 0")
     private BigDecimal price;
-
+    @Column(name = "quantity_sold")
     @NotNull(message = "Quantity in stock cannot be null")
     @Min(value = 0, message = "Quantity sold must be greater than or equal to 0")
     private Integer quantitySold;
 
-    @Column(name = "Warranty")
+    @Column(name = "warranty")
     @NotBlank(message = "Warranty cannot be blank")
     private String warranty;
 
-    @Column(name = "ReturnPolicy")
+    @Column(name = "return_policy")
     @NotBlank(message = "Return policy cannot be blank")
     private String returnPolicy;
-
+    @Column(name = "image_url")
     private String imageUrl;
-    private boolean type;
+    @Column(name = "rating")
     private Integer rating;
+    
+    @Column(name = "type")
+    private Boolean type;
 
     // relationships
     @ManyToOne
@@ -75,4 +79,5 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<Review> review;
+
 }

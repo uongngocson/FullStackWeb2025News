@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,31 +33,41 @@ import lombok.Setter;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private Integer customerId;
 
     // attributes
+    @Column(name = "first_name")
     private String firstName;
 
+    @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "phone")
     private String phone;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
+    @Column(name = "email")
     private String email;
 
     // @Past(message = "Date of birth must be in the past")
     // @NotNull(message = "Date of birth is required")
     // @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "registration_date")
     private LocalDate registrationDate = LocalDate.now();
 
+    @Column(name = "gender")
     private boolean gender;
 
+    @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "status")
     private boolean status = true;
 
     // relationships
@@ -82,5 +93,4 @@ public class Customer {
             return null;
         return Date.from(this.registrationDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
-
 }
