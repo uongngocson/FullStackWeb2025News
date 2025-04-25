@@ -1,8 +1,8 @@
 package local.example.demo.model.entity;
 
-import java.util.List;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
 @Entity
 @Table(name = "Colors")
@@ -20,22 +21,20 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Color {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "color_id")
     private Integer colorId;
 
-    // attributes
     @NotBlank(message = "Color name cannot be blank")
+    @Column(name = "color_name")
     private String colorName;
 
-    // relationship with ProductVariant
-    @OneToMany(mappedBy = "color")
-    private List<ProductVariant> productVariants;
-
     @NotBlank(message = "Color hex cannot be blank")
+    @Column(name = "color_hex")
     private String colorHex;
 
-
+    @OneToMany(mappedBy = "color", fetch = FetchType.LAZY)
+    private List<ProductVariant> productVariants;
 }

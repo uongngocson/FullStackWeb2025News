@@ -18,5 +18,8 @@ public class HomeController {
     public String getAboutPage() {
         return "client/about";
     }
-    
+    @GetMapping("/orderSuccess")
+    public String oc(){
+        return "client/orderSuccess";
+    }
 }

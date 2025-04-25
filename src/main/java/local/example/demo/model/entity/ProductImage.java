@@ -1,6 +1,8 @@
 package local.example.demo.model.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,16 +23,16 @@ import lombok.Setter;
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_image_id")
     private Integer productImageId;
 
-    // attributes
+    @Column(name = "image_url")
     private String imageUrl;
 
-    // image default
+    @Column(name = "priority", nullable = false)
     private boolean priority = false;
 
-    // relationship
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 }

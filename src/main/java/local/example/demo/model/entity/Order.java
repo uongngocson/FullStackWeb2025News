@@ -2,7 +2,10 @@ package local.example.demo.model.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,34 +29,36 @@ import lombok.Setter;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private String orderId;
 
-    // attributes
     @NotNull(message = "Order date is required")
+    @Column(name = "order_date")
     private LocalDateTime orderDate;
 
     @NotNull(message = "Total amount is required")
     @Min(value = 0, message = "Total amount must be non-negative")
+    @Column(name = "total_amount")
     private BigDecimal totalAmount;
 
     @NotBlank(message = "Order status is required")
+    @Column(name = "order_status")
     private String orderStatus;
 
-    // relationship
-    @ManyToOne
+    @Column(name = "payment_status")
+    private String paymentStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_address_id")
     @NotNull(message = "Shipping address is required")
     private Address shippingAddress;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     @NotNull(message = "Payment is required")
     private Payment payment;
 
-    private String paymentStatus;
-
-    // relationship with Customer
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     @NotNull(message = "Customer is required")
     private Customer customer;

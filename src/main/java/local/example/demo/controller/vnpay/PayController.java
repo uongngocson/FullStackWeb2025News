@@ -16,20 +16,22 @@ import java.util.TimeZone;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import local.example.demo.config.PayConfig;
 
 @Controller
 @RequestMapping("/api/payment")
 public class PayController {
     @GetMapping("/create_payment")
-    public String createPayment() throws UnsupportedEncodingException{
+    public String createPayment(@RequestParam("amount") long amount) throws UnsupportedEncodingException{
 
         // long amount = Integer.parseInt(req.getParameter("amount"))*100;
         String vnp_TxnRef = PayConfig.getRandomNumber(8);
         // String vnp_IpAddr = PayConfig.getIpAddress(req);
 
         String vnp_TmnCode = PayConfig.vnp_TmnCode;
-        long amount =20000*100;
+        amount =amount*100;
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", PayConfig.vnp_Version);
         vnp_Params.put("vnp_Command", PayConfig.vnp_Command);

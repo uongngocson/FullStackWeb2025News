@@ -1,5 +1,7 @@
 package local.example.demo.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import local.example.demo.model.dto.RegisterDTO;
 import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Cart;
+import local.example.demo.model.entity.CartDetail;
 import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
+import local.example.demo.model.entity.ProductVariant;
 import local.example.demo.repository.CartDetailRepository;
 import local.example.demo.repository.CartRepository;
 import local.example.demo.repository.CustomerRepository;
@@ -94,6 +98,42 @@ public class CustomerService {
         customer.setEmail(registerDTO.getEmail());
         customer.setPhone(registerDTO.getPhoneNumber());
         return customer;
+    }
+    @Transactional
+    public void addToCart(Customer customer, ProductVariant variant, int quantity) {
+        Cart cart = getCartByCustomer(customer);
+
+        // Nếu khách hàng chưa có giỏ hàng, tạo mới
+        if (cart == null) {
+            cart = new Cart();
+            cart.setCustomer(customer);
+            cart.setCartDetails(new ArrayList<>());
+            cartRepository.save(cart);
+            customer.setCart(cart);
+        }
+
+        // Tìm xem cart đã có sản phẩm này chưa
+        CartDetail existingDetail = cart.getCartDetails().stream()
+            .filter(cd -> cd.getProductVariant().getProductVariantId().equals(variant.getProductVariantId()))
+            .findFirst()
+            .orElse(null);
+
+        if (existingDetail != null) {
+            // Nếu đã có, tăng số lượng
+            existingDetail.setQuantity(existingDetail.getQuantity() + quantity);
+        } else {
+            // Nếu chưa có, tạo mới CartDetail
+            CartDetail newDetail = new CartDetail();
+            newDetail.setCart(cart);
+            newDetail.setProductVariant(variant);
+            newDetail.setQuantity(quantity);
+            newDetail.setAddedDate(LocalDateTime.now()); // hoặc ZonedDateTime if needed
+            newDetail.setPrice(variant.getProduct().getPrice()); // hoặc variant.getPrice() nếu có giá riêng
+
+            cart.getCartDetails().add(newDetail);
+        }
+
+        cartRepository.save(cart); // hoặc cartDetailRepository.save(...) nếu cần
     }
 
 }

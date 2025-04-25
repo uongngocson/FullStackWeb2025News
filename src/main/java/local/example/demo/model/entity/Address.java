@@ -25,19 +25,19 @@ public class Address {
     private Integer addressId;
 
     // attributes
-    @NotBlank(message = "Street is required")
+
     private String street;
 
-    @NotBlank(message = "Ward is required")
+    
     private String ward;
 
-    @NotBlank(message = "District is required")
+
     private String district;
 
-    @NotBlank(message = "Province is required")
+    
     private String province;
 
-    @NotBlank(message = "City is required")
+
     private String city;
 
     // relationship

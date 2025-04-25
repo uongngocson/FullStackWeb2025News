@@ -57,3 +57,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+document.getElementById("checkoutForm").addEventListener("submit", function (e) {
+    const requiredFields = [
+        "firstName", "lastName", "email", "phone",
+        "street", "city", "district", "country"
+    ];
+
+    let isValid = true;
+    let firstEmpty = null;
+
+    for (let id of requiredFields) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            isValid = false;
+            el.classList.add("border-red-500");
+            if (!firstEmpty) firstEmpty = el;
+        } else {
+            el.classList.remove("border-red-500");
+        }
+    }
+
+    if (!isValid) {
+        e.preventDefault();
+        alert("Vui lòng điền đầy đủ thông tin trước khi đặt hàng.");
+        firstEmpty?.focus();
+    }
+});

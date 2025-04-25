@@ -124,29 +124,32 @@
                                 <!-- Action Buttons -->
                                 <div class="flex flex-col sm:flex-row gap-3 mb-8">
                                     <!-- Nút ADD TO CART -->
-                                    <c:set var="productId" value="${product.productId}" />
-                                    <form action="/product-variant/add-to-cart/${productId}" method="post">
+                                    <form id="buyNowForm" action="/user/product-variant/add-to-cart" method="post" class="flex-1">
                                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                                        <button
-                                            class="btn-primary flex-1 bg-black text-white py-3 font-medium hover:bg-gray-800">
+                                        
+                                        <!-- 👇 Hidden input để chứa variant đã chọn -->
+                                        <input type="hidden" id="variantIdForCart" name="productVariantId" value=""/>
+                                        
+                                        <!-- 👇 Hidden quantity input -->
+                                        <input type="hidden" id="quantityInput" name="quantity" value="1" />
+                                    
+                                        <button class="w-full btn-primary bg-black text-white py-3 font-medium hover:bg-gray-800">
                                             <i class="fas fa-shopping-cart mr-2"></i> ADD TO CART
                                         </button>
                                     </form>
-                                    <button
-                                        class="btn-secondary flex-1 bg-red-600 text-white py-3 font-medium hover:bg-red-700">
-                                        BUY NOW
-                                    </button>
-
-                                    <!-- Form chứa nút BUY NOW -->
+                                    
+                                    <!-- Nút BUY NOW -->
                                     <form action="/user/order" method="get" id="buyNowForm" class="flex-1">
-                                        <input type="hidden" name="variantId" id="selectedVariantId" />
+                                        <input type="hidden" id="variantIdForBuyNow" name="variantId" value=""/>
                                         <input type="hidden" name="quantity" id="quantityInput" value="1" />
+          
                                         <button type="submit"
-                                            class="btn-secondary w-full bg-red-600 text-white py-3 font-medium hover:bg-red-700">
+                                            class="w-full btn-secondary bg-red-600 text-white py-3 font-medium hover:bg-red-700">
                                             <i class="fas fa-credit-card mr-2"></i> BUY NOW
                                         </button>
                                     </form>
                                 </div>
+                                
 
 
                                 <!-- Wishlist & Share -->
@@ -188,7 +191,7 @@
                                 <h3 class="text-sm font-medium mb-4 uppercase tracking-wider">Description</h3>
                                 <div class="prose max-w-none">
                                     <p class="text-sm mb-4">${product.description}
-                                    <pre>${variantsJson}</pre>
+                                    
 
                                     </p>
 
@@ -248,9 +251,14 @@
                                     v.color.colorId == selectedColorId && v.size.sizeId == selectedSizeId
                                 );
                                 if (found) {
-                                    document.getElementById('selectedVariantId').value = found.productVariantId;
-                                    console.log("Selected variant ID:", found.productVariantId);
-                                } else {
+                                    const variantId = found.productVariantId;
+                                    const inputCart = document.getElementById('variantIdForCart');
+                                    const inputBuyNow = document.getElementById('variantIdForBuyNow');
+                                    if (inputCart) inputCart.value = variantId;
+                                    if (inputBuyNow) inputBuyNow.value = variantId;
+                                    console.log("Selected variant ID set to:", variantId);
+                                }
+                                else {
                                     alert("Tổ hợp size & màu này không có sẵn!");
                                 }
                             }
@@ -259,16 +267,19 @@
                         }
 
                         document.getElementById('buyNowForm').addEventListener('submit', function (e) {
-                            updateSelectedVariant(); // GỌI BẮT BUỘC
+                            updateSelectedVariant();
 
-                            const variantInput = document.getElementById('selectedVariantId');
-                            console.log("Variant to submit:", variantInput.value);
+                            const variantInput = document.getElementById('variantIdForBuyNow');
+                            const colorSelected = document.querySelector('.color-option.selected');
+                            const sizeSelected = document.querySelector('.size-option.selected');
 
-                            if (!variantInput.value) {
+                            if (!colorSelected || !sizeSelected || !variantInput.value) {
                                 e.preventDefault();
-                                alert('Vui lòng chọn đầy đủ màu sắc và kích thước!');
+                                alert('❗ Vui lòng chọn đầy đủ *màu sắc* và *kích thước* trước khi mua hàng!');
                             }
                         });
+
+
 
                     </script>
                 </body>

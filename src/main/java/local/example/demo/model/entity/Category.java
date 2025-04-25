@@ -1,7 +1,5 @@
 package local.example.demo.model.entity;
 
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
 @Entity
 @Table(name = "Categories")
@@ -25,13 +24,13 @@ import lombok.Setter;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Integer categoryId;
 
-    // attributes
     @NotBlank(message = "Category name cannot be blank")
+    @Column(name = "category_name")
     private String categoryName;
 
-    // relationships
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> products;
 }
