@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import local.example.demo.model.entity.Account;
-import java.util.List;
 
 
 @Repository

@@ -34,4 +34,8 @@ public class Color {
     @OneToMany(mappedBy = "color")
     private List<ProductVariant> productVariants;
 
+    @NotBlank(message = "Color hex cannot be blank")
+    private String colorHex;
+
+
 }

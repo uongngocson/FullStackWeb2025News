@@ -25,12 +25,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Supplier {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer supplierId;
 
-    // attributes
     @NotBlank(message = "Supplier name cannot be blank")
     private String supplierName;
 
@@ -56,3 +54,4 @@ public class Supplier {
     @OneToMany(mappedBy = "supplier")
     private List<Product> products;
 }
+

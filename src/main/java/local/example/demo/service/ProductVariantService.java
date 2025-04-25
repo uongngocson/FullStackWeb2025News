@@ -1,5 +1,6 @@
 package local.example.demo.service;
 
+import java.util.List;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -24,6 +25,26 @@ public class ProductVariantService {
     private final CartDetailRepository cartDetailRepository;
 
 
+    public List<ProductVariant> findVariantsByProductId(Integer productId) {
+        return productVariantRepository.findByProduct_ProductId(productId);
+    }
+    
+    public ProductVariant findById(Integer id) {
+        return productVariantRepository.findById(id).orElse(null);
+    }
+
+    public void save(ProductVariant variant) {
+        productVariantRepository.save(variant);
+    }
+
+    public void deleteById(Integer id) {
+        productVariantRepository.deleteById(id);
+    }
+
+    public List<ProductVariant> findAll() {
+        return productVariantRepository.findAll();
+    }
+
         // handle add to cart
     public void handleAddToCart(String email, Integer productVariantId) {
         Customer customer = customerRepository.findByEmail(email);
@@ -47,11 +68,10 @@ public class ProductVariantService {
                 cartDetail.setAddedDate(LocalDateTime.now());
                 cartDetailRepository.save(cartDetail);
             } else {
-                cartDetail.setQuantity(cartDetail.getQuantity() + 1);
-                cartDetailRepository.save(cartDetail);
-            }
 
-            
+            }   
         }
     }
 }
+    
+

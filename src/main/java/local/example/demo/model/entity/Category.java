@@ -28,7 +28,6 @@ public class Category {
     private Integer categoryId;
 
     // attributes
-    @Column(name = "CategoryName")
     @NotBlank(message = "Category name cannot be blank")
     private String categoryName;
 

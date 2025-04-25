@@ -1,8 +1,8 @@
 package local.example.demo.model.entity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +29,6 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer productId;
-
     @NotBlank(message = "Product name cannot be blank")
     private String productName;
 
@@ -37,23 +36,26 @@ public class Product {
 
     @NotNull(message = "Price cannot be null")
     @Min(value = 0, message = "Price must be greater than or equal to 0")
-    private Double price;
+    private BigDecimal price;
 
     @NotNull(message = "Quantity in stock cannot be null")
     @Min(value = 0, message = "Quantity sold must be greater than or equal to 0")
     private Integer quantitySold;
 
-    @Column(name = "Warranty")
+
     @NotBlank(message = "Warranty cannot be blank")
     private String warranty;
 
-    @Column(name = "ReturnPolicy")
+
     @NotBlank(message = "Return policy cannot be blank")
     private String returnPolicy;
 
     private String imageUrl;
-    private boolean type;
+
     private Integer rating;
+    
+
+    private Boolean type;
 
     // relationships
     @ManyToOne

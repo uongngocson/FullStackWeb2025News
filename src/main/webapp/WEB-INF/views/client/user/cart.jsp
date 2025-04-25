@@ -8,7 +8,7 @@
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>MONOCHROME | Your Shopping Bag</title>
+                    <title>DDTS | Your Shopping Bag</title>
                     <c:set var="ctx" value="${pageContext.request.contextPath}" />
                     <script src="https://cdn.tailwindcss.com"></script>
                     <link rel="stylesheet"

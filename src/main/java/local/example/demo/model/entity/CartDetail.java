@@ -1,5 +1,6 @@
 package local.example.demo.model.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
@@ -34,7 +35,7 @@ public class CartDetail {
 
     @NotNull(message = "Price cannot be null")
     @Min(value = 0, message = "Price must be greater than or equal to 0")
-    private Double price;
+    private BigDecimal price;
 
     @NotNull(message = "Add date is required")
     private LocalDateTime addedDate;

@@ -2,9 +2,6 @@ package local.example.demo.model.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -53,7 +50,6 @@ public class Order {
     @NotNull(message = "Payment is required")
     private Payment payment;
 
-    @Column(name = "PaymentStatus")
     private String paymentStatus;
 
     // relationship with Customer
