@@ -67,8 +67,8 @@
                                 <!-- Cart Items -->
                                 <div class="space-y-6">
                                     <c:forEach items="${cartDetails}" var="item" varStatus="status">
-                                        <div
-                                            class="cart-item grid grid-cols-12 gap-4 items-center py-6 border-b border-gray-200">
+                                        <div class="cart-item grid grid-cols-12 gap-4 items-center py-6 border-b border-gray-200"
+                                            data-unit-price="${item.productVariant.product.price}">
                                             <div class="col-span-5 flex items-center">
                                                 <div class="w-24 h-24 bg-gray-50 mr-4">
                                                     <img src="${ctx}/${item.productVariant.imageUrl}"
@@ -98,16 +98,18 @@
                                                     <button class="px-2 py-1 text-gray-500 hover:bg-gray-100"
                                                         onclick="updateQuantity(this, -1)">-</button>
                                                     <span class="flex-1 text-center quantity-value"
-                                                        data-cart-detail-id="${cartDetail.id}"
-                                                        data-cart-detail-price="${cartDetail.price}"
+                                                        data-cart-detail-id="${item.cartDetailId}"
+                                                        data-cart-detail-price="${item.price}"
                                                         data-cart-detail-index="${status.index}">${item.quantity}</span>
                                                     <button class="px-2 py-1 text-gray-500 hover:bg-gray-100"
                                                         onclick="updateQuantity(this, 1)">+</button>
                                                 </div>
                                             </div>
                                             <div class="col-span-1 text-right">
-                                                <span
-                                                    class="font-medium">$${item.quantity*item.productVariant.product.price}</span>
+
+                                                <span class="font-medium item-total-price">
+                                                    $${item.quantity * item.productVariant.product.price}
+                                                </span>
                                             </div>
                                             <div class="col-span-1 text-right">
                                                 <button class="remove-btn text-gray-400 hover:text-gray-600 text-sm">
@@ -138,7 +140,7 @@
                                             <span class="text-sm text-gray-500">
                                                 <spring:message code="cart.subtotal" />
                                             </span>
-                                            <span class="text-sm"
+                                            <span class="text-sm" id="cart-subtotal"
                                                 data-cart-total-price="${totalPrice}">$${totalPrice}</span>
                                         </div>
                                         <div class="flex justify-between">
@@ -160,7 +162,7 @@
                                             <span class="font-medium">
                                                 <spring:message code="cart.total" />
                                             </span>
-                                            <span class="font-medium"
+                                            <span class="font-medium" id="cart-total"
                                                 data-cart-total-price="${totalPrice}">$${totalPrice}</span>
                                         </div>
                                     </div>
@@ -205,10 +207,38 @@
                     <jsp:include page="../layout/footer.jsp" />
 
                     <script>
+                        // Function to update cart totals
+                        function updateCartTotals() {
+                            let subtotal = 0;
+                            document.querySelectorAll('.cart-item').forEach(item => {
+                                const quantityElement = item.querySelector('.quantity-value');
+                                const unitPrice = parseFloat(item.dataset.unitPrice);
+                                const quantity = parseInt(quantityElement.textContent);
+                                if (!isNaN(unitPrice) && !isNaN(quantity)) {
+                                    subtotal += unitPrice * quantity;
+                                }
+                            });
+
+                            const subtotalElement = document.getElementById('cart-subtotal');
+                            const totalElement = document.getElementById('cart-total');
+
+                            if (subtotalElement) {
+                                subtotalElement.textContent = '$' + subtotal.toFixed(2); // Format to 2 decimal places
+                            }
+                            if (totalElement) {
+                                // Assuming shipping is free and no tax for now
+                                totalElement.textContent = '$' + subtotal.toFixed(2); // Format to 2 decimal places
+                            }
+                        }
+
                         // Function to update quantity
                         function updateQuantity(button, change) {
                             const quantityContainer = button.closest('.quantity-selector');
                             const quantityElement = quantityContainer.querySelector('.quantity-value');
+                            const cartItemElement = button.closest('.cart-item'); // Get the parent cart item
+                            const unitPrice = parseFloat(cartItemElement.dataset.unitPrice); // Get unit price
+                            const itemTotalPriceElement = cartItemElement.querySelector('.item-total-price'); // Get item total price element
+
                             let currentQuantity = parseInt(quantityElement.textContent);
                             currentQuantity += change;
 
@@ -217,19 +247,37 @@
 
                             quantityElement.textContent = currentQuantity;
 
-                            // Here you would typically update the cart total via AJAX
-                            // updateCartTotal();
+                            // Update the item's total price display
+                            if (itemTotalPriceElement && !isNaN(unitPrice)) {
+                                itemTotalPriceElement.textContent = '$' + (currentQuantity * unitPrice).toFixed(2);
+                            }
+
+                            // Update the cart total via AJAX or recalculate on client-side
+                            updateCartTotals();
+
+                            // TODO: Add AJAX call here to update the server-side cart
+                            // Example: sendUpdateRequest(itemId, currentQuantity);
                         }
 
                         // Function to remove item
                         document.querySelectorAll('.remove-btn').forEach(button => {
                             button.addEventListener('click', function () {
                                 const item = this.closest('.cart-item');
+                                const itemId = item.querySelector('.quantity-value').dataset.cartDetailId; // Get item ID if needed for AJAX
+
                                 item.remove();
 
-                                // Here you would typically update the cart via AJAX
-                                // updateCartAfterRemoval();
+                                // Update the cart total after removal
+                                updateCartTotals();
+
+                                // TODO: Add AJAX call here to remove the item from the server-side cart
+                                // Example: sendRemoveRequest(itemId);
                             });
+                        });
+
+                        // Initial calculation of totals when the page loads
+                        document.addEventListener('DOMContentLoaded', (event) => {
+                            updateCartTotals();
                         });
                     </script>
                 </body>

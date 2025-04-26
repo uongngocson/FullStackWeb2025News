@@ -125,24 +125,21 @@
                                 <div class="flex flex-col sm:flex-row gap-3 mb-8">
                                     <!-- Nút ADD TO CART -->
                                     <c:set var="productId" value="${product.productId}" />
-                                    <form action="/product-variant/add-to-cart/${productId}" method="post">
+                                    <form action="/product-variant/add-to-cart/${productId}" method="post"
+                                        class="flex-1">
                                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                                         <button
-                                            class="btn-primary flex-1 bg-black text-white py-3 font-medium hover:bg-gray-800">
+                                            class="w-full btn-primary bg-black text-white py-3 font-medium hover:bg-gray-800">
                                             <i class="fas fa-shopping-cart mr-2"></i> ADD TO CART
                                         </button>
                                     </form>
-                                    <button
-                                        class="btn-secondary flex-1 bg-red-600 text-white py-3 font-medium hover:bg-red-700">
-                                        BUY NOW
-                                    </button>
 
-                                    <!-- Form chứa nút BUY NOW -->
+                                    <!-- Nút BUY NOW -->
                                     <form action="/user/order" method="get" id="buyNowForm" class="flex-1">
                                         <input type="hidden" name="variantId" id="selectedVariantId" />
                                         <input type="hidden" name="quantity" id="quantityInput" value="1" />
                                         <button type="submit"
-                                            class="btn-secondary w-full bg-red-600 text-white py-3 font-medium hover:bg-red-700">
+                                            class="w-full btn-secondary bg-red-600 text-white py-3 font-medium hover:bg-red-700">
                                             <i class="fas fa-credit-card mr-2"></i> BUY NOW
                                         </button>
                                     </form>

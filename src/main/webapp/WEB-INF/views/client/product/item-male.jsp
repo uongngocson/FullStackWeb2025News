@@ -163,27 +163,46 @@
 
                 <!-- Pagination -->
                 <div class="mt-16 flex justify-center">
-                    <nav class="flex items-center gap-1">
-                        <a href="#" class="pagination-item w-10 h-10 flex items-center justify-center rounded-full">
-                            <i class="fa-solid fa-chevron-left text-xs"></i>
-                        </a>
-                        <a href="#"
-                            class="pagination-item active w-10 h-10 flex items-center justify-center rounded-full">1</a>
-                        <a href="#"
-                            class="pagination-item w-10 h-10 flex items-center justify-center rounded-full">2</a>
-                        <a href="#"
-                            class="pagination-item w-10 h-10 flex items-center justify-center rounded-full">3</a>
-                        <a href="#"
-                            class="pagination-item w-10 h-10 flex items-center justify-center rounded-full">4</a>
-                        <a href="#" class="pagination-item w-10 h-10 flex items-center justify-center rounded-full">
-                            <i class="fa-solid fa-chevron-right text-xs"></i>
-                        </a>
-                    </nav>
+                    <c:if test="${totalPages > 1}"> <%-- Only show pagination if there's more than one page --%>
+                            <nav aria-label="Page navigation">
+                                <ul class="flex items-center gap-1">
+                                    <%-- Previous Button --%>
+                                        <li>
+                                            <a href="${ctx}/product/item-male?page=${currentPage - 1}"
+                                                class="pagination-item w-10 h-10 flex items-center justify-center rounded-full ${currentPage <= 1 ? 'text-gray-400 pointer-events-none' : 'hover:bg-gray-100'}"
+                                                aria-label="Previous" ${currentPage <=1
+                                                ? 'tabindex="-1" aria-disabled="true"' : '' }>
+                                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                                            </a>
+                                        </li>
+
+                                        <%-- Page Numbers --%>
+                                            <c:forEach begin="1" end="${totalPages}" var="pageNumber">
+                                                <li>
+                                                    <a href="${ctx}/product/item-male?page=${pageNumber}"
+                                                        class="pagination-item w-10 h-10 flex items-center justify-center rounded-full ${pageNumber eq currentPage ? 'bg-black text-white font-semibold pointer-events-none' : 'hover:bg-gray-100'}">
+                                                        ${pageNumber}
+                                                    </a>
+                                                </li>
+                                            </c:forEach>
+
+                                            <%-- Next Button --%>
+                                                <li>
+                                                    <a href="${ctx}/product/item-male?page=${currentPage + 1}"
+                                                        class="pagination-item w-10 h-10 flex items-center justify-center rounded-full ${currentPage >= totalPages ? 'text-gray-400 pointer-events-none' : 'hover:bg-gray-100'}"
+                                                        aria-label="Next" ${currentPage>= totalPages ? 'tabindex="-1"
+                                                        aria-disabled="true"' : ''}>
+                                                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                                                    </a>
+                                                </li>
+                                </ul>
+                            </nav>
+                    </c:if>
                 </div>
                 <!-- Footer -->
                 <jsp:include page="../layout/footer.jsp" />
 
                 <!-- Scripts -->
-                </div>
+                </div> <%-- This closing div might be misplaced, check your original structure --%>
 
             </html>

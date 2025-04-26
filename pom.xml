@@ -118,6 +118,20 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-jpamodelgen -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>6.4.1.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.4</version>
+		</dependency>
+
     </dependencies>
 
     <build>
@@ -130,6 +144,7 @@
                     <mainClass>local.example.demo.DemoApplication</mainClass>
                 </configuration>
             </plugin>
+            
         </plugins>
     </build>
 </project>

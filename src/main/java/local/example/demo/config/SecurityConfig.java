@@ -66,7 +66,7 @@ public class SecurityConfig {
                         .permitAll()
 
                         .requestMatchers("/","/about", "/login", "/oauth2/**","/register","/register-auth","/resend-verification", "/product/**",
-                                "/resources/**")
+                                "/resources/**","/product/category")
                         .permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Ensure role is correctly defined

@@ -76,4 +76,7 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<Review> review;
 
+    @OneToMany(mappedBy = "product")
+    private List<ProductVariant> productVariant; // Đặt tên là "variants"
+
 }
