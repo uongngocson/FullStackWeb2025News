@@ -15,7 +15,5 @@ public class ProductImageService {
     
     public List<ProductImage> getAllProductImages() {
         return productImageRepository.findAll();
-    }
-
-    
+    }   
 }

@@ -77,6 +77,10 @@ public class Product {
     private List<Review> review;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductVariant> productVariant; // Đặt tên là "variants"
+    private List<ProductVariant> productVariant;
+
+    // Thêm mối quan hệ với ProductImage
+    @OneToMany(mappedBy = "product")
+    private List<ProductImage> productImages;
 
 }

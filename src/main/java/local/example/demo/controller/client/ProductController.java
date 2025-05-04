@@ -38,10 +38,13 @@ import local.example.demo.model.entity.Size;
 import local.example.demo.service.BrandService;
 import local.example.demo.service.CategoryService;
 import local.example.demo.service.ColorService;
+import local.example.demo.service.LibreTranslateService;
 import local.example.demo.service.ProductService;
 import local.example.demo.service.ProductVariantService;
 import local.example.demo.service.SizeService;
 import lombok.RequiredArgsConstructor;
+import local.example.demo.model.entity.ProductImage; // Thêm import
+import local.example.demo.service.ProductImageService; // Thêm import service ảnh
 
 @RequiredArgsConstructor
 @Controller
@@ -53,6 +56,9 @@ public class ProductController {
     private final ColorService colorService;
     private final BrandService brandService;
     private final ProductVariantService productVariantService;
+    private final ProductImageService productImageService; // Inject ProductImageService
+    private final LibreTranslateService translateService;
+
 
     @GetMapping("category")
     public String getProductCategoryPage(Model model,
@@ -204,19 +210,47 @@ public class ProductController {
 
 
      @GetMapping("detail")
-    public String showProductDetail(@RequestParam("id") Integer productId, Model model) {
-        Product product = productService.findProductById(productId);
-        List<ProductVariant> variants = productVariantService.findVariantsByProductId(product.getProductId());
+    public String showProductDetail(
+            @RequestParam("id") Integer productId,
+            @RequestParam(defaultValue = "en") String lang, // Default language is now 'en'
+            Model model) {
 
-        // Lọc các variant có hình ảnh
-        variants = variants.stream()
-                .filter(v -> v.getImageUrl() != null && !v.getImageUrl().isEmpty())
-                .collect(Collectors.toList());
-        System.out.println("variants size = " + variants.size());
-                for (ProductVariant v : variants) {
-                    System.out.println("Variant: " + v.getProductVariantId() + ", Color: " + v.getColor() + ", Size: " + v.getSize());
-                }
-                
+        Product product = productService.findProductById(productId);
+        if (product == null) {
+            return "redirect:/page-not-found";
+        }
+
+        // --- Translation Logic Update ---
+        // Ngôn ngữ gốc trong DB bây giờ là 'en'
+        String baseLang = "en";
+
+        // Chỉ thực hiện dịch nếu ngôn ngữ yêu cầu (lang) khác với ngôn ngữ gốc (baseLang)
+        if (!lang.equals(baseLang)) {
+            // Gọi service dịch với sourceLang là "en"
+            String translatedName = translateService.translate(product.getProductName(), baseLang, lang);
+            String translatedDesc = translateService.translate(product.getDescription(), baseLang, lang);
+
+            Map<String, String> translation = new HashMap<>();
+            translation.put("name", translatedName);
+            translation.put("description", translatedDesc);
+            model.addAttribute("translation", translation);
+        }
+        // --- End Translation Logic Update ---
+
+
+        List<ProductVariant> variants = productVariantService.findVariantsByProductId(product.getProductId());
+        // Lấy danh sách ảnh từ Product entity thay vì variant
+        List<ProductImage> productImages = product.getProductImages(); // Lấy ảnh theo productId
+
+        // Lọc các variant có hình ảnh (Phần này có thể không cần thiết nếu bạn hiển thị ảnh từ productImages)
+        // variants = variants.stream()
+        //         .filter(v -> v.getImageUrl() != null && !v.getImageUrl().isEmpty())
+        //         .collect(Collectors.toList());
+        // System.out.println("variants size = " + variants.size());
+        //         for (ProductVariant v : variants) {
+        //             System.out.println("Variant: " + v.getProductVariantId() + ", Color: " + v.getColor() + ", Size: " + v.getSize());
+        //         }
+
         Set<Color> colors = variants.stream()
                 .map(ProductVariant::getColor)
                 .filter(Objects::nonNull)
@@ -230,15 +264,20 @@ public class ProductController {
                 List<Map<String, Object>> variantDTOs = variants.stream().map(v -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("productVariantId", v.getProductVariantId());
-                map.put("color", Map.of(
-                        "colorId", v.getColor().getColorId(),
-                        "name", v.getColor().getColorName(),
-                        "hex", v.getColor().getColorHex()
-                ));
-                map.put("size", Map.of(
-                        "sizeId", v.getSize().getSizeId(),
-                        "name", v.getSize().getSizeName()
-                ));
+                // Kiểm tra null trước khi truy cập
+                if (v.getColor() != null) {
+                    map.put("color", Map.of(
+                            "colorId", v.getColor().getColorId(),
+                            "name", v.getColor().getColorName(),
+                            "hex", v.getColor().getColorHex()
+                    ));
+                }
+                if (v.getSize() != null) {
+                    map.put("size", Map.of(
+                            "sizeId", v.getSize().getSizeId(),
+                            "name", v.getSize().getSizeName()
+                    ));
+                }
                 return map;
             }).collect(Collectors.toList());
             ObjectMapper mapper = new ObjectMapper();
@@ -247,14 +286,16 @@ public class ProductController {
                 variantsJson = mapper.writeValueAsString(variantDTOs);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
+                variantsJson = "[]"; // Gán giá trị mặc định nếu có lỗi
             }
 
         model.addAttribute("product", product);
-        model.addAttribute("variants", variants);
+        model.addAttribute("variants", variants); // Có thể không cần nếu không dùng trực tiếp
         model.addAttribute("colors", colors);
         model.addAttribute("sizes", sizes);
-        model.addAttribute("variantsJson", variantsJson); // Add this line
-
+        model.addAttribute("variantsJson", variantsJson);
+        model.addAttribute("productImages", productImages); // Truyền danh sách ảnh sản phẩm
+        model.addAttribute("currentLang", lang);
         return "client/product/detail";
     }
 }

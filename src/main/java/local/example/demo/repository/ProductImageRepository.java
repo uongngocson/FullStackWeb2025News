@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository;
 import local.example.demo.model.entity.ProductImage;
 
 @Repository
-public interface ProductImageRepository extends JpaRepository<ProductImage, Integer> {
-
-    
+public interface ProductImageRepository extends JpaRepository<ProductImage, Integer> {    
 }

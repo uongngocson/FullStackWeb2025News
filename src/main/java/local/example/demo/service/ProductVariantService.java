@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpSession;
 import local.example.demo.model.entity.Cart;
 import local.example.demo.model.entity.CartDetail;
 import local.example.demo.model.entity.Customer;
@@ -70,6 +71,14 @@ public class ProductVariantService {
             } else {
 
             }   
+        }
+    }
+
+     public void handleRemoveCartDetail(Integer cartDetailId, HttpSession session) {
+        Optional<CartDetail> cartDetailOptional = this.cartDetailRepository.findById(cartDetailId);
+        if (cartDetailOptional.isPresent()) {
+            // delete cart-detail
+            this.cartDetailRepository.deleteById(cartDetailId);
         }
     }
 }

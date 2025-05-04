@@ -112,10 +112,16 @@
                                                 </span>
                                             </div>
                                             <div class="col-span-1 text-right">
-                                                <button class="remove-btn text-gray-400 hover:text-gray-600 text-sm">
-                                                    <i class="far fa-trash-alt mr-1"></i>
-                                                    <spring:message code="cart.remove" />
-                                                </button>
+                                                <form method="post"
+                                                    action="/user/delete-cart-product/${item.cartDetailId}">
+                                                    <input type="hidden" name="${_csrf.parameterName}"
+                                                        value="${_csrf.token}" />
+                                                    <button
+                                                        class="remove-btn text-gray-400 hover:text-gray-600 text-sm">
+                                                        <i class="far fa-trash-alt mr-1"></i>
+                                                        <spring:message code="cart.remove" />
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </c:forEach>
@@ -260,20 +266,20 @@
                         }
 
                         // Function to remove item
-                        document.querySelectorAll('.remove-btn').forEach(button => {
-                            button.addEventListener('click', function () {
-                                const item = this.closest('.cart-item');
-                                const itemId = item.querySelector('.quantity-value').dataset.cartDetailId; // Get item ID if needed for AJAX
+                        // document.querySelectorAll('.remove-btn').forEach(button => {
+                        //     button.addEventListener('click', function () {
+                        //         const item = this.closest('.cart-item');
+                        //         const itemId = item.querySelector('.quantity-value').dataset.cartDetailId; // Get item ID if needed for AJAX
 
-                                item.remove();
+                        //         item.remove();
 
-                                // Update the cart total after removal
-                                updateCartTotals();
+                        //         // Update the cart total after removal
+                        //         updateCartTotals();
 
-                                // TODO: Add AJAX call here to remove the item from the server-side cart
-                                // Example: sendRemoveRequest(itemId);
-                            });
-                        });
+                        //         // TODO: Add AJAX call here to remove the item from the server-side cart
+                        //         // Example: sendRemoveRequest(itemId);
+                        //     });
+                        // });
 
                         // Initial calculation of totals when the page loads
                         document.addEventListener('DOMContentLoaded', (event) => {
