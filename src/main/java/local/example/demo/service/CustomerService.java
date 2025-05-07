@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.hibernate.TransientObjectException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -216,4 +217,27 @@ public class CustomerService {
         account.setPassword(encodedNewPassword);
         accountRepository.save(account);
     }
+
+    public Customer fetchCurrentLoggedInCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            System.out.println("No authenticated user found");
+            return null;
+        }
+
+        String username = authentication.getName();
+        System.out.println("Authenticated username: " + username);
+
+        // Tìm Customer trực tiếp dựa trên loginName
+        Customer customer = customerRepository.findByAccountLoginName(username);
+        if (customer == null) {
+            System.out.println("Customer not found for loginName: " + username);
+            throw new IllegalStateException("Customer not found for loginName: " + username);
+        }
+        System.out.println("Found customer ID: " + customer.getCustomerId());
+
+        return customer;
+    }
+
 }

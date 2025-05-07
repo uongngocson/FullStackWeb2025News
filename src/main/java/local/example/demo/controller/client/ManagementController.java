@@ -1,8 +1,12 @@
 package local.example.demo.controller.client;
 
+import local.example.demo.model.dto.OrderDetailDTO;
 import local.example.demo.model.entity.Address;
 import local.example.demo.model.entity.Customer;
+import local.example.demo.model.entity.Order;
 import local.example.demo.service.CustomerService;
+import local.example.demo.service.OrderService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -22,6 +27,9 @@ public class ManagementController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/profile")
     public String getProfilePage(Model model) {
@@ -80,7 +88,67 @@ public class ManagementController {
     }
 
     @GetMapping("/historyorder")
-    public String getHistoryOrderPage() {
+    public String getHistoryOrderPage(Model model) {
+        Customer customer = customerService.fetchCurrentLoggedInCustomer();
+        if (customer == null) {
+            System.out
+                    .println("Không tìm thấy khách hàng đăng nhập cho /historyorder, chuyển hướng đến trang đăng nhập");
+            return "redirect:/login";
+        }
+        System.out.println("Lấy danh sách đơn hàng cho khách hàng ID: " + customer.getCustomerId());
+        List<Order> orders = orderService.findOrdersByCustomer(customer);
+        model.addAttribute("orders", orders);
         return "client/auth/orderhis";
+    }
+
+    @PostMapping("/order/cancel/{orderId}")
+    public String cancelOrder(@PathVariable String orderId, RedirectAttributes redirectAttributes) {
+        try {
+            System.out.println("Nhận yêu cầu hủy đơn hàng: /management/order/cancel/" + orderId);
+            Customer customer = customerService.fetchCurrentLoggedInCustomer();
+            if (customer == null) {
+                System.out.println(
+                        "Không tìm thấy khách hàng đăng nhập cho /order/cancel, chuyển hướng đến trang đăng nhập");
+                return "redirect:/login";
+            }
+            System.out.println("Hủy đơn hàng " + orderId + " cho khách hàng ID: " + customer.getCustomerId());
+            orderService.cancelOrder(orderId, customer);
+            redirectAttributes.addFlashAttribute("error", "Đơn hàng đã được hủy thành công!");
+            return "redirect:/management/historyorder";
+        } catch (IllegalArgumentException e) {
+            System.out.println("Lỗi khi hủy đơn hàng: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/management/historyorder";
+        }
+    }
+
+    @GetMapping("/order/details/{orderId}")
+    public String getOrderDetails(@PathVariable String orderId, Model model) {
+        System.out.println("Xử lý yêu cầu cho /management/order/details/" + orderId);
+        Customer customer = customerService.fetchCurrentLoggedInCustomer();
+        if (customer == null) {
+            System.out.println("Không tìm thấy khách hàng đăng nhập, chuyển hướng đến trang đăng nhập");
+            return "redirect:/login";
+        }
+        System.out.println("ID khách hàng đăng nhập: " + customer.getCustomerId());
+
+        List<OrderDetailDTO> orderDetails = orderService.getOrderDetails(orderId);
+        if (orderDetails.isEmpty()) {
+            System.out.println("Không tìm thấy chi tiết đơn hàng cho orderId: " + orderId);
+            model.addAttribute("errorMessage", "Không tìm thấy đơn hàng với mã: " + orderId);
+            return "client/auth/error";
+        }
+
+        boolean isAuthorized = orderDetails.stream()
+                .anyMatch(detail -> detail.getCustomerId().equals(customer.getCustomerId()));
+        if (!isAuthorized) {
+            System.out.println("Khách hàng " + customer.getCustomerId() + " không có quyền xem đơn hàng " + orderId);
+            model.addAttribute("errorMessage", "Bạn không có quyền xem chi tiết đơn hàng này.");
+            return "client/auth/error";
+        }
+
+        System.out.println("Lấy chi tiết đơn hàng thành công cho orderId: " + orderId);
+        model.addAttribute("orderDetails", orderDetails);
+        return "client/auth/order-details";
     }
 }

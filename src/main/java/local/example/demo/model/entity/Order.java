@@ -2,6 +2,9 @@ package local.example.demo.model.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -57,4 +60,11 @@ public class Order {
     @JoinColumn(name = "customer_id")
     @NotNull(message = "Customer is required")
     private Customer customer;
+
+    public Date getOrderDateAsDate() {
+        if (orderDate == null) {
+            return null;
+        }
+        return Date.from(orderDate.atZone(ZoneId.systemDefault()).toInstant());
+    }
 }
