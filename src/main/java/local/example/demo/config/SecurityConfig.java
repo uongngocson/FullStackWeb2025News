@@ -76,10 +76,9 @@ public class SecurityConfig {
                                                                 "/resend-verification", "/product/**",
                                                                 "/resources/**", "/product/category", "/api/**")
                                                 .permitAll()
-
                                                 .requestMatchers("/admin/**").hasRole("ADMIN") // Ensure role is
                                                                                                // correctly defined
-
+                                                .requestMatchers("/management/**").authenticated()
                                                 .anyRequest().authenticated())
 
                                 .sessionManagement((sessionManagement) -> sessionManagement

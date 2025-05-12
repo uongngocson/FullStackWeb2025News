@@ -1,7 +1,9 @@
 package local.example.demo.service;
 
 import local.example.demo.model.dto.CreateOrderResponse;
+import local.example.demo.model.dto.OrderDetailDTO;
 import local.example.demo.model.dto.OrderItemDTO;
+import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
 import local.example.demo.model.entity.OrderDetail;
 import local.example.demo.repository.OrderDetailRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -192,5 +195,100 @@ public class OrderService {
         }
 
         return orderId.toString();
+    }
+
+    public List<Order> findOrdersByCustomer(Customer customer) {
+        List<Order> orders = orderRepository.findByCustomerId(customer.getCustomerId());
+        System.out.println("Customer ID: " + customer.getCustomerId());
+        System.out.println("Orders found: " + (orders != null ? orders.size() : 0));
+        if (orders != null) {
+            for (Order order : orders) {
+                System.out.println("Order ID: " + order.getOrderId() + ", Status: " + order.getOrderStatus());
+            }
+        }
+        return orders;
+    }
+
+    @Transactional
+    public void cancelOrder(String orderId, Customer customer) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Đơn hàng không tồn tại"));
+        if (!order.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+            throw new IllegalArgumentException("Bạn không có quyền hủy đơn hàng này");
+        }
+        if (!order.getOrderStatus().equals("Pending")) {
+            throw new IllegalArgumentException("Chỉ có thể hủy đơn hàng ở trạng thái Pending");
+        }
+        order.setOrderStatus("Cancel"); // Cập nhật trạng thái thành "Cancel"
+        orderRepository.save(order);
+    }
+
+    public List<OrderDetailDTO> getOrderDetails(String orderId) {
+        String sql = """
+                    SELECT
+                        o.order_id,
+                        o.order_date,
+                        o.total_amount,
+                        o.order_status,
+                        o.payment_status,
+                        c.customer_id,
+                        c.first_name,
+                        c.last_name,
+                        c.email,
+                        od.order_detail_id,
+                        od.product_variant_id,
+                        p.product_id,
+                        p.product_name,
+                        p.description,
+                        p.image_url,
+                        p.rating,
+                        p.price AS product_price,
+                        od.quantity,
+                        od.price AS order_detail_price,
+                        (od.quantity * od.price) AS subtotal,
+                        -- Lấy thông tin địa chỉ giao hàng từ bảng Addresses, sử dụng các cột có sẵn
+                        CONCAT(a.street, ', ', a.ward, ', ', a.district, ', ', a.city, ', ', a.province, ', ', a.country) AS shipping_address
+                    FROM
+                        Orders o
+                        INNER JOIN Customers c ON o.customer_id = c.customer_id
+                        INNER JOIN order_details od ON o.order_id = od.order_id
+                        LEFT JOIN Products p ON od.product_variant_id = p.product_id
+                        LEFT JOIN Addresses a ON o.shipping_address_id = a.address_id
+                    WHERE
+                        o.order_id = ?
+                """;
+
+        System.out.println("Executing getOrderDetails for orderId: " + orderId);
+        System.out.println("SQL Query: " + sql);
+
+        List<OrderDetailDTO> orderDetails = jdbcTemplate.query(sql, new Object[] { orderId }, (rs, rowNum) -> {
+            OrderDetailDTO dto = new OrderDetailDTO(
+                    rs.getString("order_id"),
+                    rs.getObject("order_date", LocalDateTime.class),
+                    rs.getBigDecimal("total_amount"),
+                    rs.getString("order_status"),
+                    rs.getInt("payment_status"),
+                    rs.getInt("customer_id"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("email"),
+                    rs.getLong("order_detail_id"),
+                    rs.getLong("product_variant_id"),
+                    rs.getLong("product_id"),
+                    rs.getString("product_name"),
+                    rs.getString("description"),
+                    rs.getString("image_url"),
+                    rs.getInt("rating") != 0 ? rs.getInt("rating") : null,
+                    rs.getBigDecimal("product_price"),
+                    rs.getInt("quantity"),
+                    rs.getBigDecimal("order_detail_price"),
+                    rs.getBigDecimal("subtotal"),
+                    rs.getString("shipping_address"));
+            System.out.println("Fetched OrderDetailDTO: " + dto.getOrderId() + ", Product: " + dto.getProductName());
+            return dto;
+        });
+
+        System.out.println("Number of order details fetched: " + (orderDetails != null ? orderDetails.size() : 0));
+        return orderDetails;
     }
 }

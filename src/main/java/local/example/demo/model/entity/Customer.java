@@ -83,4 +83,6 @@ public class Customer {
         return Date.from(this.registrationDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
+    
+
 }

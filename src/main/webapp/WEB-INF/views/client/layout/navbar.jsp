@@ -481,9 +481,12 @@
                                             style="background: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); margin-top: 20px; border-radius: 12px; overflow: hidden; padding: 20px;">
                                             <div class=""> <!-- Tăng padding lên -->
                                                 <div class="flex flex-col items-center">
-                                                    <img class="w-24 h-24 rounded-full object-cover mb-4 shadow-lg"
-                                                        src="https://scontent-hkg1-2.xx.fbcdn.net/v/t39.30808-6/479525196_2075670302868049_7906133505492121922_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=I1RQ2XooieAQ7kNvwFvyV3j&_nc_oc=Adk-Ne5v-m3-joZ4GWDSSCl2HcqEU1lLtOb2mGFBlxGwyZPx3zncVpJnX65JrcCjZhVnqUFWP4ILKt187np78zlZ&_nc_zt=23&_nc_ht=scontent-hkg1-2.xx&_nc_gid=KUCQ2cVPJPo83nrlK2ikgQ&oh=00_AfH_4hFOC1c07qKWdMfAQdP-0Z2i8nvV3C72d8MdjJJZqw&oe=6813635D"
-                                                        alt="User Avatar" />
+                                                    <c:if test="${not empty customer.imageUrl}">
+                                                            <div>
+                                                                <p class="text-gray-500 text-sm">Profile Image</p>
+                                                                <img src="${ctx}${customer.imageUrl}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover" onerror="this.src='${ctx}/resources/assets/client/images/default-avatar.jpg'">
+                                                            </div>
+                                                        </c:if>
                                                     <div class="text-center font-semibold text-gray-800 text-lg mt-3">
                                                         <c:out value="${sessionScope.fullName}" />
                                                     </div>

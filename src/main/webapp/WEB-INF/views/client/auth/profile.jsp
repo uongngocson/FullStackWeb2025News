@@ -1,166 +1,271 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-    <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-        <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-            <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDTS | Your Profile</title>
+    <c:set var="ctx" value="${pageContext.request.contextPath}" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="${ctx}/resources/assets/client/css/profile.css" rel="stylesheet">
+    <style>
+        /* Optional: Additional styles for modals */
+        .modal {
+            z-index: 1000;
+        }
+        .modal input {
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .modal input:focus {
+            border-color: #000;
+        }
+        .text-red-500 {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Navbar -->
+    <jsp:include page="../layout/navbar.jsp" />
 
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
+        <!-- Flash Messages -->
+        <c:if test="${not empty success}">
+            <div class="bg-green-100 text-green-800 p-4 rounded mb-6">
+                ${success}
+            </div>
+        </c:if>
+        <c:if test="${not empty error}">
+            <div class="bg-red-100 text-red-800 p-4 rounded mb-6">
+                ${error}
+            </div>
+        </c:if>
+        <c:if test="${not empty passwordSuccess}">
+            <div class="bg-green-100 text-green-800 p-4 rounded mb-6">
+                ${passwordSuccess}
+            </div>
+        </c:if>
+        <c:if test="${not empty passwordError}">
+            <div class="bg-red-100 text-red-800 p-4 rounded mb-6">
+                ${passwordError}
+            </div>
+        </c:if>
 
-                <!DOCTYPE html>
-                <html lang="en">
+        <!-- Profile Section -->
+        <section class="pt-[64px] mb-16">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-medium">Your Profile</h2>
+                <button id="editProfileBtn" class="btn-black bg-black text-white px-6 py-2 rounded-full text-sm">
+                    Edit Info
+                </button>
+            </div>
 
-                <head>
-                    <meta charset="UTF-8">
-                    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Document</title>
-                    <script src="https://cdn.tailwindcss.com"></script>
-
-                    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-                    <link rel="preconnect" href="https://fonts.googleapis.com">
-                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                    <link
-                        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
-                        rel="stylesheet">
-                    <!-- <link rel="stylesheet"
-                        href="${pageContext.request.contextPath}/resources/assets/client/css/style.css"> -->
-                    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/sontest.css">
-
-                    <link rel="icon"
-                        href="${pageContext.request.contextPath}/resources/assets/client/images/icon-adidas-logo.svg"
-                        type="image/icon type">
-                    <style>
-                        #user-dropdown::before {
-                            content: "";
-                            position: absolute;
-                            top: -8px;
-                            /* Nâng mũi tên lên trên viền */
-                            right: 16px;
-                            /* Đặt vị trí ngang từ phải sang */
-                            width: 0;
-                            height: 0;
-                            border-left: 8px solid transparent;
-                            border-right: 8px solid transparent;
-                            border-bottom: 8px solid black;
-                            /* Màu mũi tên */
-                            /* Tùy chọn: Thêm bóng đổ nhẹ cho mũi tên */
-                            filter: drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.05));
-                        }
-                    </style>
-                </head>
-
-
-
-                <body
-                    class="bg-gradient-to-r from-indigo-800 to-blue-900 min-h-screen flex items-center justify-center p-4">
-                    <div
-                        class="font-std mb-10 w-full rounded-2xl bg-white p-10 font-normal leading-relaxed text-gray-900 shadow-xl">
-
-                        <div class="flex flex-col">
-                            <div class="flex flex-col md:flex-row justify-between mb-5 items-start">
-                                <h2 class="mb-5 text-4xl font-bold text-blue-900">Update Profile</h2>
-                                <div class="text-center">
+            <div class="bg-white p-8 shadow-sm">
+                <c:choose>
+                    <c:when test="${not empty customer}">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-lg font-medium mb-4">Personal Information</h3>
+                                <div class="space-y-4">
                                     <div>
-                                        <img src="https://i.pravatar.cc/300" alt="Profile Picture"
-                                            class="rounded-full w-32 h-32 mx-auto border-4 border-indigo-800 mb-4 transition-transform duration-300 hover:scale-105 ring ring-gray-300">
-                                        <input type="file" name="profile" id="upload_profile" hidden required>
-
-                                        <label for="upload_profile" class="inline-flex items-center">
-                                            <svg data-slot="icon" class="w-5 h-5 text-blue-700" fill="none"
-                                                stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z">
-                                                </path>
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z">
-                                                </path>
-                                            </svg>
-                                        </label>
+                                        <p class="text-gray-500 text-sm">Full Name</p>
+                                        <p class="font-medium">
+                                            <c:out value="${customer.firstName}" default="N/A"/> 
+                                            <c:out value="${customer.lastName}" default="N/A"/>
+                                        </p>
                                     </div>
-                                    <button
-                                        class="bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300 ring ring-gray-300 hover:ring-indigo-300">
-                                        Change Profile Picture
-                                    </button>
+                                    <div>
+                                        <p class="text-gray-500 text-sm">Email</p>
+                                        <p class="font-medium"><c:out value="${customer.email}" default="N/A"/></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500 text-sm">Phone</p>
+                                        <p class="font-medium"><c:out value="${customer.phone}" default="N/A"/></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500 text-sm">Date of Birth</p>
+                                        <p class="font-medium">
+                                            <c:choose>
+                                                <c:when test="${not empty customer.dateOfBirth}">
+                                                    <fmt:formatDate value="${customer.dateOfBirthAsDate}" pattern="dd/MM/yyyy" />
+                                                </c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500 text-sm">Gender</p>
+                                        <p class="font-medium">${customer.gender ? 'Male' : 'Female'}</p>
+                                    </div>
+                                    <c:if test="${not empty customer.imageUrl}">
+                                        <div>
+                                            <p class="text-gray-500 text-sm">Profile Image</p>
+                                            <img src="${ctx}${customer.imageUrl}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover" onerror="this.src='${ctx}/resources/assets/client/images/default-avatar.jpg'">
+                                        </div>
+                                    </c:if>
                                 </div>
                             </div>
 
-                            <!-- Bilgi Düzenleme Formu -->
-                            <form class="space-y-4">
-                                <!-- İsim ve Unvan -->
-                                <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                                    <input type="text" id="name"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                        value="John Doe">
+                            <div>
+                                <h3 class="text-lg font-medium mb-4">Shipping Addresses</h3>
+                                <div class="space-y-4">
+                                    <c:choose>
+                                        <c:when test="${not empty customer.addresses}">
+                                            <c:forEach var="address" items="${customer.addresses}">
+                                                <div>
+                                                    <p class="font-medium"><c:out value="${address.street}" default="N/A"/></p>
+                                                    <p class="font-medium">
+                                                        <c:out value="${address.ward}" default="N/A"/>, 
+                                                        <c:out value="${address.district}" default="N/A"/>, 
+                                                        <c:out value="${address.city}" default="N/A"/>, 
+                                                        <c:out value="${address.country}" default="N/A"/>
+                                                    </p>
+                                                </div>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p class="text-gray-500">No addresses available.</p>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
-                                <div>
-                                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-                                    <input type="text" id="title"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                        value="Software Developer">
-                                </div>
-
-                                <!-- Organizasyon Bilgisi -->
-                                <div>
-                                    <label for="organization"
-                                        class="block text-sm font-medium text-gray-700">Organization</label>
-                                    <input type="text" id="organization"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                        value="Estep Bilişim">
-                                </div>
-
-                                <!-- İletişim Bilgileri -->
-                                <div>
-                                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                    <input type="email" id="email"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                        value="john.doe@example.com">
-                                </div>
-                                <div>
-                                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
-                                    <input type="tel" id="phone"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                        value="+1 (555) 123-4567">
-                                </div>
-                                <div>
-                                    <label for="location"
-                                        class="block text-sm font-medium text-gray-700">Location</label>
-                                    <input type="text" id="location"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                        value="San Francisco, CA">
-                                </div>
-
-                                <div>
-                                    <label for="location" class="block text-sm font-medium text-gray-700">New
-                                        Password</label>
-                                    <input type="text" id="password"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                        value="New Password">
-                                </div>
-
-                                <div>
-                                    <label for="location" class="block text-sm font-medium text-gray-700">Confirm
-                                        Password</label>
-                                    <input type="text" id="confirmPassword"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                        value="Confirm Password">
-                                </div>
-
-                               
-
-                                <!-- Kaydet ve İptal Butonları -->
-                                <div class="flex justify-end space-x-4">
-                                    <button type="button"
-                                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">Cancel</button>
-                                    <button type="submit"
-                                        class="px-4 py-2 bg-indigo-800 text-white rounded-lg hover:bg-indigo-700">Save
-                                        Changes</button>
-                                </div>
-                            </form>
+                            </div>
                         </div>
+                    </c:when>
+                    <c:otherwise>
+                        <p class="text-red-500">Unable to load profile information. Please log in.</p>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </section>
+    </div>
 
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center modal">
+        <div class="bg-white p-8 rounded-lg w-full max-w-md">
+            <h3 class="text-lg font-medium mb-4">Edit Profile</h3>
+            <form:form modelAttribute="customer" action="${ctx}/management/profile/update" method="POST" enctype="multipart/form-data">
+                <form:hidden path="customerId" />
+                <form:hidden path="account.accountId" />
+                <form:hidden path="registrationDate" />
+                <form:hidden path="status" />
+
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="firstName">First Name</label>
+                    <form:input path="firstName" class="w-full px-4 py-2 border rounded-full" />
+                    <form:errors path="firstName" cssClass="text-red-500 text-sm" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="lastName">Last Name</label>
+                    <form:input path="lastName" class="w-full px-4 py-2 border rounded-full" />
+                    <form:errors path="lastName" cssClass="text-red-500 text-sm" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="email">Email</label>
+                    <form:input path="email" class="w-full px-4 py-2 border rounded-full" />
+                    <form:errors path="email" cssClass="text-red-500 text-sm" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="phone">Phone</label>
+                    <form:input path="phone" class="w-full px-4 py-2 border rounded-full" />
+                    <form:errors path="phone" cssClass="text-red-500 text-sm" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="dateOfBirth">Date of Birth</label>
+                    <form:input path="dateOfBirth" type="date" class="w-full px-4 py-2 border rounded-full" />
+                    <form:errors path="dateOfBirth" cssClass="text-red-500 text-sm" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="gender">Gender</label>
+                    <form:select path="gender" class="w-full px-4 py-2 border rounded-full">
+                        <form:option value="true">Male</form:option>
+                        <form:option value="false">Female</form:option>
+                    </form:select>
+                    <form:errors path="gender" cssClass="text-red-500 text-sm" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="image">Profile Image</label>
+                    <input type="file" name="image" class="w-full px-4 py-2 border rounded-full" />
+                </div>
+
+                <div class="flex justify-between items-center mb-4">
+                    <button type="button" id="changePasswordBtn" class="text-blue-500 hover:underline text-sm">
+                        Change Password
+                    </button>
+                    <div class="flex space-x-4">
+                        <button type="button" id="cancelEditBtn" class="px-6 py-2 border rounded-full">Cancel</button>
+                        <button type="submit" class="btn-black bg-black text-white px-6 py-2 rounded-full">Save Changes</button>
                     </div>
-                </body>
+                </div>
+            </form:form>
+        </div>
+    </div>
 
-                </html>
-                <!-- Font Awesome -->
-                <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center modal">
+        <div class="bg-white p-8 rounded-lg w-full max-w-md">
+            <h3 class="text-lg font-medium mb-4">Change Password</h3>
+            <form action="${ctx}/management/profile/change-password" method="POST">
+                <!-- CSRF Token -->
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="oldPassword">Old Password</label>
+                    <input type="password" name="oldPassword" id="oldPassword" class="w-full px-4 py-2 border rounded-full" required />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="newPassword">New Password</label>
+                    <input type="password" name="newPassword" id="newPassword" class="w-full px-4 py-2 border rounded-full" required />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-2" for="confirmPassword">Confirm New Password</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" class="w-full px-4 py-2 border rounded-full" required />
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancelPasswordBtn" class="px-6 py-2 border rounded-full">Cancel</button>
+                    <button type="submit" class="btn-black bg-black text-white px-6 py-2 rounded-full">Save Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Edit Profile Modal
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const editProfileModal = document.getElementById('editProfileModal');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+        editProfileBtn.addEventListener('click', () => {
+            editProfileModal.classList.remove('hidden');
+        });
+
+        cancelEditBtn.addEventListener('click', () => {
+            editProfileModal.classList.add('hidden');
+        });
+
+        // Toggle Change Password Modal
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const changePasswordModal = document.getElementById('changePasswordModal');
+        const cancelPasswordBtn = document.getElementById('cancelPasswordBtn');
+
+        changePasswordBtn.addEventListener('click', () => {
+            changePasswordModal.classList.remove('hidden');
+        });
+
+        cancelPasswordBtn.addEventListener('click', () => {
+            changePasswordModal.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

@@ -40,6 +40,8 @@ public class Address {
     @NotBlank(message = "City is required")
     private String city;
 
+    @NotBlank(message = "Country is required")
+    private String country;
     // relationship
     @ManyToOne
     @JoinColumn(name = "customer_id")
