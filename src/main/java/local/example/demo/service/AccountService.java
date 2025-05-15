@@ -8,20 +8,23 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import local.example.demo.model.dto.RegisterDTO;
+import local.example.demo.exception.AccountInUseException;
 import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Customer;
+import local.example.demo.model.entity.Employee; 
 import local.example.demo.repository.AccountRepository;
 import local.example.demo.repository.CustomerRepository;
+import local.example.demo.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class AccountService {
-    // Add your service methods here
-    // For example:
+
     private final AccountRepository accountRepository;
     private final RoleService roleService;
-    private final CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository; // Inject CustomerRepository
+    private final EmployeeRepository employeeRepository; // Inject EmployeeRepository
 
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
@@ -35,7 +38,23 @@ public class AccountService {
         accountRepository.save(account);
     }
 
+    @Transactional // Thêm @Transactional để đảm bảo tính nhất quán
     public void deleteAccountById(Integer id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found with ID: " + id));
+
+        // Kiểm tra liên kết với Customer
+        Customer customer = customerRepository.findByAccount(account);
+        if (customer != null) {
+            throw new AccountInUseException("Cannot delete account: It is associated with customer " + customer.getFirstName() + " " + customer.getLastName());
+        }
+
+        // Kiểm tra liên kết với Employee
+        Employee employee = employeeRepository.findByAccount(account);
+        if (employee != null) {
+            throw new AccountInUseException("Cannot delete account: It is associated with employee " + employee.getFirstName() + " " + employee.getLastName());
+        }
+
         accountRepository.deleteById(id);
     }
 
@@ -73,8 +92,6 @@ public class AccountService {
 
         return savedAccount;
     }
-
-
 
     // mapper registerDTO to account
     public Account mapRegisterDTOToAccount(RegisterDTO registerDTO) {

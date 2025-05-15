@@ -52,9 +52,7 @@ public class Order {
     @JoinColumn(name = "payment_id")
     @NotNull(message = "Payment is required")
     private Payment payment;
-
-    private String paymentStatus;
-
+    
     // relationship with Customer
     @ManyToOne
     @JoinColumn(name = "customer_id")

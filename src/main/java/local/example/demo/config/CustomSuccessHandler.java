@@ -19,14 +19,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Customer;
+import local.example.demo.model.entity.Employee;
 import local.example.demo.service.AccountService;
 import local.example.demo.service.CustomerService;
+import local.example.demo.service.EmployeeService;
 
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     private AccountService accountService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private EmployeeService employeeService;
 
     protected String determineTargetUrl(final Authentication authentication) {
 
@@ -52,12 +56,23 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
         Account account = accountService.getAccountByLoginName(authentication.getName());
+
         Customer customer = customerService.getCustomerByAccount(account);
-        session.setAttribute("customerId", customer.getCustomerId());
-        session.setAttribute("fullName", customer.getFirstName() + " " + customer.getLastName());
-        session.setAttribute("email", customer.getEmail());
-        session.setAttribute("avatar", customer.getImageUrl());
-        session.setAttribute("sum", customerService.getCartDetailCountByCart(customer));
+        if (customer != null){
+            session.setAttribute("customerId", customer.getCustomerId());
+            session.setAttribute("fullName", customer.getFirstName() + " " + customer.getLastName());
+            session.setAttribute("email", customer.getEmail());
+            session.setAttribute("avatar", customer.getImageUrl());
+            session.setAttribute("sum", customerService.getCartDetailCountByCart(customer));
+        }  
+
+        Employee employee = employeeService.getEmployeeByAccount(account);
+        if (employee != null){
+            session.setAttribute("employeeId", employee.getEmployeeId());
+            session.setAttribute("employeeFullName", employee.getFirstName() + " " + employee.getLastName());
+            session.setAttribute("employeeEmail", employee.getEmail());
+            session.setAttribute("employeeAvatar", employee.getImageUrl());
+        }  
 
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }

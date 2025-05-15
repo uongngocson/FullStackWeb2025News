@@ -19,19 +19,6 @@
                         <jsp:include page="../layout/header.jsp" />
                         <div class="container">
                             <div class="page-inner">
-                                <div class="page-header">
-                                    <h3 class="fw-bold mb-3">${account.accountId != null ? 'Edit' : 'Create'} Account
-                                    </h3>
-                                    <ul class="breadcrumbs mb-3">
-                                        <li class="nav-home"><a href="/admin/dashboard/index"><i
-                                                    class="icon-home"></i></a></li>
-                                        <li class="separator"><i class="icon-arrow-right"></i></li>
-                                        <li class="nav-item"><a href="/admin/account-mgr/list">Accounts</a></li>
-                                        <li class="separator"><i class="icon-arrow-right"></i></li>
-                                        <li class="nav-item"><a href="#">${account.accountId != null ? 'Edit' :
-                                                'Create'}</a></li>
-                                    </ul>
-                                </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="card">
@@ -50,8 +37,7 @@
                                                         <label for="loginName">Login Name <span
                                                                 class="text-danger">*</span></label>
                                                         <form:input path="loginName" type="text" class="form-control"
-                                                            id="loginName" placeholder="Enter login name"
-                                                            required="true" />
+                                                            id="loginName" placeholder="Enter login name" />
                                                         <form:errors path="loginName" cssClass="text-danger" />
                                                     </div>
 
@@ -59,8 +45,7 @@
                                                         <label for="password">Password <span
                                                                 class="text-danger">*</span></label>
                                                         <form:password path="password" class="form-control"
-                                                            id="password" placeholder="Enter password"
-                                                            required="true" />
+                                                            id="password" placeholder="Enter password" />
                                                         <form:errors path="password" cssClass="text-danger" />
                                                     </div>
 
@@ -68,9 +53,17 @@
                                                         <label for="role">Role <span
                                                                 class="text-danger">*</span></label>
                                                         <form:select path="role" class="form-control" id="role">
-                                                            <c:forEach var="role" items="${roles}">
-                                                                <form:option value="${role.roleId}">${role.roleName}
-                                                                </form:option>
+                                                            <c:forEach var="roleItem" items="${roles}">
+                                                                <c:if test="${roleItem.roleId == account.role.roleId}">
+                                                                    <form:option value="${roleItem.roleId}"
+                                                                        selected="selected">${roleItem.roleName}
+                                                                    </form:option>
+                                                                </c:if>
+                                                                <c:if test="${roleItem.roleId != account.role.roleId}">
+                                                                    <form:option value="${roleItem.roleId}">
+                                                                        ${roleItem.roleName}
+                                                                    </form:option>
+                                                                </c:if>
                                                             </c:forEach>
                                                         </form:select>
                                                         <form:errors path="role" cssClass="text-danger" />

@@ -27,6 +27,3 @@
             </div>
         </div>
     </footer>
-
-    <!-- Toast Notifications -->
-    <jsp:include page="../layout/toast.jsp" />

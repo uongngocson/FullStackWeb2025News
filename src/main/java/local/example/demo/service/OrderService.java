@@ -1,5 +1,6 @@
 package local.example.demo.service;
 
+import local.example.demo.exception.OrderInUseException;
 import local.example.demo.model.dto.CreateOrderResponse;
 import local.example.demo.model.dto.OrderDetailDTO;
 import local.example.demo.model.dto.OrderItemDTO;
@@ -8,6 +9,8 @@ import local.example.demo.model.entity.Order;
 import local.example.demo.model.entity.OrderDetail;
 import local.example.demo.repository.OrderDetailRepository;
 import local.example.demo.repository.OrderRepository;
+import local.example.demo.repository.ReturnRepository;
+import local.example.demo.repository.ShipmentRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,6 +36,8 @@ public class OrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final JdbcTemplate jdbcTemplate;
     private final DataSource dataSource;
+    private final ReturnRepository returnRepository;
+    private final ShipmentRepository shipmentRepository;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -52,11 +57,27 @@ public class OrderService {
             // Trường hợp cập nhật: lấy từ DB trước
             Order existingOrder = orderRepository.findById(order.getOrderId())
                     .orElseThrow(() -> new RuntimeException("Order not found: " + order.getOrderId()));
-            orderRepository.save(existingOrder);
+
+            // Cập nhật các trường của existingOrder từ order (đối tượng từ form)
+            existingOrder.setOrderDate(order.getOrderDate());
+            existingOrder.setTotalAmount(order.getTotalAmount());
+            existingOrder.setOrderStatus(order.getOrderStatus());
+            existingOrder.setShippingAddress(order.getShippingAddress());
+            existingOrder.setPayment(order.getPayment());
+            existingOrder.setCustomer(order.getCustomer());
+            // Thêm các trường khác nếu có
+
+            orderRepository.save(existingOrder); // Lưu đối tượng đã được cập nhật
         }
     }
 
     public void deleteOrder(String orderId) {
+        if (returnRepository.existsByOrder_OrderId(orderId)) {
+            throw new OrderInUseException("Cannot delete order with associated returns");
+        }
+        if (shipmentRepository.existsByOrder_OrderId(orderId)) {
+            throw new OrderInUseException("Cannot delete order with associated shipments");
+        }
         orderRepository.deleteById(orderId);
     }
 

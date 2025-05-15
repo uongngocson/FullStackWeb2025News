@@ -14,4 +14,6 @@ public interface Addressv2Repository extends JpaRepository<Addressv2, Integer> {
 
     @Query("SELECT a FROM Addressv2 a JOIN FETCH a.ward JOIN FETCH a.district JOIN FETCH a.province WHERE a.customerId = ?1")
     List<Addressv2> findByCustomerIdWithDetails(Integer customerId);
+
+    void deleteByCustomerId(Integer customerId);
 }

@@ -3,7 +3,7 @@ package local.example.demo.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest; // Thêm import này
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,35 +11,46 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
-import local.example.demo.model.entity.Brand;
 import local.example.demo.model.entity.Product;
 import local.example.demo.model.entity.ProductVariant;
+import local.example.demo.repository.InventoryRepository;
 import local.example.demo.repository.ProductRepository;
 import local.example.demo.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
 
-import java.math.BigDecimal; // Thêm import này
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Optional;
 
+import local.example.demo.exception.ProductInUseException;
 import local.example.demo.model.entity.*;
-import local.example.demo.repository.ProductRepository;
 
-import jakarta.persistence.criteria.Predicate; // Thêm import này
+import jakarta.persistence.criteria.Predicate;
 
 @RequiredArgsConstructor
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductVariantRepository productVariantRepository ;
-
+    private final ProductVariantRepository productVariantRepository;
+    private final InventoryRepository inventoryRepository;
 
 
     // get all product
     public List<Product> findAllProducts() {
         return productRepository.findAllProducts();
+    }
+
+    // total stock product
+    public long getTotalStock(Integer productId) {
+        List<Inventory> inventories = inventoryRepository.findByProduct_ProductId(productId);
+        long sumQuantity = 0;
+        for (Inventory inventory : inventories) {
+            Integer quantity = inventory.getQuantityStock();
+            if (quantity!= null) {
+                sumQuantity += quantity;
+            }
+        }
+        return sumQuantity;
     }
 
     // get all product by page
@@ -56,8 +67,6 @@ public class ProductService {
 
     // }
 
-
-
     // save product
     public void saveProduct(Product product) {
         productRepository.save(product);
@@ -65,6 +74,17 @@ public class ProductService {
 
     public Product findProductById(Integer productId) {
         return productRepository.findById(productId).orElse(null);
+    }
+
+    // delete product by id
+    public void deleteProductById(Integer productId) {
+        if (productVariantRepository.existsByProduct_ProductId(productId)) {
+            throw new ProductInUseException("Không thể xóa! Sản phẩm này đang đại diện cho nhiều sản phầm");
+        }
+        if (inventoryRepository.existsByProduct_ProductId(productId)) {
+            throw new ProductInUseException("Không thể xóa! Sản phẩm này đang có trong kho hàng");
+        }
+        productRepository.deleteById(productId);
     }
 
     // find product by id
@@ -202,11 +222,6 @@ public class ProductService {
     }
 
 
-    // delete product by id
-    public void deleteProductById(Integer productId) {
-        productRepository.deleteById(productId);
-    }
-
     // get product by supplierId
     public List<Product> findProductsBySupplierId(Integer supplierId) {
         return productRepository.findProductsBySupplierId(supplierId);
@@ -233,5 +248,7 @@ public class ProductService {
     public List<ProductVariant> findVariantsByProductId(Integer productId) {
         return productVariantRepository.findByProduct_ProductId(productId);
     }
+
+
    
 }

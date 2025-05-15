@@ -7,5 +7,8 @@ import local.example.demo.model.entity.Supplier;
 
 @Repository
 public interface SupplierRepository extends JpaRepository<Supplier, Integer> {
+    boolean existsBySupplierName(String supplierName);
+
+    Supplier findBySupplierName(String supplierName);
 
 }

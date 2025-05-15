@@ -79,16 +79,6 @@
                                             <div class="d-flex align-items-center">
                                                 <h4 class="card-title">Product #${product.productId} -
                                                     ${product.productName}</h4>
-                                                <div class="ms-auto">
-                                                    <a href="/admin/product-mgr/update/${product.productId}"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-edit"></i> Edit Product
-                                                    </a>
-                                                    <button class="btn btn-danger btn-sm"
-                                                        onclick="deleteProduct('${product.productId}')">
-                                                        <i class="fas fa-trash"></i> Delete Product
-                                                    </button>
-                                                </div>
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -115,8 +105,12 @@
                                                             $${product.price}
                                                         </p>
                                                         <p class="text-muted mb-2">
-                                                            <i class="fas fa-boxes me-2"></i>In Stock:
+                                                            <i class="fas fa-boxes me-2"></i>Quantity sold:
                                                             ${product.quantitySold}
+                                                        </p>
+                                                        <p class="text-muted mb-2">
+                                                            <i class="fas fa-boxes me-2"></i>Total quantity:
+                                                            ${totalQuantity}
                                                         </p>
 
                                                     </div>

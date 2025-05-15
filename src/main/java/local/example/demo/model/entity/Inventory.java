@@ -28,6 +28,19 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer inventoryId;
 
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    @NotNull(message = "Supplier required")
+    private Supplier supplier;
+    // relationships
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    @NotNull(message = "Product required")
+    private Product product;
+
+    @NotNull(message = "Price cannot be null")
+    private Date importDate;
+
     // attribute
     @NotNull(message = "Quantity stock cannot be null")
     @Min(value = 0, message = "Quantity stock must be greater than or equal to 0")
@@ -36,16 +49,4 @@ public class Inventory {
     @NotNull(message = "Price cannot be null")
     @Min(value = 0, message = "Price must be greater than or equal to 0")
     private BigDecimal purchasePrice;
-
-    @NotNull(message = "Price cannot be null")
-    private Date lastUpdate;
-
-    // relationships
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
 }

@@ -100,16 +100,15 @@
                                                                 <div class="mb-3">
                                                                     <label class="fw-bold">Customer <span
                                                                             class="text-danger">*</span></label>
-                                                                    <form:select path="customer"
+                                                                    <form:select path="customer.customerId"
                                                                         class="form-control form-control-lg">
                                                                         <form:option value=""
                                                                             label="-- Select Customer --" />
-                                                                        <c:forEach items="${customers}" var="customer">
-                                                                            <form:option value="${customer.customerId}"
-                                                                                label="${customer.firstName} ${customer.lastName}" />
+                                                                        <c:forEach items="${customers}" var="cust">
+                                                                            <form:option value="${cust.customerId}"
+                                                                                label="${cust.firstName} ${cust.lastName}" />
                                                                         </c:forEach>
                                                                     </form:select>
-
                                                                     <form:errors path="customer"
                                                                         cssClass="text-danger" />
                                                                 </div>
@@ -128,19 +127,17 @@
                                                             </div>
                                                         </div>
 
-
-
                                                         <div class="col-md-6">
                                                             <div class="mb-3">
                                                                 <label class="fw-bold">Shipping Address <span
                                                                         class="text-danger">*</span></label>
-                                                                <form:select path="shippingAddress"
+                                                                <form:select path="shippingAddress.addressId"
                                                                     class="form-control form-control-lg">
                                                                     <form:option value=""
                                                                         label="-- Select Shipping Address --" />
-                                                                    <c:forEach items="${addresses}" var="address">
-                                                                        <form:option value="${address.addressId}"
-                                                                            label="${address.street}, ${address.ward}, ${address.district}, ${address.province}, ${address.city}" />
+                                                                    <c:forEach items="${customerAddresses}" var="addr">
+                                                                        <form:option value="${addr.addressId}"
+                                                                            label="${addr.street}, ${addr.ward}, ${addr.district}, ${addr.province}, ${addr.city}" />
                                                                     </c:forEach>
                                                                 </form:select>
                                                                 <form:errors path="shippingAddress"
@@ -192,25 +189,9 @@
                                                                 <form:option value=""
                                                                     label="-- Select Payment Method --" />
                                                                 <form:options items="${payments}" itemValue="paymentId"
-                                                                    itemLabel="namePaymentMethod" />
+                                                                    itemLabel="paymentMethod" />
                                                             </form:select>
                                                             <form:errors path="payment" cssClass="text-danger" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row mb-4">
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label class="fw-bold">Payment Status</label>
-                                                            <form:select path="paymentStatus"
-                                                                class="form-control form-control-lg">
-                                                                <form:option value="Pending" label="Pending" />
-                                                                <form:option value="Paid" label="Paid" />
-                                                                <form:option value="Failed" label="Failed" />
-                                                                <form:option value="Refunded" label="Refunded" />
-                                                            </form:select>
-                                                            <form:errors path="paymentStatus" cssClass="text-danger" />
                                                         </div>
                                                     </div>
                                                 </div>

@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -40,22 +41,25 @@ public class Employee {
 
     private String imageUrl;
 
+    @NotBlank(message = "Address cannot be blank")
     private String address;
 
-    @NotNull(message = "Date of birth cannot be null")
+    @NotNull(message = "Date of birth cannot be blank")
     private LocalDate dateOfBirth;
 
     private boolean gender;
 
     @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email must be valid")
     private String email;
 
     @NotBlank(message = "Phone number cannot be blank")
     private String phone;
 
+    @NotNull(message = "Hire date cannot be blank")
     private LocalDate hireDate = LocalDate.now();
 
-    @NotNull(message = "Salary cannot be null")
+    @NotNull(message = "Salary cannot be blank")
     private BigDecimal salary;
 
     private boolean status;

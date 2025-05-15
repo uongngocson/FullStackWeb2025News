@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import local.example.demo.model.entity.Employee;
@@ -84,8 +85,23 @@ public class EmployeeMgrController {
 
     // delete employee
     @PostMapping("delete/{employeeId}")
-    public String deleteEmployee(@PathVariable("employeeId") Integer employeeId) {
-        employeeService.deleteEmployee(employeeId);
+    public String deleteEmployee(@PathVariable("employeeId") Integer employeeId, RedirectAttributes redirectAttributes) {
+        try {
+            // Kiểm tra xem nhân viên có đang quản lý nhân viên khác không
+            // Hoặc có ràng buộc nào khác không cho phép xóa (ví dụ: đang có task active,...)
+            // Ví dụ đơn giản: nếu nhân viên có status là active thì không cho xóa
+            Employee employee = employeeService.getEmployeeById(employeeId);
+            if (employee != null && employee.isStatus()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa nhân viên đang hoạt động.");
+                return "redirect:/admin/employee-mgr/list";
+            }
+
+            employeeService.deleteEmployee(employeeId);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa nhân viên thành công!");
+        } catch (Exception e) {
+            // Log lỗi ở đây nếu cần thiết
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi xóa nhân viên: " + e.getMessage());
+        }
         return "redirect:/admin/employee-mgr/list";
     }
 }

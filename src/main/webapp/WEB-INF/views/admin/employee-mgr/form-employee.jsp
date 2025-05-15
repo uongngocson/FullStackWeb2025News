@@ -265,7 +265,7 @@
                                                         </script>
 
                                                         <!-- Hire Date -->
-                                                        <div class="col-md-6">
+                                                        <!-- <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label for="hireDate">
                                                                     <i
@@ -276,7 +276,7 @@
                                                                     class="form-control" id="hireDate" />
                                                                 <form:errors path="hireDate" cssClass="text-danger" />
                                                             </div>
-                                                        </div>
+                                                        </div> -->
 
                                                         <!-- Salary -->
                                                         <div class="col-md-6">

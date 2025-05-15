@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import local.example.demo.model.entity.Product;
+import local.example.demo.model.entity.Supplier;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
@@ -41,4 +42,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
     // get product type=0 - women by page
     @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.supplier s WHERE p.type = false")
     Page<Product> findProductsByTypeWomen(Pageable pageable);
+
+    boolean existsBySupplier(Supplier supplier); // Changed type 
 }

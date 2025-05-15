@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import local.example.demo.model.entity.Address;
 import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
+import local.example.demo.exception.CustomerInUseException;
 import local.example.demo.service.CustomerService;
 import local.example.demo.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +49,10 @@ public class CustomerMgrController {
         if (customer == null) {
             return "redirect:/admin/customer-mgr/list";
         }
-
+        List<Address> addresses = customerService.findAddressesByCustomerId(customerId);
         List<Order> orders = customerService.findOrdersByCustomerId(customerId);
         model.addAttribute("orders", orders);
+        model.addAttribute("addresses", addresses);
         model.addAttribute("customer", customer);
         return "admin/customer-mgr/detail-customer";
     }
@@ -88,8 +92,22 @@ public class CustomerMgrController {
     }
 
     @GetMapping("delete/{customerId}")
-    public String deleteCustomer(@PathVariable("customerId") Integer customerId) {
-        customerService.deleteCustomerById(customerId);
+    public String deleteCustomer(@PathVariable("customerId") Integer customerId, RedirectAttributes redirectAttributes) {
+        Customer customer = customerService.findCustomerById(customerId);
+        if (customer.isStatus()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Khách hàng đang hoạt động không thể xóa.");
+            return "redirect:/admin/customer-mgr/list";
+        }
+        try {
+            customerService.deleteCustomerById(customerId);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa khách hàng thành công!");
+        } catch (CustomerInUseException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy khách hàng để xóa hoặc lỗi không xác định.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi không mong muốn khi xóa khách hàng.");
+        }
         return "redirect:/admin/customer-mgr/list";
     }
 }

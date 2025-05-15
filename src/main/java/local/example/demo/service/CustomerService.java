@@ -23,12 +23,16 @@ import local.example.demo.model.entity.Address;
 import local.example.demo.model.entity.Cart;
 import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
+import local.example.demo.exception.CustomerInUseException;
+import local.example.demo.repository.AccountDiscountCodeRepository;
 import local.example.demo.repository.AccountRepository;
 import local.example.demo.repository.AddressRepository;
 import local.example.demo.repository.CartDetailRepository;
 import local.example.demo.repository.CartRepository;
 import local.example.demo.repository.CustomerRepository;
 import local.example.demo.repository.OrderRepository;
+import local.example.demo.repository.ReviewRepository;
+import local.example.demo.repository.Addressv2Repository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -42,6 +46,9 @@ public class CustomerService {
     private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ReviewRepository reviewRepository;
+    private final Addressv2Repository addressv2Repository;
+    private final AccountDiscountCodeRepository accountDiscountCodeRepository;
 
     @Transactional(readOnly = true)
     public List<Customer> findAllCustomers() {
@@ -60,21 +67,39 @@ public class CustomerService {
 
     @Transactional
     public void deleteCustomerById(Integer customerId) {
-        Optional<Customer> customerOpt = customerRepository.findById(customerId);
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng có ID: " + customerId));
 
-        if (customerOpt.isEmpty()) {
-            throw new IllegalArgumentException("Không tìm thấy khách hàng có ID: " + customerId);
+        // Kiểm tra ràng buộc với Order
+        if (orderRepository.existsByCustomer_CustomerId(customerId)) {
+            throw new CustomerInUseException("Không thể xóa khách hàng này vì có đơn hàng liên quan.");
         }
 
-        Customer customer = customerOpt.get();
-
-        try {
-            customerRepository.delete(customer);
-        } catch (TransientObjectException e) {
-            throw new RuntimeException("Lỗi Hibernate (TransientObjectException): " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi xóa khách hàng: " + e.getMessage(), e);
+        // Kiểm tra ràng buộc với Review
+        if (reviewRepository.existsByCustomer_CustomerId(customerId)) {
+            throw new CustomerInUseException("Không thể xóa khách hàng này vì có đánh giá liên quan.");
         }
+        // kiểm tra địa chỉ có được sử dụng trong Order không
+        List<Address> addresses = customer.getAddresses();
+        for (Address address : addresses) {
+            // Đảm bảo rằng tên phương thức ở đây khớp với tên đã sửa trong OrderRepository
+            if (orderRepository.existsByShippingAddress_AddressId(address.getAddressId())) {
+                throw new CustomerInUseException("Không thể xóa khách hàng này vì có địa chỉ liên quan đến đơn hàng.");
+            }
+        }
+        addressRepository.deleteByCustomer_CustomerId(customerId);
+        addressv2Repository.deleteByCustomerId(customerId);
+        cartRepository.deleteByCustomer_CustomerId(customerId);
+        accountDiscountCodeRepository.deleteByCustomer_CustomerId(customerId);
+
+        // Optional: Xóa Account nếu nó không còn được sử dụng bởi bất kỳ Customer nào
+        // khác
+        Account account = customer.getAccount();
+        if (account != null && !customerRepository.existsByAccount(account)) {
+            accountRepository.delete(account);
+        }
+
+        customerRepository.delete(customer);
     }
 
     @Transactional(readOnly = true)

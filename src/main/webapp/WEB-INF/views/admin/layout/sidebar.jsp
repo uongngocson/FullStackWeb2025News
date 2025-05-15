@@ -5,8 +5,8 @@
         <div class="sidebar-logo">
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="dark">
-                <a href="admin/dashboard/index" class="logo">
-                    <img src="../../../../resources/assets/user/img/home/walmart-logo.webp" alt="navbar brand"
+                <a href="/admin/dashboard/index" class="logo">
+                    <img src="../../../../resources/assets/dashboard/img/kaiadmin/favicon.ico" alt="navbar brand"
                         class="navbar-brand" height="20" />
                 </a>
 
@@ -132,7 +132,7 @@
                                         <span class="sub-item">Product List</span>
                                     </a>
                                 </li>
-                                <li>
+                                <!-- <li>
                                     <a href="#">
                                         <span class="sub-item">Brand List</span>
                                     </a>
@@ -156,7 +156,7 @@
                                     <a href="#">
                                         <span class="sub-item">Inventory</span>
                                     </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                     </li>
@@ -188,11 +188,6 @@
                             </ul>
                         </div>
                     </li>
-
-
-
-
-
                     <!-- Account Management -->
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#accounts">
@@ -205,11 +200,6 @@
                                 <li>
                                     <a href="/admin/account-mgr/list">
                                         <span class="sub-item">Account List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Role List</span>
                                     </a>
                                 </li>
                             </ul>

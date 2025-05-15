@@ -2,10 +2,8 @@
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
-
             <div class="main-header">
-                <div class="main-header-logo">
-                    <!-- Logo Header -->
+                <div class="main-header-logo"><!-- Logo Header -->
 
                     <!-- End Logo Header -->
                 </div>
@@ -17,12 +15,14 @@
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
-                                        <img src="../../../../resources/assets/dashboard/img/logoduong.jpg" alt="..."
-                                            class="avatar-img rounded-circle" />
+                                        <%-- Sử dụng c:url để tạo đường dẫn chính xác --%>
+                                            <img src="<c:url value='${sessionScope.employeeAvatar}'/>" alt=""
+                                                class="avatar-img rounded-circle" />
                                     </div>
                                     <span class="profile-username">
                                         <span class="op-7">Hi,</span>
-                                        <span class="fw-bold">DƯƠNG</span>
+                                        <span class="fw-bold">${sessionScope.employeeFullName}
+                                        </span>
                                     </span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -30,25 +30,18 @@
                                         <li>
                                             <div class="user-box">
                                                 <div class="avatar-lg">
-                                                    <img src="../../../../resources/assets/dashboard/img/logoduong.jpg"
-                                                        alt="image profile" class="avatar-img rounded" />
+                                                    <%-- Áp dụng tương tự cho ảnh lớn nếu cần --%>
+                                                        <img src="<c:url value='${sessionScope.employeeAvatar}'/>"
+                                                            alt="image profile" class="avatar-img rounded" />
                                                 </div>
                                                 <div class="u-text">
-                                                    <h4>DƯƠNG</h4>
-                                                    <p class="text-muted">${sessionScope.email}</p>
-                                                    <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View
+                                                    <p class="text-muted">${sessionScope.employeeEmail}</p>
+                                                    <a href="#" class="btn btn-xs btn-secondary btn-sm">View
                                                         Profile</a>
                                                 </div>
                                             </div>
                                         </li>
                                         <li>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">My Profile</a>
-                                            <a class="dropdown-item" href="#">My Balance</a>
-                                            <a class="dropdown-item" href="#">Inbox</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Account Setting</a>
-                                            <div class="dropdown-divider"></div>
                                             <form method="post" action="/logout">
                                                 <input type="hidden" name="${_csrf.parameterName}"
                                                     value="${_csrf.token}" />

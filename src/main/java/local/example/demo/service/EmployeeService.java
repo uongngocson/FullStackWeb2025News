@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Employee;
 
 import local.example.demo.repository.EmployeeRepository;
@@ -34,5 +35,10 @@ public class EmployeeService {
     // delete employee
     public void deleteEmployee(Integer id) {
         employeeRepository.deleteById(id);
+    }
+
+    // get employee by account
+    public Employee getEmployeeByAccount(Account account) {
+        return employeeRepository.findByAccount(account);
     }
 }

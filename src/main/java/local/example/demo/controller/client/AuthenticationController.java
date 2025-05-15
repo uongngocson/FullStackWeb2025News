@@ -64,7 +64,6 @@ public class AuthenticationController {
         session.setAttribute("pending_email", registerDTO.getEmail());
         session.setAttribute("pending_password", registerDTO.getPassword());
         session.setAttribute("pending_username", registerDTO.getLoginName());
-        // Add other necessary fields...
         
         // Generate and send verification code
         String verificationCode = registerService.generateVerificationCode();

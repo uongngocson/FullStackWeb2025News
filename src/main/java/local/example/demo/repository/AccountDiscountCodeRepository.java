@@ -3,11 +3,11 @@ package local.example.demo.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import local.example.demo.model.entity.Cart;
-import local.example.demo.model.entity.Customer;
+import local.example.demo.model.entity.AccountDiscountCode;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, Integer> {
-    Cart findByCustomer(Customer customer);
+public interface AccountDiscountCodeRepository extends JpaRepository<AccountDiscountCode, Integer> {
+
     void deleteByCustomer_CustomerId(Integer customerId);
+    
 }

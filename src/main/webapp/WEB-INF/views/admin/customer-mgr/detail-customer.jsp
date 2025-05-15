@@ -138,165 +138,166 @@
 
                         <div class="container">
                             <div class="page-inner">
-                                <div class="page-header">
+                                <%-- PAGE HEADER -PATH --%>
+                                    <div class="page-header">
+                                        <h3 class="fw-bold mb-3">Customer Details</h3>
+                                        <ul class="breadcrumbs mb-3">
+                                            <li class="nav-home">
+                                                <a href="/admin/dashboard/index">
+                                                    <i class="fas fa-home"></i>
+                                                </a>
+                                            </li>
+                                            <li class="separator">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="/admin/customer-mgr/list">Customers</a>
+                                            </li>
+                                            <li class="separator">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="#">Detail</a>
+                                            </li>
+                                        </ul>
+                                    </div>
 
-                                    <h3 class="fw-bold mb-3">Customer Details</h3>
-                                    <ul class="breadcrumbs mb-3">
-                                        <li class="nav-home">
-                                            <a href="/admin/dashboard/index">
-                                                <i class="fas fa-home"></i>
-                                            </a>
-                                        </li>
-                                        <li class="separator">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="/admin/customer-mgr/list">Customers</a>
-                                        </li>
-                                        <li class="separator">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="#">Detail</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="card info-card">
+                                                <div class="card-body text-center">
+                                                    <div class="profile-img-container">
 
+                                                        <img src="${not empty customer.imageUrl  ? customer.imageUrl : (ctx.concat(customer.gender ? '/resources/images-upload/customer/avatar-default-male.jpg' 
+                                                                                                          : '/resources/images-upload/customer/avatar-default-female.jpg'))}"
+                                                            class="profile-img" alt="${customer.firstName}">
+                                                        <div
+                                                            class="profile-badge ${customer.status ? 'bg-success' : 'bg-danger'}">
+                                                            <i
+                                                                class="fas ${customer.status ? 'fa-check' : 'fa-times'}"></i>
+                                                        </div>
+                                                    </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="card info-card">
-                                            <div class="card-body text-center">
-                                                <div class="profile-img-container">
-                                                    <img src="${not empty customer.imageUrl ? customer.imageUrl : ctx.concat('/resources/images-upload/logo-is-empty.jpg')}"
-                                                        class="profile-img" alt="${customer.firstName}">
-                                                    <div
-                                                        class="profile-badge ${customer.status ? 'bg-success' : 'bg-danger'}">
-                                                        <i class="fas ${customer.status ? 'fa-check' : 'fa-times'}"></i>
+                                                    <h4 class="mb-2">${customer.firstName} ${customer.lastName}</h4>
+                                                    <p class="text-muted mb-3">${customer.email}</p>
+
+                                                    <div class="d-flex justify-content-center mb-3">
+                                                        <span
+                                                            class="status-badge ${customer.status ? 'bg-success' : 'bg-danger'}">
+                                                            ${customer.status ? 'Active' : 'Inactive'}
+                                                        </span>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <h4 class="mb-2">${customer.firstName} ${customer.lastName}</h4>
-                                                <p class="text-muted mb-3">${customer.email}</p>
-
-                                                <div class="d-flex justify-content-center mb-3">
-                                                    <span
-                                                        class="status-badge ${customer.status ? 'bg-success' : 'bg-danger'}">
-                                                        ${customer.status ? 'Active' : 'Inactive'}
-                                                    </span>
+                                            <div class="card info-card">
+                                                <div class="card-header">
+                                                    <h5 class="card-title mb-0">
+                                                        <i class="fas fa-chart-pie mr-2 text-primary"></i>
+                                                        Customer Stats
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="info-item">
+                                                        <div class="info-label">Total Orders</div>
+                                                        <div class="info-value">${not empty orders ? orders.size() : 0}
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- <div class="card info-card">
-                                            <div class="card-header">
-                                                <h5 class="card-title mb-0">
-                                                    <i class="fas fa-chart-pie mr-2 text-primary"></i>
-                                                    Customer Stats
-                                                </h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="info-item">
-                                                    <div class="info-label">Total Orders</div>
-                                                    <div class="info-value">${not empty orders ? orders.size() : 0}
-                                                    </div>
-                                                </div>
+                                        <div class="col-md-8">
+                                            <!-- Navigation Tabs -->
+                                            <ul class="nav nav-pills nav-pills-custom mb-3" id="customerTabs"
+                                                role="tablist">
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link active" id="profile-tab"
+                                                        data-bs-toggle="tab" data-bs-target="#profile" type="button"
+                                                        role="tab" aria-controls="profile" aria-selected="true">Personal
+                                                        Info</button>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link" id="addresses-tab" data-bs-toggle="tab"
+                                                        data-bs-target="#addresses" type="button" role="tab"
+                                                        aria-controls="addresses"
+                                                        aria-selected="false">Addresses</button>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link" id="orders-tab" data-bs-toggle="tab"
+                                                        data-bs-target="#customer-orders" type="button" role="tab"
+                                                        aria-controls="orders" aria-selected="false">Order
+                                                        History</button>
+                                                </li>
 
-                                                <div class="info-item">
-                                                    <div class="info-label">Total Spending</div>
-                                                    <div class="info-value">
-                                                        <fmt:formatNumber value="${totalSpending}" type="currency"
-                                                            currencySymbol="$" />
-                                                    </div>
-                                                </div>
+                                            </ul>
 
-                                                <div class="info-item">
-                                                    <div class="info-label">Last Order</div>
-                                                    <div class="info-value">
-                                                        <c:choose>
-                                                            <c:when test="${not empty lastOrderDate}">
-                                                                <fmt:formatDate value="${lastOrderDate}"
-                                                                    pattern="MMM dd, yyyy" />
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                N/A
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> -->
-                                    </div>
-
-                                    <div class="col-md-8">
-                                        <div class="tab-content" id="customerTabsContent">
-                                            <div class="tab-pane fade show active" id="profile" role="tabpanel">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="card info-card">
-                                                            <div class="card-header">
-                                                                <h5 class="card-title mb-0">
-                                                                    <i class="fas fa-id-card mr-2 text-primary"></i>
-                                                                    Personal Info
-                                                                </h5>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <div class="info-item">
-                                                                    <div class="info-label">Customer ID</div>
-                                                                    <div class="info-value">#${customer.customerId}
+                                            <!-- Tab Content -->
+                                            <div class="tab-content" id="customerTabsContent">
+                                                <!-- Personal Info Tab -->
+                                                <div class="tab-pane fade show active" id="profile" role="tabpanel"
+                                                    aria-labelledby="profile-tab" tabindex="0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="card info-card">
+                                                                <div class="card-header">
+                                                                    <h5 class="card-title mb-0">
+                                                                        <i class="fas fa-id-card mr-2 text-primary"></i>
+                                                                        Personal Info
+                                                                    </h5>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="info-item">
+                                                                        <div class="info-label">Customer ID</div>
+                                                                        <div class="info-value">#${customer.customerId}
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-
-                                                                <div class="info-item">
-                                                                    <div class="info-label">Full Name</div>
-                                                                    <div class="info-value">${customer.firstName}
-                                                                        ${customer.lastName}</div>
-                                                                </div>
-
-                                                                <div class="info-item">
-                                                                    <div class="info-label">Gender</div>
-                                                                    <div class="info-value">${customer.gender ? 'Male' :
-                                                                        'Female'}</div>
-                                                                </div>
-
-                                                                <div class="info-item">
-                                                                    <div class="info-label">Date of Birth</div>
-                                                                    <div class="info-value">
-                                                                        <fmt:formatDate
-                                                                            value="${customer.getDateOfBirthAsDate()}"
-                                                                            pattern="MMM dd, yyyy" />
+                                                                    <div class="info-item">
+                                                                        <div class="info-label">Full Name</div>
+                                                                        <div class="info-value">${customer.firstName}
+                                                                            ${customer.lastName}</div>
+                                                                    </div>
+                                                                    <div class="info-item">
+                                                                        <div class="info-label">Gender</div>
+                                                                        <div class="info-value">${customer.gender ?
+                                                                            'Male' : 'Female'}</div>
+                                                                    </div>
+                                                                    <div class="info-item">
+                                                                        <div class="info-label">Date of Birth</div>
+                                                                        <div class="info-value">
+                                                                            <fmt:formatDate
+                                                                                value="${customer.getDateOfBirthAsDate()}"
+                                                                                pattern="MMM dd, yyyy" />
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="card info-card">
-                                                            <div class="card-header">
-                                                                <h5 class="card-title mb-0">
-                                                                    <i
-                                                                        class="fas fa-address-book mr-2 text-primary"></i>
-                                                                    Contact Info
-                                                                </h5>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <div class="info-item">
-                                                                    <div class="info-label">Email</div>
-                                                                    <div class="info-value">${customer.email}</div>
+                                                        <div class="col-md-6">
+                                                            <div class="card info-card">
+                                                                <div class="card-header">
+                                                                    <h5 class="card-title mb-0">
+                                                                        <i
+                                                                            class="fas fa-address-book mr-2 text-primary"></i>
+                                                                        Contact Info
+                                                                    </h5>
                                                                 </div>
-
-                                                                <div class="info-item">
-                                                                    <div class="info-label">Phone</div>
-                                                                    <div class="info-value">${customer.phone}</div>
-                                                                </div>
-
-                                                                <div class="info-item">
-                                                                    <div class="info-label">Registration Date</div>
-                                                                    <div class="info-value">
-                                                                        <fmt:formatDate
-                                                                            value="${customer.getRegistrationDateAsDate()}"
-                                                                            pattern="MMM dd, yyyy" />
+                                                                <div class="card-body">
+                                                                    <div class="info-item">
+                                                                        <div class="info-label">Email</div>
+                                                                        <div class="info-value">${customer.email}</div>
+                                                                    </div>
+                                                                    <div class="info-item">
+                                                                        <div class="info-label">Phone</div>
+                                                                        <div class="info-value">${customer.phone}</div>
+                                                                    </div>
+                                                                    <div class="info-item">
+                                                                        <div class="info-label">Registration Date</div>
+                                                                        <div class="info-value">
+                                                                            <fmt:formatDate
+                                                                                value="${customer.getRegistrationDateAsDate()}"
+                                                                                pattern="MMM dd, yyyy" />
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -304,105 +305,153 @@
                                                     </div>
                                                 </div>
 
-
-                                            </div>
-
-                                            <div class="tab-pane fade" id="orders" role="tabpanel">
-                                                <div class="card info-card">
-                                                    <div class="card-header">
-                                                        <h5 class="card-title mb-0">
-                                                            <i class="fas fa-shopping-bag mr-2 text-primary"></i>
-                                                            Order History
-                                                        </h5>
+                                                <!-- Addresses Tab -->
+                                                <div class="tab-pane fade" id="addresses" role="tabpanel"
+                                                    aria-labelledby="addresses-tab" tabindex="0">
+                                                    <div class="card info-card mt-4">
+                                                        <div
+                                                            class="card-header d-flex justify-content-between align-items-center">
+                                                            <h5 class="card-title mb-0">
+                                                                <i class="fas fa-map-marker-alt mr-2 text-primary"></i>
+                                                                Addresses
+                                                            </h5>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <c:choose>
+                                                                <c:when test="${not empty addresses}">
+                                                                    <div class="row">
+                                                                        <c:forEach var="address" items="${addresses}">
+                                                                            <div class="col-md-6 mb-3">
+                                                                                <div class="card h-100 border">
+                                                                                    <div class="card-body">
+                                                                                        <p class="card-text mb-1">
+                                                                                            ${address.street},
+                                                                                            ${address.ward}</p>
+                                                                                        <p class="card-text mb-1">
+                                                                                            ${address.district},
+                                                                                            ${address.city}</p>
+                                                                                        <p class="card-text mb-1">
+                                                                                            ${address.province}</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </c:forEach>
+                                                                    </div>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <div class="text-center py-4">
+                                                                        <i
+                                                                            class="fas fa-map-marked-alt fa-3x text-muted mb-3"></i>
+                                                                        <h5>No Addresses Found</h5>
+                                                                        <p class="text-muted">This customer hasn't added
+                                                                            any addresses yet.</p>
+                                                                    </div>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </div>
                                                     </div>
-                                                    <div class="card-body">
-                                                        <c:choose>
-                                                            <c:when test="${not empty orders}">
-                                                                <div class="table-responsive">
-                                                                    <table class="table table-hover">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Order ID</th>
-                                                                                <th>Date</th>
-                                                                                <th>Amount</th>
-                                                                                <th>Status</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <c:forEach var="order" items="${orders}">
+                                                </div>
+
+                                                <!-- Order History Tab -->
+                                                <div class="tab-pane fade" id="customer-orders" role="tabpanel"
+                                                    aria-labelledby="orders-tab" tabindex="0">
+                                                    <div class="card info-card">
+                                                        <div class="card-header">
+                                                            <h5 class="card-title mb-0">
+                                                                <i class="fas fa-shopping-bag mr-2 text-primary"></i>
+                                                                Order History
+                                                            </h5>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <c:choose>
+                                                                <c:when test="${not empty orders}">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table table-hover">
+                                                                            <thead>
                                                                                 <tr>
-                                                                                    <td>#${order.orderId}</td>
-                                                                                    <td>
-                                                                                        <fmt:parseDate
-                                                                                            value="${order.orderDate}"
-                                                                                            pattern="yyyy-MM-dd'T'HH:mm"
-                                                                                            var="parsedDate"
-                                                                                            type="both" />
-                                                                                        <fmt:formatDate
-                                                                                            value="${parsedDate}"
-                                                                                            pattern="MMM dd, yyyy" />
-                                                                                    </td>
-                                                                                    <td>$${order.totalAmount}</td>
-                                                                                    <td>
-                                                                                        <span
-                                                                                            class="status-badge ${order.orderStatus == 'Completed' ? 'bg-success' : 
-                                                                                  order.orderStatus == 'Processing' ? 'bg-primary' : 
-                                                                                  order.orderStatus == 'Shipped' ? 'bg-info' : 
-                                                                                  order.orderStatus == 'Cancelled' ? 'bg-danger' : 'bg-warning'}">
-                                                                                            ${order.orderStatus}
-                                                                                        </span>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <a href="/admin/order-mgr/detail/${order.orderId}"
-                                                                                            class="btn btn-sm btn-outline-primary">
-                                                                                            <i class="fas fa-eye"></i>
-                                                                                            View
-                                                                                        </a>
-                                                                                    </td>
+                                                                                    <th>Order ID</th>
+                                                                                    <th>Date</th>
+                                                                                    <th>Amount</th>
+                                                                                    <th>Status</th>
+                                                                                    <th>Action</th>
                                                                                 </tr>
-                                                                            </c:forEach>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <div class="text-center py-4">
-                                                                    <i
-                                                                        class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
-                                                                    <h5>No Orders Found</h5>
-                                                                    <p class="text-muted">This customer hasn't placed
-                                                                        any orders yet.</p>
-                                                                </div>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="tab-pane fade" id="activity" role="tabpanel">
-                                                <div class="card info-card">
-                                                    <div class="card-header">
-                                                        <h5 class="card-title mb-0">
-                                                            <i class="fas fa-chart-bar mr-2 text-primary"></i>
-                                                            Purchase Activity
-                                                        </h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="chart-container">
-                                                            <canvas id="purchaseChart"></canvas>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <c:forEach var="order"
+                                                                                    items="${orders}">
+                                                                                    <tr>
+                                                                                        <td>#${order.orderId}</td>
+                                                                                        <td>
+                                                                                            <fmt:parseDate
+                                                                                                value="${order.orderDate}"
+                                                                                                pattern="yyyy-MM-dd'T'HH:mm"
+                                                                                                var="parsedDate"
+                                                                                                type="both" />
+                                                                                            <fmt:formatDate
+                                                                                                value="${parsedDate}"
+                                                                                                pattern="MMM dd, yyyy" />
+                                                                                        </td>
+                                                                                        <td>$${order.totalAmount}</td>
+                                                                                        <td>
+                                                                                            <span
+                                                                                                class="status-badge ${order.orderStatus == 'Completed' ? 'bg-success' : 
+                                                                                                order.orderStatus == 'Processing' ? 'bg-primary' : 
+                                                                                                order.orderStatus == 'Shipped' ? 'bg-info' : 
+                                                                                                order.orderStatus == 'Cancelled' ? 'bg-danger' : 'bg-warning'}">
+                                                                                                ${order.orderStatus}
+                                                                                            </span>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <a href="/admin/order-mgr/detail/${order.orderId}"
+                                                                                                class="btn btn-sm btn-outline-primary">
+                                                                                                <i
+                                                                                                    class="fas fa-eye"></i>
+                                                                                                View
+                                                                                            </a>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </c:forEach>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <div class="text-center py-4">
+                                                                        <i
+                                                                            class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                                                                        <h5>No Orders Found</h5>
+                                                                        <p class="text-muted">This customer hasn't
+                                                                            placed any orders yet.</p>
+                                                                    </div>
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <!-- JavaScript to ensure tab functionality -->
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                // Initialize Bootstrap tabs
+                                                const tabList = document.querySelectorAll('#customerTabs .nav-link');
+                                                tabList.forEach(tab => {
+                                                    tab.addEventListener('click', function (e) {
+                                                        e.preventDefault();
+                                                        const bsTab = new bootstrap.Tab(this);
+                                                        bsTab.show();
+                                                    });
+                                                });
+                                            });
+                                        </script>
                                     </div>
-                                </div>
                             </div>
                         </div>
-
-                        <jsp:include page="../layout/footer.jsp" />
                     </div>
+
+                    <jsp:include page="../layout/footer.jsp" />
+                </div>
                 </div>
 
                 <script src="${ctx}/resources/assets/dashboard/js/core/jquery-3.7.1.min.js"></script>
@@ -410,4 +459,7 @@
                 <script src="${ctx}/resources/assets/dashboard/js/core/bootstrap.min.js"></script>
                 <script src="${ctx}/resources/assets/dashboard/js/plugin/chart.js/chart.min.js"></script>
                 <script src="${ctx}/resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
-                <script src="${ctx}/resources/assets/dashboard/js/kai
+                <script src="${ctx}/resources/assets/dashboard/js/kaiadmin.min.js"></script>
+            </body>
+
+            </html>

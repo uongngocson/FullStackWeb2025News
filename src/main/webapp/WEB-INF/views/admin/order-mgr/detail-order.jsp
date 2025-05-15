@@ -215,16 +215,6 @@
                                                         <i class="fas fa-info-circle mr-2 text-primary"></i>
                                                         Order Information
                                                     </h4>
-                                                    <div class="ml-auto action-buttons">
-                                                        <a href="/admin/order-mgr/update/${order.orderId}"
-                                                            class="btn btn-primary btn-round">
-                                                            <i class="fa fa-edit mr-1"></i> Edit
-                                                        </a>
-                                                        <button class="btn btn-danger btn-round"
-                                                            onclick="deleteOrder('${order.orderId}')">
-                                                            <i class="fa fa-trash mr-1"></i> Delete
-                                                        </button>
-                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="card-body">
@@ -275,7 +265,7 @@
                                                                 <div><i class="fas fa-envelope mr-2 text-muted"></i>
                                                                     ${order.customer.email}</div>
                                                                 <div><i class="fas fa-phone mr-2 text-muted"></i>
-                                                                    ${order.customer.phoneNumber}</div>
+                                                                    ${order.customer.phone}</div>
                                                             </div>
                                                         </div>
                                                         <div class="mb-4">
@@ -295,20 +285,7 @@
                                                             <div class="info-label">Payment Information</div>
                                                             <div class="info-value">
                                                                 <i class="fas fa-credit-card mr-2 text-muted"></i>
-                                                                ${order.payment.namePaymentMethod}
-                                                            </div>
-                                                            <div class="mt-2">
-                                                                <strong>Status:</strong>
-                                                                <span
-                                                                    class="order-status-badge ${order.paymentStatus == 'Paid' ? 'bg-success' : 
-                                                        order.paymentStatus == 'Pending' ? 'bg-warning' : 
-                                                        order.paymentStatus == 'Failed' ? 'bg-danger' : 'bg-secondary'}">
-                                                                    <i
-                                                                        class="fas ${order.paymentStatus == 'Paid' ? 'fa-check-circle' : 
-                                                            order.paymentStatus == 'Pending' ? 'fa-clock' : 
-                                                            order.paymentStatus == 'Failed' ? 'fa-times-circle' : 'fa-question-circle'} mr-1"></i>
-                                                                    ${order.paymentStatus}
-                                                                </span>
+                                                                ${order.payment.paymentMethod}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -350,7 +327,7 @@
 
                                                                             <div class="product-details">
                                                                                 <div class="product-name">
-                                                                                    ${orderDetail.product.productName}
+                                                                                    ${orderDetail.productVariant.product.productName}
                                                                                 </div>
                                                                             </div>
                                                                         </div>

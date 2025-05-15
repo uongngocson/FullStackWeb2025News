@@ -165,7 +165,7 @@
                                                                 <div class="mt-2">
                                                                     <div id="logoPreview" class="img-preview">
                                                                         <c:if test="${not empty supplier.logoUrl}">
-                                                                            <img src="${ctx}/${supplier.logoUrl}"
+                                                                            <img src="${ctx}${supplier.logoUrl}"
                                                                                 alt="supplier Logo"
                                                                                 class="img-fluid rounded"
                                                                                 style="max-height: 150px;">

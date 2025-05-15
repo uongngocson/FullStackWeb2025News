@@ -64,95 +64,108 @@
                                     </ul>
                                 </div>
 
-                                <!-- start order datatable -->
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <div class="d-flex align-items-center">
-                                                    <h4 class="card-title">Orders list</h4>
-                                                    <a href="/admin/order-mgr/create"
+                                <%-- Display Success and Error Messages --%>
+                                    <c:if test="${not empty successMessage}">
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            ${successMessage}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${not empty errorMessage}">
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            ${errorMessage}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    </c:if>
+
+                                    <!-- start order datatable -->
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <div class="d-flex align-items-center">
+                                                        <h4 class="card-title">Orders list</h4>
+                                                        <!-- <a href="/admin/order-mgr/create"
                                                         class="btn btn-primary btn-round ms-auto">
                                                         <i class="fas fa-plus"></i> Add New Order
-                                                    </a>
+                                                    </a> -->
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table id="add-row" class="table table-hover">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>No.</th>
-                                                                <th>ID</th>
-                                                                <th>Customer</th>
-                                                                <th>Order Date</th>
-                                                                <th>Total Amount</th>
-                                                                <th>Order Status</th>
-                                                                <th>Payment Status</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <c:forEach var="order" items="${orders}" varStatus="status">
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table id="add-row" class="table table-hover">
+                                                            <thead>
                                                                 <tr>
-                                                                    <td>${status.index+1}</td>
-                                                                    <td><a href="/admin/order-mgr/detail/${order.orderId}"
-                                                                            class="text-primary">#${order.orderId}</a>
-                                                                    </td>
-                                                                    <td>${order.customer.firstName}
-                                                                        ${order.customer.lastName}</td>
-                                                                    <td>
-                                                                        <fmt:parseDate value="${order.orderDate}"
-                                                                            pattern="yyyy-MM-dd'T'HH:mm"
-                                                                            var="parsedDate" type="both" />
-                                                                        <fmt:formatDate value="${parsedDate}"
-                                                                            pattern="dd/MM/yyyy HH:mm" />
-                                                                    </td>
+                                                                    <th>No.</th>
+                                                                    <th>ID</th>
+                                                                    <th>Customer</th>
+                                                                    <th>Order Date</th>
+                                                                    <th>Total Amount</th>
+                                                                    <th>Order Status</th>
+                                                                    <th>Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <c:forEach var="order" items="${orders}"
+                                                                    varStatus="status">
+                                                                    <tr>
+                                                                        <td>${status.index+1}</td>
+                                                                        <td><a href="/admin/order-mgr/detail/${order.orderId}"
+                                                                                class="text-primary">#${order.orderId}</a>
+                                                                        </td>
+                                                                        <td>${order.customer.firstName}
+                                                                            ${order.customer.lastName}</td>
+                                                                        <td>
+                                                                            <fmt:parseDate value="${order.orderDate}"
+                                                                                pattern="yyyy-MM-dd'T'HH:mm"
+                                                                                var="parsedDate" type="both" />
+                                                                            <fmt:formatDate value="${parsedDate}"
+                                                                                pattern="dd/MM/yyyy HH:mm" />
+                                                                        </td>
 
-                                                                    <td>$${order.totalAmount}</td>
-                                                                    <td>
-                                                                        <span
-                                                                            class="badge ${order.orderStatus == 'Completed' ? 'bg-success' : 
+                                                                        <td>$${order.totalAmount}</td>
+                                                                        <td>
+                                                                            <span
+                                                                                class="badge ${order.orderStatus == 'Completed' ? 'bg-success' : 
                                                                         order.orderStatus == 'Processing' ? 'bg-primary' : 
                                                                         order.orderStatus == 'Shipped' ? 'bg-info' : 
                                                                         order.orderStatus == 'Cancelled' ? 'bg-danger' : 'bg-warning'}">
-                                                                            ${order.orderStatus}
-                                                                        </span>
-                                                                    </td>
-                                                                    <td>
-                                                                        <span
-                                                                            class="badge ${order.paymentStatus == 'Paid' ? 'bg-success' : 
-                                                                        order.paymentStatus == 'Pending' ? 'bg-warning' : 
-                                                                        order.paymentStatus == 'Failed' ? 'bg-danger' : 'bg-secondary'}">
-                                                                            ${order.paymentStatus}
-                                                                        </span>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="btn-group">
-                                                                            <a href="/admin/order-mgr/detail/${order.orderId}"
-                                                                                class="btn btn-sm btn-info">
-                                                                                <i class="fas fa-eye"></i>
-                                                                            </a>
-                                                                            <a href="/admin/order-mgr/update/${order.orderId}"
-                                                                                class="btn btn-sm btn-primary">
-                                                                                <i class="fas fa-edit"></i>
-                                                                            </a>
-                                                                            <button type="button"
-                                                                                class="btn btn-sm btn-danger"
-                                                                                onclick="deleteOrder('${order.orderId}')">
-                                                                                <i class="fas fa-trash"></i>
-                                                                            </button>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </c:forEach>
-                                                        </tbody>
-                                                    </table>
+                                                                                ${order.orderStatus}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="btn-group">
+                                                                                <a href="/admin/order-mgr/detail/${order.orderId}"
+                                                                                    class="btn btn-sm btn-info">
+                                                                                    <i class="fas fa-eye"></i>
+                                                                                </a>
+                                                                                <a href="/admin/order-mgr/update/${order.orderId}"
+                                                                                    class="btn btn-sm btn-primary">
+                                                                                    <i class="fas fa-edit"></i>
+                                                                                </a>
+                                                                                <%-- Update delete button to use a form
+                                                                                    or a more robust JS confirmation
+                                                                                    --%>
+                                                                                    <button type="button"
+                                                                                        class="btn btn-sm btn-danger"
+                                                                                        onclick="confirmDeleteOrder('${order.orderId}')">
+                                                                                        <i class="fas fa-trash"></i>
+                                                                                    </button>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </c:forEach>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
                         <jsp:include page="../layout/footer.jsp" />
@@ -181,27 +194,44 @@
                     $(document).ready(function () {
                         $('#add-row').DataTable({
                             "pageLength": 10,
+                            lengthMenu: [5, 10, 25, 50, 100],
+                            columnDefs: [
+                                {
+                                    targets: [6], // Target the Actions column
+                                    orderable: false,
+                                    searchable: false
+                                }
+                            ]
                         });
                     });
 
-                    // Delete confirmation and API call
-                    function deleteOrder(orderId) {
+                    // Delete confirmation and form submission
+                    function confirmDeleteOrder(orderId) {
                         swal({
-                            title: "Are you sure you want to delete this order?",
+                            title: "Are you sure you want to delete this order (#" + orderId + ")?",
                             text: "This action cannot be undone.",
                             icon: "warning",
-                            buttons: ["Cancel", "Delete"],
+                            buttons: {
+                                cancel: {
+                                    text: "Cancel",
+                                    value: null,
+                                    visible: true,
+                                    className: "btn btn-default",
+                                    closeModal: true,
+                                },
+                                confirm: {
+                                    text: "Delete",
+                                    value: true,
+                                    visible: true,
+                                    className: "btn btn-danger",
+                                    closeModal: true
+                                }
+                            },
                             dangerMode: true,
-                        }).then((confirmed) => {
-                            if (confirmed) {
-                                $.post(`/admin/order-mgr/delete/${orderId}`)
-                                    .done(() => {
-                                        swal("Deleted!", "The order has been successfully deleted.", "success")
-                                            .then(() => location.reload());
-                                    })
-                                    .fail(() => {
-                                        swal("Error!", "Something went wrong. Please try again.", "error");
-                                    });
+                        }).then((willDelete) => {
+                            if (willDelete) {
+                                // Redirect to the delete URL (which is a GET request handled by Spring MVC)
+                                window.location.href = "/admin/order-mgr/delete/" + orderId;
                             }
                         });
                     }

@@ -197,7 +197,8 @@
                                 <div class="profile-header">
                                     <div class="row align-items-center">
                                         <div class="col-md-2 text-center">
-                                            <img src="${not empty employee.imageUrl ? employee.imageUrl : ctx.concat('/resources/images-upload/logo-is-empty.jpg')}"
+                                            <img src="${not empty employee.imageUrl? employee.imageUrl : (ctx.concat(employee.gender ? '/resources/images-upload/employee/avatar-default-male.jpg' 
+                                                                                                                                                     : '/resources/images-upload/employee/avatar-default-female.jpg'))}"
                                                 alt="${employee.firstName}" class="profile-img">
                                         </div>
                                         <div class="col-md-10">
@@ -313,19 +314,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Action Buttons -->
-                                        <div class="card mt-4">
-                                            <div class="card-body text-center">
-                                                <a href="/admin/employee-mgr/update/${employee.employeeId}"
-                                                    class="btn btn-primary btn-lg mr-3">
-                                                    <i class="fas fa-edit mr-2"></i>Update Employee
-                                                </a>
-                                                <button onclick="deleteEmployee('${employee.employeeId}')"
-                                                    class="btn btn-danger btn-lg">
-                                                    <i class="fas fa-trash-alt mr-2"></i>Delete Employee
-                                                </button>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -352,45 +341,6 @@
                 <!-- Kaiadmin JS -->
                 <script src="${ctx}/resources/assets/dashboard/js/kaiadmin.min.js"></script>
 
-                <script>
-                    function deleteEmployee(employeeId) {
-                        swal({
-                            title: 'Are you sure?',
-                            text: "You won't be able to revert this!",
-                            icon: 'warning',
-                            buttons: {
-                                cancel: {
-                                    visible: true,
-                                    text: 'Cancel',
-                                    className: 'btn btn-secondary'
-                                },
-                                confirm: {
-                                    text: 'Yes, delete it!',
-                                    className: 'btn btn-danger'
-                                }
-                            }
-                        }).then((willDelete) => {
-                            if (willDelete) {
-                                $.ajax({
-                                    url: '/admin/employee-mgr/delete/' + employeeId,
-                                    type: 'POST',
-                                    success: function (result) {
-                                        swal({
-                                            title: 'Deleted!',
-                                            text: 'Employee has been deleted.',
-                                            icon: 'success'
-                                        }).then(() => {
-                                            window.location.href = '/admin/employee-mgr/list';
-                                        });
-                                    },
-                                    error: function (error) {
-                                        swal('Error!', 'Something went wrong.', 'error');
-                                    }
-                                });
-                            }
-                        });
-                    }
-                </script>
             </body>
 
             </html>

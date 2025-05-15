@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import local.example.demo.exception.ProductInUseException;
 import local.example.demo.model.entity.Brand;
 import local.example.demo.model.entity.Category;
 import local.example.demo.model.entity.Product;
@@ -69,6 +71,7 @@ public class ProductMgrController {
         if (product == null) {
             return "redirect:/admin/product-mgr/list";
         }
+        model.addAttribute("totalQuantity", productService.getTotalStock(productId));
         model.addAttribute("product", product);
         return "admin/product-mgr/detail-product";
     }
@@ -97,9 +100,16 @@ public class ProductMgrController {
         return "redirect:/admin/product-mgr/list";
     }
 
-    @GetMapping("delete/{productId}")
-    public String deleteProduct(Model model, @PathVariable("productId") Integer productId) {
-        productService.deleteProductById(productId);
+    @PostMapping("delete/{productId}")
+    public String deleteProduct(Model model, @PathVariable("productId") Integer productId, RedirectAttributes redirectAttributes) {
+        try {
+            productService.deleteProductById(productId);
+            redirectAttributes.addFlashAttribute("successMessage", "Product deleted successfully.");
+        } catch (ProductInUseException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete product. An unexpected error occurred.");
+        }
         return "redirect:/admin/product-mgr/list";
     }
 }

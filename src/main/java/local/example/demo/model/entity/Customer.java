@@ -64,11 +64,14 @@ public class Customer {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @OneToOne(mappedBy = "customer", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "customer")
     private Cart cart;
 
     @OneToMany(mappedBy = "customer")
     private List<Address> addresses;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders;
 
     // methods
     public Date getDateOfBirthAsDate() {
