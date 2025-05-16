@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import local.example.demo.model.dto.OrderItemDTO;
 import local.example.demo.model.entity.Address;
-import local.example.demo.model.entity.Addressv2;
 import local.example.demo.model.entity.CartDetail;
 import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.ProductVariant;
@@ -96,24 +95,24 @@ public class OrderViewController {
             model.addAttribute("formattedAddresses", formattedAddresses);
 
             // Truy vấn địa chỉ từ bảng mới để in ra terminal kiểm tra
-            List<Addressv2> addressesv2 = addressService.getAddressesv2ForCustomer(customerDetails.getCustomerId());
+            List<Address> addressesv2 = addressService.getAddressesv2ForCustomer(customerDetails.getCustomerId());
             log.info("Addressesv2 information for testing:");
-            for (Addressv2 address : addressesv2) {
+            for (Address address : addressesv2) {
                 log.info("Address ID: {}, Street: {}, Full Address: {}",
                         address.getAddressId(),
                         address.getStreet(),
                         address.getFullAddress());
 
                 log.info("Ward: ID={}, Name={}",
-                        address.getWardId(),
+                        address.getWard().getWardId(),
                         address.getWard() != null ? address.getWard().getWardName() : "N/A");
 
                 log.info("District: ID={}, Name={}",
-                        address.getDistrictId(),
+                        address.getDistrict().getDistrictId(),
                         address.getDistrict() != null ? address.getDistrict().getDistrictName() : "N/A");
 
                 log.info("Province: ID={}, Name={}",
-                        address.getProvinceId(),
+                        address.getProvince().getProvinceId(),
                         address.getProvince() != null ? address.getProvince().getProvinceName() : "N/A");
             }
 
@@ -210,16 +209,16 @@ public class OrderViewController {
                     .append("\nWard: ").append(address.getWard())
                     .append("\nDistrict: ").append(address.getDistrict())
                     .append("\nProvince: ").append(address.getProvince())
-                    .append("\nCity: ").append(address.getCity())
+                    .append("\nCountry: ").append(address.getCountry())
                     .append("\n-----------------------");
 
-            log.info("Address formatted: ID={}, Street={}, Ward={}, District={}, Province={}, City={}",
+            log.info("Address formatted: ID={}, Street={}, Ward={}, District={}, Province={}, Country={}",
                     address.getAddressId(),
                     address.getStreet(),
                     address.getWard(),
                     address.getDistrict(),
                     address.getProvince(),
-                    address.getCity());
+                    address.getCountry());
         }
 
         if (addresses.isEmpty()) {

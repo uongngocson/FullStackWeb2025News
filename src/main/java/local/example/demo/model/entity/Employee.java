@@ -47,7 +47,7 @@ public class Employee {
     @NotNull(message = "Date of birth cannot be blank")
     private LocalDate dateOfBirth;
 
-    private boolean gender;
+    private boolean gender = true;
 
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email must be valid")
@@ -62,7 +62,7 @@ public class Employee {
     @NotNull(message = "Salary cannot be blank")
     private BigDecimal salary;
 
-    private boolean status;
+    private boolean status = true;
 
     // relationships
     @OneToOne

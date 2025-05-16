@@ -22,7 +22,7 @@
                 <!-- Add Font Awesome for better icons -->
                 <link rel="stylesheet"
                     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-
+                <!-- Fonts and icons -->
                 <script>
                     WebFont.load({
                         google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -40,7 +40,7 @@
                         },
                     });
                 </script>
-
+                <!-- Custom CSS for Employee Management -->
                 <style>
                     .employee-avatar {
                         width: 45px;
@@ -221,7 +221,7 @@
                                                         <table id="employee-table" class="table table-hover">
                                                             <thead>
                                                                 <tr>
-                                                                    <th>ID</th>
+                                                                    <th>No.</th>
                                                                     <th>Employee</th>
                                                                     <th>Hire Date</th>
                                                                     <th>Salary</th>
@@ -230,9 +230,10 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <c:forEach var="employee" items="${employees}">
+                                                                <c:forEach var="employee" items="${employees}"
+                                                                    varStatus="status">
                                                                     <tr>
-                                                                        <td>#${employee.employeeId}</td>
+                                                                        <td>${status.index + 1}</td>
                                                                         <td>
                                                                             <div class="employee-info">
 
@@ -328,7 +329,6 @@
                             $('#employee-table').DataTable({
                                 "pageLength": 10,
                                 "lengthMenu": [5, 10, 15, 20, 50, 100],
-                                "order": [[0, "desc"]],
                                 "columnDefs": [
                                     { "orderable": false, "targets": [4] }, // Status column
                                     { "orderable": false, "targets": [5] }  // Actions column

@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 import jakarta.servlet.DispatcherType;
 import local.example.demo.service.AccountService;
@@ -52,15 +53,13 @@ public class SecurityConfig {
                 return new CustomLogoutSuccessHandler();
         }
 
-        // @Bean
-        // public SpringSessionRememberMeServices rememberMeServices() {
-        // SpringSessionRememberMeServices rememberMeServices = new
-        // SpringSessionRememberMeServices();
-        // // optionally customize
-        // rememberMeServices.setAlwaysRemember(true);
-
-        // return rememberMeServices;
-        // }
+        @Bean
+        public SpringSessionRememberMeServices rememberMeServices() {
+                SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
+                // optionally customize
+                rememberMeServices.setAlwaysRemember(false);
+                return rememberMeServices;
+        }
 
         // Ensure this method is present and correctly configured
         @Bean
@@ -92,7 +91,7 @@ public class SecurityConfig {
                                                 .deleteCookies("JSESSIONID")
                                                 .invalidateHttpSession(true))
 
-                                // .rememberMe(r -> r.rememberMeServices(rememberMeServices()))
+                                .rememberMe(r -> r.rememberMeServices(rememberMeServices()))
 
                                 /*
                                  * Temporarily disable OAuth2 login configuration

@@ -5,9 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import local.example.demo.model.entity.Address;
-import local.example.demo.model.entity.Addressv2;
-import local.example.demo.repository.Addressv2Repository;
-import local.example.demo.service.CustomerService;
+import local.example.demo.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AddressService {
 
     private final CustomerService customerService;
-    private final Addressv2Repository addressv2Repository;
+    private final AddressRepository addressRepository;
 
     /**
      * Retrieves addresses for a customer and formats them as a string
@@ -29,13 +27,13 @@ public class AddressService {
         log.info("Retrieving addresses for customerId: {}", customerId);
 
         // Lấy địa chỉ từ bảng mới với thông tin chi tiết
-        List<Addressv2> addresses = addressv2Repository.findByCustomerIdWithDetails(customerId);
+        List<Address> addresses = addressRepository.findByCustomerIdWithDetails(customerId);
 
         StringBuilder result = new StringBuilder();
         result.append("Retrieved ").append(addresses.size()).append(" addresses for customerId ").append(customerId)
                 .append(":\n");
 
-        for (Addressv2 address : addresses) {
+        for (Address address : addresses) {
             result.append("\nAddress ID: ").append(address.getAddressId())
                     .append("\nStreet: ").append(address.getStreet())
                     .append("\nWard: ").append(address.getWard() != null ? address.getWard().getWardName() : "N/A")
@@ -81,8 +79,8 @@ public class AddressService {
      * @param customerId The ID of the customer
      * @return List of new addresses for the customer
      */
-    public List<Addressv2> getAddressesv2ForCustomer(Integer customerId) {
+    public List<Address> getAddressesv2ForCustomer(Integer customerId) {
         log.info("Retrieving addressesv2 for customerId: {}", customerId);
-        return addressv2Repository.findByCustomerIdWithDetails(customerId);
+        return addressRepository.findByCustomerIdWithDetails(customerId);
     }
 }

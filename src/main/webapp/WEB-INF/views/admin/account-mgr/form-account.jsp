@@ -7,9 +7,35 @@
             <head>
                 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
                 <title>${account.accountId != null ? 'Edit' : 'Create'} Account</title>
+                <c:set var="ctx" value="${pageContext.request.contextPath}" />
                 <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-                <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/bootstrap.min.css" />
-                <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/kaiadmin.min.css" />
+                <script src="${ctx}/resources/assets/dashboard/js/plugin/webfont/webfont.min.js"></script>
+                <script>
+                    WebFont.load({
+                        google: { families: ["Public Sans:300,400,500,600,700"] },
+                        custom: {
+                            families: [
+                                "Font Awesome 5 Solid",
+                                "Font Awesome 5 Regular",
+                                "Font Awesome 5 Brands",
+                                "simple-line-icons",
+                            ],
+                            urls: ["${ctx}/resources/assets/dashboard/css/fonts.min.css"],
+                        },
+                        active: function () {
+                            sessionStorage.fonts = true;
+                        },
+                    });
+                </script>
+
+                <!-- CSS Files -->
+                <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/bootstrap.min.css" />
+                <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/plugins.min.css" />
+                <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/kaiadmin.min.css" />
+                <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/demo.css" />
+                <!-- Add Font Awesome for better icons -->
+                <link rel="stylesheet"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
             </head>
 
             <body>
@@ -84,6 +110,21 @@
                         <jsp:include page="../layout/footer.jsp" />
                     </div>
                 </div>
+
+                <!-- Core JS Files -->
+                <script src="${ctx}/resources/assets/dashboard/js/core/jquery-3.7.1.min.js"></script>
+                <script src="${ctx}/resources/assets/dashboard/js/core/popper.min.js"></script>
+                <script src="${ctx}/resources/assets/dashboard/js/core/bootstrap.min.js"></script>
+
+                <!-- jQuery Scrollbar -->
+                <script
+                    src="${ctx}/resources/assets/dashboard/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+                <!-- Sweet Alert -->
+                <script src="${ctx}/resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+                <!-- Kaiadmin JS -->
+                <script src="${ctx}/resources/assets/dashboard/js/kaiadmin.min.js"></script>
             </body>
 
             </html>

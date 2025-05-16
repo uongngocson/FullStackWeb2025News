@@ -65,7 +65,7 @@
                         <nav>
                             <i class="uil uil-bars"></i>
                             <a href="/" class="logo">
-                                <img src="${pageContext.request.contextPath}/resources/assets/client/images/icon-adidas-logo.svg"
+                                <img src="${pageContext.request.contextPath}/resources/assets/client/images/walmart-logo.webp"
                                     alt="">
                             </a>
 
@@ -482,11 +482,13 @@
                                             <div class=""> <!-- Tăng padding lên -->
                                                 <div class="flex flex-col items-center">
                                                     <c:if test="${not empty customer.imageUrl}">
-                                                            <div>
-                                                                <p class="text-gray-500 text-sm">Profile Image</p>
-                                                                <img src="${ctx}${customer.imageUrl}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover" onerror="this.src='${ctx}/resources/assets/client/images/default-avatar.jpg'">
-                                                            </div>
-                                                        </c:if>
+                                                        <div>
+                                                            <p class="text-gray-500 text-sm">Profile Image</p>
+                                                            <img src="${ctx}${customer.imageUrl}" alt="Profile Image"
+                                                                class="w-24 h-24 rounded-full object-cover"
+                                                                onerror="this.src='${ctx}/resources/assets/client/images/default-avatar.jpg'">
+                                                        </div>
+                                                    </c:if>
                                                     <div class="text-center font-semibold text-gray-800 text-lg mt-3">
                                                         <c:out value="${sessionScope.fullName}" />
                                                     </div>

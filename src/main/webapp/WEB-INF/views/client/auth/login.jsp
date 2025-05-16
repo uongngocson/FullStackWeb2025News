@@ -56,6 +56,11 @@
                                         class="w-full px-0 py-2 border-b border-gray-300 focus:border-black focus:outline-none transition-colors duration-300">
                                 </div>
 
+                                <div class="mb-6">
+                                    <input type="checkbox" id="remember-me" name="remember-me" class="mr-2">
+                                    <label for="remember-me" class="text-xs">Remember Me</label>
+                                </div>
+
                                 <div>
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                                 </div>

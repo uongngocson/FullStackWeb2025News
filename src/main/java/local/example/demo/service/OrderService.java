@@ -268,7 +268,7 @@ public class OrderService {
                         od.price AS order_detail_price,
                         (od.quantity * od.price) AS subtotal,
                         -- Lấy thông tin địa chỉ giao hàng từ bảng Addresses, sử dụng các cột có sẵn
-                        CONCAT(a.street, ', ', a.ward, ', ', a.district, ', ', a.city, ', ', a.province, ', ', a.country) AS shipping_address
+                        CONCAT(a.street, ', ', a.ward, ', ', a.district, ', ', a.country, ', ', a.province, ', ', a.country) AS shipping_address
                     FROM
                         Orders o
                         INNER JOIN Customers c ON o.customer_id = c.customer_id

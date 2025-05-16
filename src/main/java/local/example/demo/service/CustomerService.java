@@ -32,7 +32,6 @@ import local.example.demo.repository.CartRepository;
 import local.example.demo.repository.CustomerRepository;
 import local.example.demo.repository.OrderRepository;
 import local.example.demo.repository.ReviewRepository;
-import local.example.demo.repository.Addressv2Repository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -47,7 +46,6 @@ public class CustomerService {
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
     private final ReviewRepository reviewRepository;
-    private final Addressv2Repository addressv2Repository;
     private final AccountDiscountCodeRepository accountDiscountCodeRepository;
 
     @Transactional(readOnly = true)
@@ -88,7 +86,7 @@ public class CustomerService {
             }
         }
         addressRepository.deleteByCustomer_CustomerId(customerId);
-        addressv2Repository.deleteByCustomerId(customerId);
+        addressRepository.deleteByCustomerId(customerId);
         cartRepository.deleteByCustomer_CustomerId(customerId);
         accountDiscountCodeRepository.deleteByCustomer_CustomerId(customerId);
 
