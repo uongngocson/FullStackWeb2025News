@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class GHNProvince {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "province_id")
     private Integer provinceId;
 

@@ -1,6 +1,11 @@
 package local.example.demo.controller.client;
 
+import java.net.http.HttpRequest;
+
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -23,6 +28,8 @@ import local.example.demo.service.RoleService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RequiredArgsConstructor
@@ -42,7 +49,24 @@ public class AuthenticationController {
     }
 
     @GetMapping("page-not-found")
-    public String getPageNotFoundPage() {
+    public String getPageNotFoundPage(HttpServletRequest request) {
+        // Lấy thông tin xác thực từ SecurityContextHolder
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Kiểm tra xem người dùng đã đăng nhập và có vai trò EMPLOYEE không
+        if (authentication != null && authentication.isAuthenticated() &&
+                !(authentication instanceof AnonymousAuthenticationToken)) {
+
+            // Kiểm tra vai trò EMPLOYEE
+            boolean isEmployee = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYEE"));
+
+            if (isEmployee) {
+                return "employee/auth/page-not-found";
+            }
+        }
+
+        // Mặc định trả về view client
         return "client/auth/page-not-found";
     }
 
@@ -59,17 +83,17 @@ public class AuthenticationController {
             model.addAttribute("message", "REGISTRATION FAILED!");
             return "client/auth/register";
         }
-        
+
         // Store individual fields in session
         session.setAttribute("pending_email", registerDTO.getEmail());
         session.setAttribute("pending_password", registerDTO.getPassword());
         session.setAttribute("pending_username", registerDTO.getLoginName());
-        
+
         // Generate and send verification code
         String verificationCode = registerService.generateVerificationCode();
         session.setAttribute("verificationCode", verificationCode);
         registerService.sendVerificationCode(registerDTO.getEmail(), verificationCode);
-        
+
         return "client/auth/register-auth";
     }
 
@@ -78,52 +102,52 @@ public class AuthenticationController {
             HttpSession session,
             RedirectAttributes redirectAttributes,
             Model model) {
-        
+
         // Add debug logging
         System.out.println("Submitted Code: " + submittedCode);
         System.out.println("Stored Code: " + session.getAttribute("verificationCode"));
         System.out.println("Stored Email: " + session.getAttribute("pending_email"));
-        
+
         String storedCode = (String) session.getAttribute("verificationCode");
         String email = (String) session.getAttribute("pending_email");
         String password = (String) session.getAttribute("pending_password");
         String username = (String) session.getAttribute("pending_username");
-        
+
         if (storedCode == null || email == null) {
             redirectAttributes.addFlashAttribute("verificationError", "Session expired. Please register again.");
             return "redirect:/register";
         }
-        
+
         if (!storedCode.equals(submittedCode)) {
             // Change to use Model instead of RedirectAttributes for direct return
             model.addAttribute("verificationError", "Invalid verification code");
             return "client/auth/register-auth";
         }
-        
+
         // Recreate RegisterDTO from session data
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setEmail(email);
         registerDTO.setPassword(password);
         registerDTO.setLoginName(username);
         // Set other fields...
-        
+
         // Process registration
         registerDTO.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         Account account = accountService.mapRegisterDTOToAccount(registerDTO);
         Customer customer = customerService.mapRegisterDTOToCustomer(registerDTO);
-        
+
         account.setRole(roleService.getRoleById(1));
         accountService.saveAccount(account);
         customer.setAccount(account);
         customerService.saveCustomer(customer);
-        
+
         // Clear session
         session.removeAttribute("verificationCode");
         session.removeAttribute("pending_email");
         session.removeAttribute("pending_password");
         session.removeAttribute("pending_username");
         // Remove other stored fields...
-        
+
         redirectAttributes.addFlashAttribute("message", "Registration successful! Please login.");
         return "redirect:/login";
     }
@@ -135,15 +159,14 @@ public class AuthenticationController {
             redirectAttributes.addFlashAttribute("verificationError", "Session expired. Please register again.");
             return "redirect:/register";
         }
-        
+
         String newCode = registerService.generateVerificationCode();
         session.setAttribute("verificationCode", newCode);
         registerService.sendVerificationCode(email, newCode);
-        
-        model.addAttribute("message", "New verification code sent!");
-        return "client/auth/register-auth";  // Return directly to the view instead of redirect
-    }
 
+        model.addAttribute("message", "New verification code sent!");
+        return "client/auth/register-auth"; // Return directly to the view instead of redirect
+    }
 
     @GetMapping("/oauth2-login")
     public String accountList(Model model, @AuthenticationPrincipal OAuth2User principal) {

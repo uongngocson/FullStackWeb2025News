@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import local.example.demo.model.entity.ProductImage; // Import ProductImage
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,10 +45,8 @@ public class Product {
     @Min(value = 0, message = "Quantity sold must be greater than or equal to 0")
     private Integer quantitySold;
 
-
     @NotBlank(message = "Warranty cannot be blank")
     private String warranty;
-
 
     @NotBlank(message = "Return policy cannot be blank")
     private String returnPolicy;
@@ -55,7 +54,6 @@ public class Product {
     private String imageUrl;
 
     private Integer rating;
-    
 
     private Boolean type;
 
@@ -81,4 +79,6 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<ProductVariant> productVariant; // Đặt tên là "variants"
 
+    @OneToMany(mappedBy = "product") // Add this mapping
+    private List<ProductImage> images;
 }

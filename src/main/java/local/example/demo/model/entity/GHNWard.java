@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class GHNWard {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ward_id")
     private Integer wardId;
 

@@ -67,10 +67,12 @@ public class Employee {
     // relationships
     @OneToOne
     @JoinColumn(name = "account_id")
+    @NotNull(message = "Account cannot be blank")
     private Account account;
 
     @ManyToOne
     @JoinColumn(name = "manager_id")
+    @NotNull(message = "Manager cannot be blank")
     private Employee manager;
 
     public Date getHireDateAsDate() {

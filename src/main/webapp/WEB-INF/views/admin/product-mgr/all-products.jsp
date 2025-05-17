@@ -101,6 +101,7 @@
                                                                 <th>No.</th>
                                                                 <th>ID</th>
                                                                 <th>Name</th>
+                                                                <th>Image</th>
                                                                 <th>Category</th>
                                                                 <th>Brand</th>
                                                                 <th>Price</th>
@@ -117,6 +118,26 @@
                                                                             class="text-primary">#${product.productId}</a>
                                                                     </td>
                                                                     <td>${product.productName}</td>
+                                                                    <td>
+                                                                        <c:set var="defaultImageUrl" value="" />
+                                                                        <c:forEach var="image"
+                                                                            items="${product.images}">
+                                                                            <c:if test="${image.priority}">
+                                                                                <c:set var="defaultImageUrl"
+                                                                                    value="${image.imageUrl}" />
+                                                                            </c:if>
+                                                                        </c:forEach>
+                                                                        <%-- Nếu không tìm thấy ảnh default, dùng ảnh
+                                                                            đầu tiên nếu có --%>
+                                                                            <c:if
+                                                                                test="${empty defaultImageUrl && not empty product.images}">
+                                                                                <c:set var="defaultImageUrl"
+                                                                                    value="${product.images[0].imageUrl}" />
+                                                                            </c:if>
+                                                                            <img src="${ctx}/${defaultImageUrl}"
+                                                                                alt="${product.productName}"
+                                                                                style="max-width: 100px; max-height: 100px;">
+                                                                    </td>
                                                                     <td>${product.category.categoryName}</td>
                                                                     <td>${product.brand.brandName}</td>
                                                                     <td>$${product.price}</td>

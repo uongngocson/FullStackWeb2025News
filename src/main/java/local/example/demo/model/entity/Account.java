@@ -38,7 +38,10 @@ public class Account {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "account")
     private Customer customer;
+
+    @OneToOne(mappedBy = "account")
+    private Employee employee;
 
 }

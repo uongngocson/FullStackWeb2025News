@@ -275,10 +275,9 @@
                                                                 ${order.shippingAddress.street}
                                                             </div>
                                                             <div class="mt-2">
-                                                                <div>${order.shippingAddress.ward},
-                                                                    ${order.shippingAddress.district}
-                                                                    ${order.shippingAddress.province}</div>
-                                                                <div>${order.shippingAddress.city}</div>
+                                                                <div>${order.shippingAddress.ward.wardName},
+                                                                    ${order.shippingAddress.district.districtName}
+                                                                    ${order.shippingAddress.province.provinceName}</div>
                                                             </div>
                                                         </div>
                                                         <div class="mb-4">

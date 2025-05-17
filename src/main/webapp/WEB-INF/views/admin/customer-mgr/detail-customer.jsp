@@ -215,7 +215,7 @@
                                                     <button class="nav-link active" id="profile-tab"
                                                         data-bs-toggle="tab" data-bs-target="#profile" type="button"
                                                         role="tab" aria-controls="profile" aria-selected="true">Personal
-                                                        Info</button>
+                                                        Information</button>
                                                 </li>
                                                 <li class="nav-item" role="presentation">
                                                     <button class="nav-link" id="addresses-tab" data-bs-toggle="tab"

@@ -14,19 +14,12 @@ import local.example.demo.repository.ShipmentRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Types;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import javax.sql.DataSource;
 
 @RequiredArgsConstructor
 @Service
@@ -35,7 +28,6 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final JdbcTemplate jdbcTemplate;
-    private final DataSource dataSource;
     private final ReturnRepository returnRepository;
     private final ShipmentRepository shipmentRepository;
 

@@ -36,7 +36,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put("ROLE_CUSTOMER", "");
-        roleTargetUrlMap.put("ROLE_EMPLOYEE", "/admin/dashboard/index");
+        roleTargetUrlMap.put("ROLE_SHIPPER", "/shipper/order/list");
+        roleTargetUrlMap.put("ROLE_EMPLOYEE", "/employee/product-mgr/list");
         roleTargetUrlMap.put("ROLE_ADMIN", "/admin/dashboard/index");
 
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -57,22 +58,51 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         }
         Account account = accountService.getAccountByLoginName(authentication.getName());
 
-        Customer customer = customerService.getCustomerByAccount(account);
-        if (customer != null){
-            session.setAttribute("customerId", customer.getCustomerId());
-            session.setAttribute("fullName", customer.getFirstName() + " " + customer.getLastName());
-            session.setAttribute("email", customer.getEmail());
-            session.setAttribute("avatar", customer.getImageUrl());
-            session.setAttribute("sum", customerService.getCartDetailCountByCart(customer));
-        }  
+        // Check roles to determine if we need to fetch customer or employee details
+        boolean isCustomer = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"));
+        boolean isEmployeeOrAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYEE")
+                        || a.getAuthority().equals("ROLE_ADMIN")
+                        || a.getAuthority().equals("ROLE_SHIPPER"));
 
-        Employee employee = employeeService.getEmployeeByAccount(account);
-        if (employee != null){
-            session.setAttribute("employeeId", employee.getEmployeeId());
-            session.setAttribute("employeeFullName", employee.getFirstName() + " " + employee.getLastName());
-            session.setAttribute("employeeEmail", employee.getEmail());
-            session.setAttribute("employeeAvatar", employee.getImageUrl());
-        }  
+        if (isCustomer) {
+            Customer customer = customerService.getCustomerByAccount(account);
+            if (customer != null) {
+                session.setAttribute("customerId", customer.getCustomerId());
+                session.setAttribute("fullName", customer.getFirstName() + " " + customer.getLastName());
+                session.setAttribute("email", customer.getEmail());
+                session.setAttribute("avatar", customer.getImageUrl());
+                session.setAttribute("sum", customerService.getCartDetailCountByCart(customer));
+            }
+        } else if (isEmployeeOrAdmin) {
+            // This is where the error likely occurs if the employee record is missing
+            Employee employee = null;
+            try {
+                employee = employeeService.getEmployeeByAccount(account);
+            } catch (Exception e) {
+                // Log the exception or handle it as needed
+                System.err.println("Error fetching employee details: " + e.getMessage());
+                // Optionally, redirect to an error page or log out the user
+                // This depends on the desired behavior when an employee/admin account is
+                // misconfigured
+            }
+            // Add a more robust check here
+            if (employee != null && employee.getEmployeeId() != null) { // Added employee.getEmployeeId() != null check
+                session.setAttribute("employeeId", employee.getEmployeeId());
+                session.setAttribute("employeeFullName", employee.getFirstName() + " " + employee.getLastName());
+                session.setAttribute("employeeEmail", employee.getEmail());
+                session.setAttribute("employeeAvatar", employee.getImageUrl());
+            } else {
+                // Log a warning or handle the case where an employee/admin account has no
+                // linked employee record
+                System.err.println("Warning: Employee/Admin account " + account.getLoginName()
+                        + " logged in but no linked Employee record found or accessible.");
+                // Optionally, redirect to an error page or log out the user
+                // This depends on the desired behavior when an admin/employee account is
+                // misconfigured
+            }
+        }
 
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }

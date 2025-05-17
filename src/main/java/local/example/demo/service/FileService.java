@@ -87,4 +87,26 @@ public class FileService {
     public boolean isValidFile(MultipartFile file) {
         return file != null && !file.isEmpty();
     }
+
+    public boolean deleteFile(String relativeFilePath) {
+        if (relativeFilePath == null || relativeFilePath.isEmpty()) {
+            return false;
+        }
+        try {
+            // Assuming relativeFilePath is like
+            // "resources/images-upload/product-variants/image.jpg"
+            // We need to get the actual file system path
+            String rootPath = servletContext.getRealPath("/"); // Get root of webapp
+            Path filePathToDelete = Paths.get(rootPath, relativeFilePath);
+
+            if (Files.exists(filePathToDelete)) {
+                Files.delete(filePathToDelete);
+                return true;
+            }
+            return false; // File not found
+        } catch (IOException e) {
+            e.printStackTrace(); // Log error
+            return false;
+        }
+    }
 }

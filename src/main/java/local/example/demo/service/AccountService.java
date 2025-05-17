@@ -1,6 +1,7 @@
 package local.example.demo.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,7 @@ import local.example.demo.model.dto.RegisterDTO;
 import local.example.demo.exception.AccountInUseException;
 import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Customer;
-import local.example.demo.model.entity.Employee; 
+import local.example.demo.model.entity.Employee;
 import local.example.demo.repository.AccountRepository;
 import local.example.demo.repository.CustomerRepository;
 import local.example.demo.repository.EmployeeRepository;
@@ -46,13 +47,15 @@ public class AccountService {
         // Kiểm tra liên kết với Customer
         Customer customer = customerRepository.findByAccount(account);
         if (customer != null) {
-            throw new AccountInUseException("Cannot delete account: It is associated with customer " + customer.getFirstName() + " " + customer.getLastName());
+            throw new AccountInUseException("Cannot delete account: It is associated with customer "
+                    + customer.getFirstName() + " " + customer.getLastName());
         }
 
         // Kiểm tra liên kết với Employee
         Employee employee = employeeRepository.findByAccount(account);
         if (employee != null) {
-            throw new AccountInUseException("Cannot delete account: It is associated with employee " + employee.getFirstName() + " " + employee.getLastName());
+            throw new AccountInUseException("Cannot delete account: It is associated with employee "
+                    + employee.getFirstName() + " " + employee.getLastName());
         }
 
         accountRepository.deleteById(id);
@@ -73,7 +76,8 @@ public class AccountService {
     @Transactional
     public Account findOrCreateAccount(String googleId, String email, String name) {
         Account account = accountRepository.findByLoginName(email);
-        if (account != null) return account;
+        if (account != null)
+            return account;
 
         // Tạo account mới
         Account newAccount = new Account();
@@ -91,6 +95,10 @@ public class AccountService {
         customerRepository.save(customer);
 
         return savedAccount;
+    }
+
+    public List<Account> findAccountsNotLinkedToEmployee() {
+        return accountRepository.findAccountsNotLinkedToEmployee();
     }
 
     // mapper registerDTO to account

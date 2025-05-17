@@ -83,4 +83,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     // Tên cũ: boolean existsBySippingAddressId(Integer shippingAddressId);
     // Tên mới, giả sử Address có trường addressId:
     boolean existsByShippingAddress_AddressId(Integer shippingAddressId);
+
+    List<Order> findByOrderStatus(String orderStatus);
+
 }
