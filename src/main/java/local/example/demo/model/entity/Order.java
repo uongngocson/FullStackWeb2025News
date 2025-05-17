@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -52,7 +53,11 @@ public class Order {
     @JoinColumn(name = "payment_id")
     @NotNull(message = "Payment is required")
     private Payment payment;
-    
+
+    @Column(name = "payment_status")
+    @NotNull(message = "Payment status is required")
+    private Boolean paymentStatus;
+
     // relationship with Customer
     @ManyToOne
     @JoinColumn(name = "customer_id")

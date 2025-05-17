@@ -5,6 +5,8 @@ import local.example.demo.model.entity.Order;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,8 +15,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, String> {
 
-    @Query("SELECT o FROM Order o WHERE o.customer.id = :customerId")
+    @Query("SELECT o FROM Order o WHERE o.customer.customerId = :customerId")
     List<Order> findByCustomerId(@Param("customerId") Integer customerId);
+
+    @Query("SELECT o FROM Order o WHERE o.customer.customerId = :customerId")
+    Page<Order> findByCustomerIdPaged(@Param("customerId") Integer customerId, Pageable pageable);
 
     @Query("SELECT o FROM Order o WHERE o.orderId = :orderId AND o.customer.customerId = :customerId")
     Order findByOrderIdAndCustomerId(@Param("orderId") String orderId, @Param("customerId") Integer customerId);
