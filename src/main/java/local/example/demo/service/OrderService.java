@@ -13,10 +13,20 @@ import local.example.demo.repository.ReturnRepository;
 import local.example.demo.repository.ShipmentRepository;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.StoredProcedureQuery;
+
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -31,36 +41,58 @@ public class OrderService {
     private final ReturnRepository returnRepository;
     private final ShipmentRepository shipmentRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
+    public Page<Order> getPaginatedOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return orderRepository.findAll(pageable);
+    }
+
     public Order getOrderById(String orderId) {
+        System.out.println("Fetching order with ID: " + orderId);
         return orderRepository.findById(orderId).orElse(null);
     }
 
     @Transactional
     public void saveOrder(Order order) {
         if (order.getOrderId() == null || order.getOrderId().isEmpty()) {
-            // Trường hợp tạo mới
             order.setOrderId(generateRandomOrderId());
             orderRepository.save(order);
         } else {
-            // Trường hợp cập nhật: lấy từ DB trước
             Order existingOrder = orderRepository.findById(order.getOrderId())
                     .orElseThrow(() -> new RuntimeException("Order not found: " + order.getOrderId()));
-
-            // Cập nhật các trường của existingOrder từ order (đối tượng từ form)
             existingOrder.setOrderDate(order.getOrderDate());
             existingOrder.setTotalAmount(order.getTotalAmount());
             existingOrder.setOrderStatus(order.getOrderStatus());
             existingOrder.setShippingAddress(order.getShippingAddress());
             existingOrder.setPayment(order.getPayment());
             existingOrder.setCustomer(order.getCustomer());
-            // Thêm các trường khác nếu có
-
-            orderRepository.save(existingOrder); // Lưu đối tượng đã được cập nhật
+            orderRepository.save(existingOrder);
         }
+    }
+
+    @Transactional
+    public void updateOrderStatusAndPayment(String orderId, String orderStatus, Boolean paymentStatus) {
+        System.out.println("Updating order ID: " + orderId + ", orderStatus: " + orderStatus + ", paymentStatus: "
+                + paymentStatus);
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+        List<String> validStatuses = List.of("PENDING", "CONFIRMED", "SHIPPING", "COMPLETED", "CANCELLED", "RETURNED");
+        if (!validStatuses.contains(orderStatus)) {
+            throw new IllegalArgumentException("Invalid order status: " + orderStatus);
+        }
+        if (paymentStatus == null) {
+            throw new IllegalArgumentException("Payment status cannot be null");
+        }
+        existingOrder.setOrderStatus(orderStatus);
+        existingOrder.setPaymentStatus(paymentStatus);
+        orderRepository.save(existingOrder);
+        System.out.println("Order updated successfully: ID=" + orderId);
     }
 
     public void deleteOrder(String orderId) {
@@ -222,6 +254,11 @@ public class OrderService {
         return orders;
     }
 
+    public Page<Order> findPaginatedOrdersByCustomer(Customer customer, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return orderRepository.findByCustomerIdPaged(customer.getCustomerId(), pageable);
+    }
+
     @Transactional
     public void cancelOrder(String orderId, Customer customer) {
         Order order = orderRepository.findById(orderId)
@@ -229,79 +266,54 @@ public class OrderService {
         if (!order.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
             throw new IllegalArgumentException("Bạn không có quyền hủy đơn hàng này");
         }
-        if (!order.getOrderStatus().equals("Pending")) {
+        if (!order.getOrderStatus().equals("PENDING")) {
             throw new IllegalArgumentException("Chỉ có thể hủy đơn hàng ở trạng thái Pending");
         }
-        order.setOrderStatus("Cancel"); // Cập nhật trạng thái thành "Cancel"
+        order.setOrderStatus("CANCELLED"); // Cập nhật trạng thái thành "Cancel"
         orderRepository.save(order);
     }
 
+    @SuppressWarnings("unchecked")
     public List<OrderDetailDTO> getOrderDetails(String orderId) {
-        String sql = """
-                    SELECT
-                        o.order_id,
-                        o.order_date,
-                        o.total_amount,
-                        o.order_status,
-                        o.payment_status,
-                        c.customer_id,
-                        c.first_name,
-                        c.last_name,
-                        c.email,
-                        od.order_detail_id,
-                        od.product_variant_id,
-                        p.product_id,
-                        p.product_name,
-                        p.description,
-                        p.image_url,
-                        p.rating,
-                        p.price AS product_price,
-                        od.quantity,
-                        od.price AS order_detail_price,
-                        (od.quantity * od.price) AS subtotal,
-                        -- Lấy thông tin địa chỉ giao hàng từ bảng Addresses, sử dụng các cột có sẵn
-                        CONCAT(a.street, ', ', a.ward, ', ', a.district, ', ', a.country, ', ', a.province, ', ', a.country) AS shipping_address
-                    FROM
-                        Orders o
-                        INNER JOIN Customers c ON o.customer_id = c.customer_id
-                        INNER JOIN order_details od ON o.order_id = od.order_id
-                        LEFT JOIN Products p ON od.product_variant_id = p.product_id
-                        LEFT JOIN Addresses a ON o.shipping_address_id = a.address_id
-                    WHERE
-                        o.order_id = ?
-                """;
+        System.out.println("Thực thi sp_GetOrderDetails cho orderId: " + orderId);
 
-        System.out.println("Executing getOrderDetails for orderId: " + orderId);
-        System.out.println("SQL Query: " + sql);
+        StoredProcedureQuery query = entityManager
+                .createStoredProcedureQuery("sp_GetOrderDetails");
+        query.registerStoredProcedureParameter("OrderId", String.class, ParameterMode.IN);
+        query.setParameter("OrderId", orderId);
 
-        List<OrderDetailDTO> orderDetails = jdbcTemplate.query(sql, new Object[] { orderId }, (rs, rowNum) -> {
-            OrderDetailDTO dto = new OrderDetailDTO(
-                    rs.getString("order_id"),
-                    rs.getObject("order_date", LocalDateTime.class),
-                    rs.getBigDecimal("total_amount"),
-                    rs.getString("order_status"),
-                    rs.getInt("payment_status"),
-                    rs.getInt("customer_id"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getString("email"),
-                    rs.getLong("order_detail_id"),
-                    rs.getLong("product_variant_id"),
-                    rs.getLong("product_id"),
-                    rs.getString("product_name"),
-                    rs.getString("description"),
-                    rs.getString("image_url"),
-                    rs.getInt("rating") != 0 ? rs.getInt("rating") : null,
-                    rs.getBigDecimal("product_price"),
-                    rs.getInt("quantity"),
-                    rs.getBigDecimal("order_detail_price"),
-                    rs.getBigDecimal("subtotal"),
-                    rs.getString("shipping_address"));
-            System.out.println("Fetched OrderDetailDTO: " + dto.getOrderId() + ", Product: " + dto.getProductName());
-            return dto;
-        });
+        List<Object[]> results = query.getResultList();
+        List<OrderDetailDTO> orderDetails = results.stream().map(result -> {
+            LocalDateTime orderDate = result[1] != null ? ((Timestamp) result[1]).toLocalDateTime() : null;
+            Integer paymentStatus = result[4] != null ? ((Boolean) result[4] ? 1 : 0) : null;
+            return new OrderDetailDTO(
+                    (String) result[0], // order_id
+                    orderDate, // order_date
+                    (java.math.BigDecimal) result[2], // total_amount
+                    (String) result[3], // order_status
+                    paymentStatus, // payment_status
+                    (Integer) result[5], // customer_id
+                    (String) result[6], // first_name
+                    (String) result[7], // last_name
+                    (String) result[8], // email
+                    result[9] != null ? ((Number) result[9]).longValue() : null, // order_detail_id
+                    result[10] != null ? ((Number) result[10]).longValue() : null, // product_variant_id
+                    result[11] != null ? ((Number) result[11]).longValue() : null, // product_id
+                    (String) result[12], // product_name
+                    (String) result[13], // description
+                    (String) result[14], // image_url
+                    result[15] != null && ((Number) result[15]).intValue() != 0
+                            ? ((Number) result[15]).intValue()
+                            : null, // rating
+                    (java.math.BigDecimal) result[16], // product_price
+                    (Integer) result[17], // quantity
+                    (java.math.BigDecimal) result[18], // order_detail_price
+                    (java.math.BigDecimal) result[19], // subtotal
+                    (String) result[20] // shipping_address
+            );
+        }).toList();
 
-        System.out.println("Number of order details fetched: " + (orderDetails != null ? orderDetails.size() : 0));
+        System.out.println("Số chi tiết đơn hàng lấy được: " + orderDetails.size());
         return orderDetails;
     }
 }
