@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.google.api.client.util.Value;
+
 import local.example.demo.service.ProductLoadRandom;
 
 import java.util.List;
@@ -62,11 +64,6 @@ public class HomeController {
         return "client/datatest";
     }
 
-    @GetMapping("blog")
-    public String getBlogPage() {
-        return "client/layout/blog";
-    }
-
     @GetMapping("blogpage")
     public String getBlogPagePage() {
         return "client/layout/blogpage";
@@ -76,5 +73,5 @@ public class HomeController {
     public String getTestApiThanhToan() {
         return "client/testapithanhtoan";
     }
-
+    
 }

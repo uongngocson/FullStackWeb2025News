@@ -117,7 +117,6 @@
 
                 <body class="bg-white text-black font-sans">
 
-
                     <!-- navbar -->
                     <jsp:include page="layout/navbar.jsp" />
 

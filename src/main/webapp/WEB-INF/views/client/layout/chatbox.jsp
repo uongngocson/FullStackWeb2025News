@@ -33,52 +33,48 @@
 
                         <!-- Messages Container -->
                         <div class="flex-1 overflow-y-auto p-4 space-y-4">
-                            <!-- Pesan Bot Pertama (Statis) -->
-                            <div class="flex justify-start">
-                                <div class="max-w-[80%] rounded-lg p-3 bg-gray-200 text-gray-800 rounded-bl-none">
-                                    <div class="flex items-center mb-1">
-                                        <i data-lucide="bot" class="mr-1 w-4 h-4"></i>
-                                        <span class="text-xs font-medium">Chatbot</span>
-                                        <span class="text-xs ml-2 opacity-75">10:00</span>
-                                    </div>
-                                    <p>Hello! I'm your friendly chatbot. How can I help you today?</p>
-                                </div>
-                            </div>
 
-                            <!-- Contoh Pesan User (Statis) -->
-                            <div class="flex justify-end">
-                                <div class="max-w-[80%] rounded-lg p-3 bg-blue-600 text-white rounded-br-none">
-                                    <div class="flex items-center mb-1">
-                                        <i data-lucide="user" class="mr-1 w-4 h-4"></i>
-                                        <span class="text-xs font-medium">You</span>
-                                        <span class="text-xs ml-2 opacity-75">10:01</span>
+                            <!-- Tin nhắn từ người dùng -->
+                            <c:if test="${not empty prompt}">
+                                <div class="flex justify-end">
+                                    <div class="max-w-[80%] rounded-lg p-3 bg-blue-600 text-white rounded-br-none">
+                                        <div class="flex items-center mb-1">
+                                            <i data-lucide="user" class="mr-1 w-4 h-4"></i>
+                                            <span class="text-xs font-medium">You</span>
+                                            <span class="text-xs ml-2 opacity-75"><fmt:formatDate value="${now}" type="time"/></span>
+                                        </div>
+                                        <p>${prompt}</p>
                                     </div>
-                                    <p>Hi! Can you tell me more about this?</p>
                                 </div>
-                            </div>
-
-                            <!-- Contoh Pesan Bot Kedua (Statis) -->
-                            <div class="flex justify-start">
-                                <div class="max-w-[80%] rounded-lg p-3 bg-gray-200 text-gray-800 rounded-bl-none">
-                                    <div class="flex items-center mb-1">
-                                        <i data-lucide="bot" class="mr-1 w-4 h-4"></i>
-                                        <span class="text-xs font-medium">Chatbot</span>
-                                        <span class="text-xs ml-2 opacity-75">10:02</span>
+                            </c:if>
+                        
+                            <!-- Phản hồi từ chatbot -->
+                            <c:if test="${not empty result}">
+                                <div class="flex justify-start">
+                                    <div class="max-w-[80%] rounded-lg p-3 bg-gray-200 text-gray-800 rounded-bl-none">
+                                        <div class="flex items-center mb-1">
+                                            <i data-lucide="bot" class="mr-1 w-4 h-4"></i>
+                                            <span class="text-xs font-medium">Chatbot</span>
+                                            <span class="text-xs ml-2 opacity-75"><fmt:formatDate value="${now}" type="time"/></span>
+                                        </div>
+                                        <p>${result}</p>
                                     </div>
-                                    <p>I'm here to help! What would you like to know?</p>
                                 </div>
-                            </div>
+                            </c:if>
+                        
                         </div>
+                        
 
                         <!-- Input Area -->
-                        <div class="border-t border-gray-200 p-4 flex items-center">
-                            <input type="text" placeholder="Type your message here..."
+                        <form:form action="${pageContext.request.contextPath}/ask" method="post" class="border-t border-gray-200 p-4 flex items-center">
+                            <input type="text" name ="prompt" placeholder="Type your message here..."
                                 class="flex-1 border border-gray-300 rounded-l-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                            <button
+                                <button
                                 class="bg-blue-600 text-white p-2 rounded-r-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <i data-lucide="send" class="w-5 h-5"></i>
+                                <i data-lucide="send" class="w-5 h-5" type="submit"></i>
                             </button>
-                        </div>
+                        
+                        </form:form>
                     </div>
                 </body>
 
