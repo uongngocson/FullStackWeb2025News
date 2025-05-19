@@ -82,6 +82,21 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Query(value = "EXEC sp_GetRevenueByDateRange :startDate, :endDate", nativeQuery = true)
     List<Object[]> getRevenueByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
+    // New method: Product-wise revenue for a given month
+    @Query(value = """
+            SELECT
+                p.product_id,
+                p.product_name,
+                SUM(od.quantity * od.price) as total_revenue,
+                SUM(od.quantity) as total_quantity
+            FROM Orders o
+            INNER JOIN order_details od ON o.order_id = od.order_id
+            LEFT JOIN Products p ON od.product_variant_id = p.product_id
+            WHERE YEAR(o.order_date) = :year AND MONTH(o.order_date) = :month
+            GROUP BY p.product_id, p.product_name
+            """, nativeQuery = true)
+    List<Object[]> getProductRevenueByMonth(@Param("year") int year, @Param("month") int month);
+
     boolean existsByCustomer_CustomerId(Integer customerId);
 
     // Sửa tên phương thức ở đây
