@@ -7,6 +7,8 @@ import local.example.demo.model.entity.Order;
 import local.example.demo.service.CustomerService;
 import local.example.demo.service.OrderService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -19,12 +21,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @Controller
 @RequestMapping("/management")
 public class ManagementController {
+    private static final Logger logger = LoggerFactory.getLogger(ManagementController.class);
 
     @Autowired
     private CustomerService customerService;
@@ -34,77 +36,111 @@ public class ManagementController {
 
     @GetMapping("/profile")
     public String getProfilePage(Model model) {
+        logger.debug("Processing GET /management/profile");
         Customer customer = customerService.getCurrentLoggedInCustomer();
         if (customer == null) {
+            logger.warn("No authenticated customer found, redirecting to login");
             return "redirect:/login";
         }
-        // Nạp addresses để hiển thị
+        logger.debug("Found customer ID: {}", customer.getCustomerId());
+
         List<Address> addresses = customerService.findAddressesByCustomer(customer);
         customer.setAddresses(addresses);
         model.addAttribute("customer", customer);
+
+        logger.debug("Customer data: firstName={}, lastName={}, email={}, dateOfBirth={}",
+                customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getDateOfBirth());
+
         return "client/auth/profile";
     }
 
+    @GetMapping("/profile/update")
+    public String getUpdateProfilePage(Model model) {
+        logger.debug("Processing GET /management/profile/update");
+        Customer customer = customerService.getCurrentLoggedInCustomer();
+        if (customer == null) {
+            logger.warn("No authenticated customer found, redirecting to login");
+            return "redirect:/login";
+        }
+        logger.debug("Found customer ID: {}", customer.getCustomerId());
+
+        model.addAttribute("customer", customer);
+        return "client/auth/update_profile";
+    }
+
     @PostMapping("/profile/update")
-    public String updateProfile(
-            @Valid @ModelAttribute("customer") Customer customer,
-            BindingResult result,
+    public String updateProfile(@Valid @ModelAttribute("customer") Customer updatedCustomer,
+            BindingResult bindingResult,
             @RequestParam("image") MultipartFile image,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
-            model.addAttribute("customer", customer);
-            return "client/auth/profile";
+            RedirectAttributes redirectAttributes,
+            Model model) {
+        logger.debug("Processing POST /management/profile/update for customer ID: {}", updatedCustomer.getCustomerId());
+
+        if (bindingResult.hasErrors()) {
+            logger.warn("Validation failed for customer: {}", bindingResult.getAllErrors());
+            model.addAttribute("error", "Vui lòng sửa các lỗi trong form trước khi gửi.");
+            return "client/auth/update_profile";
         }
 
         try {
-            customerService.updateCustomerProfile(customer, image);
-            redirectAttributes.addFlashAttribute("success", "Hồ sơ đã được cập nhật thành công!");
-            return "redirect:/management/profile";
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("customer", customer);
-            return "client/auth/profile";
+            Customer updated = customerService.updateCustomerProfile(updatedCustomer, image);
+            logger.info("Profile updated successfully for customer ID: {}", updated.getCustomerId());
+            redirectAttributes.addFlashAttribute("success", "Cập nhật hồ sơ thành công!");
         } catch (IOException e) {
-            model.addAttribute("error", "Lỗi khi tải lên ảnh: " + e.getMessage());
-            model.addAttribute("customer", customer);
-            return "client/auth/profile";
+            logger.error("Failed to update profile due to IO error: {}", e.getMessage());
+            model.addAttribute("error", "Cập nhật hồ sơ thất bại: Lỗi khi xử lý ảnh.");
+            return "client/auth/update_profile";
+        } catch (Exception e) {
+            logger.error("Failed to update profile: {}", e.getMessage());
+            model.addAttribute("error", "Cập nhật hồ sơ thất bại: " + e.getMessage());
+            return "client/auth/update_profile";
         }
+        return "redirect:/management/profile";
+    }
+
+    @GetMapping("/profile/change-password")
+    public String getChangePasswordPage() {
+        logger.debug("Processing GET /management/profile/change-password");
+        return "client/auth/change_password";
     }
 
     @PostMapping("/profile/change-password")
-    public String changePassword(
-            @RequestParam("oldPassword") String oldPassword,
+    public String changePassword(@RequestParam("oldPassword") String oldPassword,
             @RequestParam("newPassword") String newPassword,
             @RequestParam("confirmPassword") String confirmPassword,
             RedirectAttributes redirectAttributes) {
+        logger.debug("Processing POST /management/profile/change-password");
         try {
             customerService.changePassword(oldPassword, newPassword, confirmPassword);
-            redirectAttributes.addFlashAttribute("passwordSuccess", "Password changed successfully!");
-            return "redirect:/management/profile";
+            logger.info("Password changed successfully");
+            redirectAttributes.addFlashAttribute("passwordSuccess", "Thay đổi mật khẩu thành công!");
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("passwordError", e.getMessage());
-            return "redirect:/management/profile";
+            logger.error("Failed to change password: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("passwordError", "Thay đổi mật khẩu thất bại: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected error during password change: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("passwordError", "Thay đổi mật khẩu thất bại: Lỗi không xác định.");
         }
+        return "redirect:/management/profile";
     }
 
     @GetMapping("/historyorder")
     public String getHistoryOrderPage(@RequestParam(defaultValue = "0") int page,
             Model model) {
-        Customer customer = customerService.fetchCurrentLoggedInCustomer();
+        logger.debug("Processing GET /management/historyorder?page={}", page);
+        Customer customer = customerService.getCurrentLoggedInCustomer();
         if (customer == null) {
-            System.out
-                    .println("Không tìm thấy khách hàng đăng nhập cho /historyorder, chuyển hướng đến trang đăng nhập");
+            logger.warn("No authenticated customer found, redirecting to login");
             return "redirect:/login";
         }
-        System.out.println("Lấy danh sách đơn hàng cho khách hàng ID: " + customer.getCustomerId());
+        logger.debug("Fetching orders for customer ID: {}", customer.getCustomerId());
 
-        // Fetch paginated orders (7 per page)
         Page<Order> orderPage = orderService.findPaginatedOrdersByCustomer(customer, page, 7);
         model.addAttribute("orders", orderPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", orderPage.getTotalPages());
         model.addAttribute("totalItems", orderPage.getTotalElements());
+        logger.debug("Found {} orders for customer ID: {}", orderPage.getTotalElements(), customer.getCustomerId());
         return "client/auth/orderhis";
     }
 
@@ -112,40 +148,42 @@ public class ManagementController {
     public String cancelOrder(@PathVariable String orderId,
             @RequestParam(defaultValue = "0") int page,
             RedirectAttributes redirectAttributes) {
+        logger.debug("Processing POST /management/order/cancel/{}", orderId);
         try {
-            System.out.println("Nhận yêu cầu hủy đơn hàng: /management/order/cancel/" + orderId);
-            Customer customer = customerService.fetchCurrentLoggedInCustomer();
+            Customer customer = customerService.getCurrentLoggedInCustomer();
             if (customer == null) {
-                System.out.println(
-                        "Không tìm thấy khách hàng đăng nhập cho /order/cancel, chuyển hướng đến trang đăng nhập");
+                logger.warn("No authenticated customer found, redirecting to login");
                 return "redirect:/login";
             }
-            System.out.println("Hủy đơn hàng " + orderId + " cho khách hàng ID: " + customer.getCustomerId());
+            logger.debug("Cancelling order {} for customer ID: {}", orderId, customer.getCustomerId());
             orderService.cancelOrder(orderId, customer);
-            redirectAttributes.addFlashAttribute("error", "Đơn hàng đã được hủy thành công!");
-            return "redirect:/management/historyorder?page=" + page;
+            logger.info("Order {} cancelled successfully", orderId);
+            redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được hủy thành công!");
         } catch (IllegalArgumentException e) {
-            System.out.println("Lỗi khi hủy đơn hàng: " + e.getMessage());
+            logger.error("Failed to cancel order {}: {}", orderId, e.getMessage());
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/management/historyorder?page=" + page;
+        } catch (Exception e) {
+            logger.error("Unexpected error cancelling order {}: {}", orderId, e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Hủy đơn hàng thất bại: Lỗi không xác định.");
         }
+        return "redirect:/management/historyorder?page=" + page;
     }
 
     @GetMapping("/order/details/{orderId}")
     public String getOrderDetails(@PathVariable String orderId,
             @RequestParam(defaultValue = "0") int page,
             Model model) {
-        System.out.println("Xử lý yêu cầu cho /management/order/details/" + orderId);
-        Customer customer = customerService.fetchCurrentLoggedInCustomer();
+        logger.debug("Processing GET /management/order/details/{}", orderId);
+        Customer customer = customerService.getCurrentLoggedInCustomer();
         if (customer == null) {
-            System.out.println("Không tìm thấy khách hàng đăng nhập, chuyển hướng đến trang đăng nhập");
+            logger.warn("No authenticated customer found, redirecting to login");
             return "redirect:/login";
         }
-        System.out.println("ID khách hàng đăng nhập: " + customer.getCustomerId());
+        logger.debug("Fetching order details for order ID: {} by customer ID: {}", orderId, customer.getCustomerId());
 
         List<OrderDetailDTO> orderDetails = orderService.getOrderDetails(orderId);
         if (orderDetails.isEmpty()) {
-            System.out.println("Không tìm thấy chi tiết đơn hàng cho orderId: " + orderId);
+            logger.warn("No order details found for order ID: {}", orderId);
             model.addAttribute("errorMessage", "Không tìm thấy đơn hàng với mã: " + orderId);
             return "client/auth/error";
         }
@@ -153,14 +191,14 @@ public class ManagementController {
         boolean isAuthorized = orderDetails.stream()
                 .anyMatch(detail -> detail.getCustomerId().equals(customer.getCustomerId()));
         if (!isAuthorized) {
-            System.out.println("Khách hàng " + customer.getCustomerId() + " không có quyền xem đơn hàng " + orderId);
+            logger.warn("Customer ID: {} not authorized to view order ID: {}", customer.getCustomerId(), orderId);
             model.addAttribute("errorMessage", "Bạn không có quyền xem chi tiết đơn hàng này.");
             return "client/auth/error";
         }
 
-        System.out.println("Lấy chi tiết đơn hàng thành công cho orderId: " + orderId);
+        logger.debug("Order details retrieved successfully for order ID: {}", orderId);
         model.addAttribute("orderDetails", orderDetails);
-        model.addAttribute("currentPage", page); // Pass current page for return navigation
+        model.addAttribute("currentPage", page);
         return "client/auth/order-details";
     }
 }

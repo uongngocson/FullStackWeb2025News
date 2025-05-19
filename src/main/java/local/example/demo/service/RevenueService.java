@@ -37,5 +37,10 @@ public class RevenueService {
     public List<Object[]> getRevenueByDays() {
         return orderRepository.getRevenueByDays();
     }
-    
+
+    // New method: Fetch product-wise revenue for a month
+    public List<Object[]> getProductRevenueByMonth(int year, int month) {
+        return orderRepository.getProductRevenueByMonth(year, month);
+    }
+
 }

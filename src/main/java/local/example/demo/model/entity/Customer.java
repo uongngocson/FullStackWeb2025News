@@ -18,6 +18,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,19 +38,20 @@ public class Customer {
     private Integer customerId;
 
     // attributes
+    @NotBlank(message = "First name is required")
     private String firstName;
 
+    @NotBlank(message = "Last name is required")
     private String lastName;
 
+    @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
     private String phone;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
 
-    // @Past(message = "Date of birth must be in the past")
-    // @NotNull(message = "Date of birth is required")
-    // @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -85,7 +89,5 @@ public class Customer {
             return null;
         return Date.from(this.registrationDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
-
-    
 
 }
