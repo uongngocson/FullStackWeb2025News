@@ -18,6 +18,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+// relationships
+// Thêm import
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "ProductVariants")
@@ -40,10 +43,12 @@ public class ProductVariant {
     @Min(value = 0, message = "Size must be greater than or equal to 0")
     private Integer quantityStock;
 
-    // relationships
+    // Trong lớp ProductVariant
+    @JsonIgnore
     @OneToMany(mappedBy = "productVariant", fetch = FetchType.LAZY)
     private List<OrderDetail> orderDetails;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "productVariant", fetch = FetchType.LAZY)
     private List<CartDetail> cartDetails;
 

@@ -1,6 +1,7 @@
 package local.example.demo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class EmployeeService {
 
     // get employee by id
     public Employee getEmployeeById(Integer id) {
-        return employeeRepository.findById(id).orElse(null);
+        return employeeRepository.findByEmployeeId(id);
     }
 
     // save employee

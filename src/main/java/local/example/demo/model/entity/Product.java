@@ -15,7 +15,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import local.example.demo.model.entity.ProductImage; // Import ProductImage
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +30,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer productId;
+
     @NotBlank(message = "Product name cannot be blank")
     private String productName;
 
@@ -77,8 +77,8 @@ public class Product {
     private List<Review> review;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductVariant> productVariant; // Đặt tên là "variants"
+    private List<ProductVariant> productVariant;
 
-    @OneToMany(mappedBy = "product") // Add this mapping
+    @OneToMany(mappedBy = "product")
     private List<ProductImage> images;
 }

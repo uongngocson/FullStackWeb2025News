@@ -34,7 +34,6 @@ public class ProductService {
     private final ProductVariantRepository productVariantRepository;
     private final InventoryRepository inventoryRepository;
 
-
     // get all product
     public List<Product> findAllProducts() {
         return productRepository.findAllProducts();
@@ -42,12 +41,17 @@ public class ProductService {
 
     // total stock product
     public long getTotalStock(Integer productId) {
-        List<Inventory> inventories = inventoryRepository.findByProduct_ProductId(productId);
+        List<ProductVariant> productVariants = productVariantRepository.findByProduct_ProductId(productId);
         long sumQuantity = 0;
-        for (Inventory inventory : inventories) {
-            Integer quantity = inventory.getQuantityStock();
-            if (quantity!= null) {
-                sumQuantity += quantity;
+        for (ProductVariant productVariant : productVariants) {
+            Inventory inventory = inventoryRepository
+                    .findByProductVariant_ProductVariantId(productVariant.getProductVariantId());
+            // Check if inventory is null before accessing quantityStock
+            if (inventory != null) {
+                Integer quantity = inventory.getQuantityStock();
+                if (quantity != null) {
+                    sumQuantity += quantity;
+                }
             }
         }
         return sumQuantity;
@@ -59,11 +63,12 @@ public class ProductService {
     }
 
     // public Page<Product> fetchProducts(String name, Pageable pageable) {
-    //     return productRepository.findAll(this.nameLike(name), pageable);
+    // return productRepository.findAll(this.nameLike(name), pageable);
     // }
-    
+
     // private Specification<Product> nameLike(String name){
-    //     return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get(Product_.PRODUCT_NAME), "%"+name+"%");
+    // return (root, query, criteriaBuilder) ->
+    // criteriaBuilder.like(root.get(Product_.PRODUCT_NAME), "%"+name+"%");
 
     // }
 
@@ -81,7 +86,8 @@ public class ProductService {
         if (productVariantRepository.existsByProduct_ProductId(productId)) {
             throw new ProductInUseException("Không thể xóa! Sản phẩm này đang đại diện cho nhiều sản phầm");
         }
-        if (inventoryRepository.existsByProduct_ProductId(productId)) {
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product.getProductVariant().size() > 0) {
             throw new ProductInUseException("Không thể xóa! Sản phẩm này đang có trong kho hàng");
         }
         productRepository.deleteById(productId);
@@ -127,7 +133,6 @@ public class ProductService {
             spec = spec.and(typeEquals(type.get()));
         }
 
-
         // Xử lý sắp xếp
         String sortBy = sortByOpt.orElse("newest"); // Mặc định là newest
         Sort sort;
@@ -139,8 +144,8 @@ public class ProductService {
                 sort = Sort.by(Sort.Direction.DESC, "price");
                 break;
             case "bestSellers":
-                 sort = Sort.by(Sort.Direction.DESC, "quantitySold");
-                 break;
+                sort = Sort.by(Sort.Direction.DESC, "quantitySold");
+                break;
             case "newest":
             default:
                 sort = Sort.by(Sort.Direction.DESC, "productId"); // Sắp xếp theo ID giảm dần (mới nhất)
@@ -156,17 +161,17 @@ public class ProductService {
         Specification<Product> specification = (root, query, cb) -> {
             Predicate predicate = null;
             if (finalSpec != null) {
-                 predicate = finalSpec.toPredicate(root, query, cb);
+                predicate = finalSpec.toPredicate(root, query, cb);
             }
 
-            // Apply distinct only if filtering by size or color to avoid duplicates from joins
+            // Apply distinct only if filtering by size or color to avoid duplicates from
+            // joins
             // if (sizeId.isPresent() || colorId.isPresent()) {
-            //      query.distinct(true);
+            // query.distinct(true);
             // }
 
             return predicate;
         };
-
 
         // Pass the specification to the repository
         return productRepository.findAll(specification, sortedPageable);
@@ -221,7 +226,6 @@ public class ProductService {
         return (root, query, cb) -> cb.equal(root.get("type"), type);
     }
 
-
     // get product by supplierId
     public List<Product> findProductsBySupplierId(Integer supplierId) {
         return productRepository.findProductsBySupplierId(supplierId);
@@ -231,6 +235,7 @@ public class ProductService {
     public List<Product> findProductsByTypeMen() {
         return productRepository.findProductsByTypeMen();
     }
+
     // get product type men by page
     public Page<Product> findProductsByTypeMen(Pageable pageable) {
         return productRepository.findProductsByTypeMen(pageable);
@@ -240,6 +245,7 @@ public class ProductService {
     public List<Product> findProductsByTypeWomen() {
         return productRepository.findProductsByTypeWomen();
     }
+
     // get product type women by page
     public Page<Product> findProductsByTypeWomen(Pageable pageable) {
         return productRepository.findProductsByTypeWomen(pageable);
@@ -249,6 +255,12 @@ public class ProductService {
         return productVariantRepository.findByProduct_ProductId(productId);
     }
 
+    public List<ProductVariant> findAllProductVariants() {
+        return productVariantRepository.findAll();
+    }
 
-   
+    public ProductVariant findProductVariantById(Integer productVariantId) {
+        return productVariantRepository.findByProductVariantId(productVariantId);
+    }
+
 }

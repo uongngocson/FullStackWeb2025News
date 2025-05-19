@@ -9,4 +9,6 @@ import local.example.demo.model.entity.Employee;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     Employee findByAccount(Account account);
+
+    Employee findByEmployeeId(Integer employeeId);
 }

@@ -34,35 +34,6 @@
                             <p>Dashboard</p>
                         </a>
                     </li>
-
-                    <!-- Charts -->
-                    <!-- <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#charts">
-                            <i class="fas fa-chart-bar"></i>
-                            <p>Charts</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="charts">
-                            <ul class="nav nav-collapse">
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Revenue Over Time</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Order Status Breakdown</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Top Selling Products</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li> -->
-
                     <!-- Customer Management -->
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#customers">
@@ -118,6 +89,29 @@
                         </div>
                     </li>
 
+                    <!-- Receipt Management -->
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#receipts">
+                            <i class="fas fa-th"></i>
+                            <p>Receipt Management</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="receipts">
+                            <ul class="nav nav-collapse">
+                                <li>
+                                    <a href="/admin/inventory-mgr/list">
+                                        <span class="sub-item">Inventory</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/admin/receipt-mgr/list">
+                                        <span class="sub-item">Receipt List</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
                     <!-- Product Management -->
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#products">
@@ -132,31 +126,6 @@
                                         <span class="sub-item">Product List</span>
                                     </a>
                                 </li>
-                                <!-- <li>
-                                    <a href="#">
-                                        <span class="sub-item">Brand List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/#">
-                                        <span class="sub-item">Size List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/#">
-                                        <span class="sub-item">Color List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Category List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Inventory</span>
-                                    </a>
-                                </li> -->
                             </ul>
                         </div>
                     </li>
