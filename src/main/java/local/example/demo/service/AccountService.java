@@ -28,21 +28,29 @@ import local.example.demo.repository.CustomerRepository;
 public class AccountService {
     // Add your service methods here
     // For example:
-    @Autowired
     private final CustomerRepository customerRepository;
-    @Autowired
     private final AccountRepository accountRepository;
-    @Autowired
-    private RoleService roleService ;
-        
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AccountService(AccountRepository accountRepository, CustomerRepository customerRepository) {
-        this.accountRepository = accountRepository;
+    @Autowired
+    public AccountService(CustomerRepository customerRepository,
+                          AccountRepository accountRepository,
+                          RoleService roleService,
+                          PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
+        this.accountRepository = accountRepository;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    // ✅ Thêm method đúng cho controller gọi
+    public Account getAccountById(Integer id) {
+        return accountRepository.findById(id).orElse(null);
+    }
+    public List<Account> getAllAccounts(){
+        return accountRepository.findAll() ;
+    }
     public void saveAccount(Account account) {
         accountRepository.save(account);
     }
