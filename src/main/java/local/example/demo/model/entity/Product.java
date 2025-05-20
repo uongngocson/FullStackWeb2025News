@@ -81,4 +81,17 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<ProductImage> images;
+
+    // Custom getter for primary image URL
+    public String getPrimaryImageUrl() {
+        if (images != null) {
+            for (ProductImage image : images) {
+                if (image.isPriority()) {
+                    return image.getImageUrl();
+                }
+            }
+        }
+        // Fallback to the main imageUrl if no primary image is found
+        return this.imageUrl;
+    }
 }

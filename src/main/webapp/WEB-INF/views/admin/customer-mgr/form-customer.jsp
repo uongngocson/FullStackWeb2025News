@@ -220,6 +220,9 @@
                                                     <c:if test="${not empty customer.customerId}">
                                                         <form:hidden path="customerId" />
                                                     </c:if>
+                                                    <c:if test="${not empty customer.account.accountId}">
+                                                        <form:hidden path="account.accountId" />
+                                                    </c:if>
 
                                                     <div class="form-section">
                                                         <div class="row">

@@ -1,5 +1,6 @@
 package local.example.demo.controller.admin;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import local.example.demo.model.entity.Order;
 import local.example.demo.exception.CustomerInUseException;
 import local.example.demo.service.CustomerService;
 import local.example.demo.service.FileService;
+import local.example.demo.service.FileUploadS3Service;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class CustomerMgrController {
 
     private final CustomerService customerService;
     private final FileService fileService;
+    private final FileUploadS3Service fileUploadS3Service;
 
     @GetMapping("list")
     public String getCustomersList() {
@@ -80,9 +83,18 @@ public class CustomerMgrController {
         if (bindingResult.hasErrors()) {
             return "admin/customer-mgr/form-customer";
         }
-        if (fileService.isValidFile(imageFile)) {
-            String nameImageFile = fileService.handleSaveUploadFile(imageFile, "customer");
-            customer.setImageUrl("/resources/images-upload/customer/" + nameImageFile);
+        // if (fileService.isValidFile(imageFile)) {
+        // String nameImageFile = fileService.handleSaveUploadFile(imageFile,
+        // "customer");
+        // customer.setImageUrl("/resources/images-upload/customer/" + nameImageFile);
+        // }
+        try {
+            if (fileUploadS3Service.isValidFile(imageFile)) {
+                String nameImageFile = fileUploadS3Service.uploadFile(imageFile, "customers");
+                customer.setImageUrl(nameImageFile);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         if (customer.getCustomerId() == null) {
             customer.setRegistrationDate(LocalDate.now());
@@ -92,7 +104,8 @@ public class CustomerMgrController {
     }
 
     @GetMapping("delete/{customerId}")
-    public String deleteCustomer(@PathVariable("customerId") Integer customerId, RedirectAttributes redirectAttributes) {
+    public String deleteCustomer(@PathVariable("customerId") Integer customerId,
+            RedirectAttributes redirectAttributes) {
         Customer customer = customerService.findCustomerById(customerId);
         if (customer.isStatus()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Khách hàng đang hoạt động không thể xóa.");
@@ -104,7 +117,8 @@ public class CustomerMgrController {
         } catch (CustomerInUseException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy khách hàng để xóa hoặc lỗi không xác định.");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Không tìm thấy khách hàng để xóa hoặc lỗi không xác định.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi không mong muốn khi xóa khách hàng.");
         }

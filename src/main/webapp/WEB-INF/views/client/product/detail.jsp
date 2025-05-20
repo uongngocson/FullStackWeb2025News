@@ -33,40 +33,31 @@
                                 <!-- Product Images -->
                                 <div class="w-full md:w-1/2 px-4 mb-8">
                                     <div class="image-container">
-                                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwxfHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
-                                            alt="${product.productName}" class="w-full h-auto rounded-lg shadow-md mb-4"
-                                            id="mainImage">
+                                        <img src="${product.primaryImageUrl}" alt="${product.productName}"
+                                            class="w-full h-auto rounded-lg shadow-md mb-4" id="mainImage">
                                     </div>
                                     <div class="flex gap-4 py-4 justify-center overflow-x-auto">
-                                        <img src="https://images.unsplash.com/photo-1505751171710-1f6d0ace5a85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwxMnx8aGVhZHBob25lfGVufDB8MHx8fDE3MjEzMDM2OTB8MA&ixlib=rb-4.0.3&q=80&w=1080"
-                                            alt="Thumbnail 1"
-                                            class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                            onclick="changeImage(this.src)">
-                                        <img src="https://images.unsplash.com/photo-1484704849700-f032a568e944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw0fHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
-                                            alt="Thumbnail 2"
-                                            class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                            onclick="changeImage(this.src)">
-                                        <img src="https://images.unsplash.com/photo-1496957961599-e35b69ef5d7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw4fHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
-                                            alt="Thumbnail 3"
-                                            class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                            onclick="changeImage(this.src)">
-                                        <img src="https://images.unsplash.com/photo-1528148343865-51218c4a13e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwzfHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
-                                            alt="Thumbnail 4"
-                                            class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                            onclick="changeImage(this.src)">
+                                        <%-- Loop through product images and display thumbnails for non-primary images
+                                            --%>
+                                            <c:forEach var="image" items="${product.images}">
+                                                <img src="<c:url value='${image.imageUrl}'/>"
+                                                    alt="${product.productName} Thumbnail"
+                                                    class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
+                                                    onclick="changeImage(this.src)">
+                                            </c:forEach>
                                     </div>
                                 </div>
 
                                 <!-- Product Details -->
                                 <div class="w-full md:w-1/2 px-4">
                                     <h2 class="text-3xl font-bold mb-2">${product.productName}</h2>
-                                    <p class="text-gray-600 mb-4">SKU: WH1000XM4</p>
+                                    <p class="text-gray-600 mb-4">${product.productVariant[0].SKU}</p>
                                     <p class="text-gray-600 mb-4">TÌNH TRẠNG: <span id="stockStatus"
                                             class="text-green-600">Còn hàng</span> <span id="stockQuantity"
                                             class="text-blue-600 font-medium"></span></p>
 
                                     <div class="mb-4">
-                                        <span class="text-2xl font-bold mr-2">${product.price}</span>
+                                        <span class="text-2xl font-bold mr-2">$${product.price}</span>
                                         <span class="text-gray-500 line-through">$399.99</span>
                                     </div>
                                     <div class="flex items-center mb-4">
@@ -102,7 +93,7 @@
                                         </svg>
                                         <span class="ml-2 text-gray-600">4.7 | ${product.quantitySold} sold</span>
                                     </div>
-                                    <p class="text-gray-700 mb-6">${product.description}</p>
+
 
                                     <div class="mb-6">
                                         <h3 class="text-lg font-semibold mb-2">COLOR: <span id="selectedColor2"
@@ -194,6 +185,11 @@
                                             <li>Touch sensor controls</li>
                                             <li>Speak-to-chat technology</li>
                                         </ul>
+
+                                    </div>
+                                    <div class="card card-body bg-light prose max-w-none">
+                                        <c:out value="${product.description}" escapeXml="false"
+                                            default="No description available for this product." />
                                     </div>
                                 </div>
                             </div>

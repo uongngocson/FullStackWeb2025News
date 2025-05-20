@@ -36,6 +36,7 @@
 
                         .detail-row:hover {
                             background-color: #e9ecef;
+                            /* Slightly darker on hover */
                         }
 
                         .remove-detail {
@@ -47,10 +48,12 @@
                             font-weight: bold;
                         }
 
+                        /* Ensure template is hidden initially */
                         #detail-template {
                             display: none;
                         }
                     </style>
+
                     <script>
                         WebFont.load({
                             google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -72,9 +75,12 @@
 
                 <body>
                     <div class="wrapper">
+                        <!-- Sidebar -->
                         <jsp:include page="../layout/sidebar.jsp" />
+
                         <div class="main-panel">
                             <jsp:include page="../layout/header.jsp" />
+
                             <div class="container">
                                 <div class="page-inner">
                                     <div class="page-header">
@@ -97,249 +103,329 @@
                                             <li class="nav-item">Cập nhật</li>
                                         </ul>
                                     </div>
-                                    <c:if test="${not empty successMessage}">
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                            ${successMessage}
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                        </div>
-                                    </c:if>
-                                    <c:if test="${not empty errorMessage}">
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            ${errorMessage}
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                        </div>
-                                    </c:if>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <div class="d-flex align-items-center">
-                                                        <h4 class="card-title">Thông tin phiếu nhập hàng</h4>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body">
-                                                    <form:form action="${ctx}/admin/receipt-mgr/save" method="POST"
-                                                        modelAttribute="purchaseReceipt" id="receiptForm">
-                                                        <form:hidden path="id" />
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label for="receiptCode" class="required-field">Mã
-                                                                        phiếu nhập</label>
-                                                                    <form:input path="receiptCode" id="receiptCode"
-                                                                        class="form-control" required="true"
-                                                                        readonly="true" />
-                                                                    <form:errors path="receiptCode"
-                                                                        cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label for="supplier" class="required-field">Nhà
-                                                                        cung cấp</label>
-                                                                    <form:select path="supplier.supplierId"
-                                                                        id="supplier" class="form-control"
-                                                                        required="true">
-                                                                        <form:option value=""
-                                                                            label="-- Chọn nhà cung cấp --" />
-                                                                        <form:options items="${suppliers}"
-                                                                            itemValue="supplierId"
-                                                                            itemLabel="supplierName" />
-                                                                    </form:select>
-                                                                    <form:errors path="supplier"
-                                                                        cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label for="note">Ghi chú</label>
-                                                                    <form:textarea path="note" id="note"
-                                                                        class="form-control" rows="3" />
-                                                                    <form:errors path="note" cssClass="text-danger" />
-                                                                </div>
-                                                            </div>
 
-                                                            <form:hidden path="createAt" />
+                                    <%-- Display Success and Error Messages --%>
+                                        <c:if test="${not empty successMessage}">
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                ${successMessage}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${not empty errorMessage}">
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                ${errorMessage}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                        </c:if>
+
+                                        <!-- Form cập nhật phiếu nhập hàng -->
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <div class="d-flex align-items-center">
+                                                            <h4 class="card-title">Thông tin phiếu nhập hàng</h4>
                                                         </div>
-                                                        <hr>
-                                                        <div class="card-header">
-                                                            <div class="d-flex align-items-center">
-                                                                <h4 class="card-title">Chi tiết phiếu nhập</h4>
-                                                                <button type="button" id="addDetail"
-                                                                    class="btn btn-primary btn-round ms-auto">
-                                                                    <i class="fas fa-plus"></i> Thêm sản phẩm
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-body" id="detailsContainer">
-                                                            <div class="detail-row" id="detail-template"
-                                                                style="display: none;">
-                                                                <input type="hidden" class="detail-id" value="0" />
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <form:form action="${ctx}/admin/receipt-mgr/update"
+                                                            method="POST" modelAttribute="purchaseReceipt"
+                                                            id="receiptForm">
+                                                            <%-- Hidden input for Receipt ID --%>
+                                                                <form:hidden path="id" />
                                                                 <div class="row">
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-6">
                                                                         <div class="form-group">
-                                                                            <label class="required-field">Sản
-                                                                                phẩm</label>
-                                                                            <select class="form-control product-select"
-                                                                                required>
-                                                                                <option value="">-- Chọn sản phẩm --
-                                                                                </option>
-                                                                                <c:forEach items="${products}"
-                                                                                    var="product">
-                                                                                    <option
-                                                                                        value="${product.productId}">
-                                                                                        ${product.productName}</option>
-                                                                                </c:forEach>
-                                                                            </select>
-                                                                            <div class="invalid-feedback">Vui lòng chọn
-                                                                                sản phẩm.</div>
+                                                                            <label for="receiptCode"
+                                                                                class="required-field">Mã phiếu
+                                                                                nhập</label>
+                                                                            <form:input path="receiptCode"
+                                                                                id="receiptCode" class="form-control"
+                                                                                required="true" readonly="true" />
+                                                                            <form:errors path="receiptCode"
+                                                                                cssClass="text-danger" />
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-6">
                                                                         <div class="form-group">
-                                                                            <label class="required-field">Biến
-                                                                                thể</label>
-                                                                            <select class="form-control variant-select"
-                                                                                required disabled>
-                                                                                <option value="">-- Chọn sản phẩm trước
-                                                                                    --</option>
-                                                                            </select>
-                                                                            <div class="invalid-feedback">Vui lòng chọn
-                                                                                biến thể.</div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group">
-                                                                            <label class="required-field">Số
-                                                                                lượng</label>
-                                                                            <input type="number"
-                                                                                class="form-control quantity" min="1"
-                                                                                value="1" required />
-                                                                            <div class="invalid-feedback">Số lượng phải
-                                                                                lớn hơn 0.</div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group">
-                                                                            <label class="required-field">Đơn
-                                                                                giá</label>
-                                                                            <input type="number"
-                                                                                class="form-control unit-price" min="0"
-                                                                                step="0.01" value="0" required />
-                                                                            <div class="invalid-feedback">Đơn giá không
-                                                                                được âm.</div>
+                                                                            <label for="supplier"
+                                                                                class="required-field">Nhà cung
+                                                                                cấp</label>
+                                                                            <form:select path="supplier.supplierId"
+                                                                                id="supplier" class="form-control"
+                                                                                required="true">
+                                                                                <form:option value=""
+                                                                                    label="-- Chọn nhà cung cấp --" />
+                                                                                <form:options items="${suppliers}"
+                                                                                    itemValue="supplierId"
+                                                                                    itemLabel="supplierName" />
+                                                                            </form:select>
+                                                                            <form:errors path="supplier"
+                                                                                cssClass="text-danger" />
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-6">
                                                                         <div class="form-group">
-                                                                            <label>Thành tiền:</label>
-                                                                            <span class="subtotal">0.00</span> VND
+                                                                            <label for="note">Ghi chú</label>
+                                                                            <form:textarea path="note" id="note"
+                                                                                class="form-control" rows="3" />
+                                                                            <form:errors path="note"
+                                                                                cssClass="text-danger" />
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-8 text-end">
-                                                                        <button type="button"
-                                                                            class="btn btn-danger btn-sm remove-detail">
-                                                                            <i class="fas fa-trash"></i> Xóa
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label for="createAt">Ngày tạo</label>
+                                                                            <%-- Display create date, make it readonly
+                                                                                --%>
+                                                                                <input type="text" class="form-control"
+                                                                                    value="<fmt:formatDate value="
+                                                                                    ${purchaseReceipt.createAt}"
+                                                                                    pattern="dd/MM/yyyy HH:mm" />"
+                                                                                readonly />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <hr>
+
+                                                                <div class="card-header">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <h4 class="card-title">Chi tiết phiếu nhập
+                                                                        </h4>
+                                                                        <button type="button" id="addDetail"
+                                                                            class="btn btn-primary btn-round ms-auto">
+                                                                            <i class="fas fa-plus"></i> Thêm sản phẩm
                                                                         </button>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr>
-                                                        <div class="row">
-                                                            <div class="col-md-12 text-end">
-                                                                <div class="form-group">
-                                                                    <label>Tổng tiền phiếu nhập:</label>
-                                                                    <span id="totalAmount" class="total-amount">0.00
-                                                                        VND</span>
-                                                                    <input type="hidden" id="totalAmountInput"
-                                                                        name="totalAmount" value="0.00" />
+                                                                <div class="card-body" id="detailsContainer">
+                                                                    <!-- Template for detail row (hidden by default) -->
+                                                                    <div class="detail-row" id="detail-template"
+                                                                        style="display: none;">
+                                                                        <%-- Hidden input for detail ID (if updating
+                                                                            existing detail) --%>
+                                                                            <input type="hidden" class="detail-id"
+                                                                                value="0" />
+                                                                            <div class="row">
+                                                                                <div class="col-md-4">
+                                                                                    <div class="form-group">
+                                                                                        <label
+                                                                                            class="required-field">Sản
+                                                                                            phẩm</label>
+                                                                                        <select
+                                                                                            class="form-control product-select"
+                                                                                            required>
+                                                                                            <option value="">-- Chọn sản
+                                                                                                phẩm --</option>
+                                                                                            <c:forEach
+                                                                                                items="${products}"
+                                                                                                var="product">
+                                                                                                <option
+                                                                                                    value="${product.productId}">
+                                                                                                    ${product.productName}
+                                                                                                </option>
+                                                                                            </c:forEach>
+                                                                                        </select>
+                                                                                        <div class="invalid-feedback">
+                                                                                            Vui
+                                                                                            lòng chọn sản phẩm.</div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-4">
+                                                                                    <div class="form-group">
+                                                                                        <label
+                                                                                            class="required-field">Biến
+                                                                                            thể</label>
+                                                                                        <select
+                                                                                            class="form-control variant-select"
+                                                                                            required disabled>
+                                                                                            <option value="">-- Chọn sản
+                                                                                                phẩm trước --</option>
+                                                                                        </select>
+                                                                                        <div class="invalid-feedback">
+                                                                                            Vui
+                                                                                            lòng chọn biến thể.</div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <div class="form-group">
+                                                                                        <label class="required-field">Số
+                                                                                            lượng</label>
+                                                                                        <input type="number"
+                                                                                            class="form-control quantity"
+                                                                                            min="1" value="1"
+                                                                                            required />
+                                                                                        <div class="invalid-feedback">Số
+                                                                                            lượng phải lớn hơn 0.</div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <div class="form-group">
+                                                                                        <label
+                                                                                            class="required-field">Đơn
+                                                                                            giá</label>
+                                                                                        <input type="number"
+                                                                                            class="form-control unit-price"
+                                                                                            min="0" step="0.01"
+                                                                                            value="0" required />
+                                                                                        <div class="invalid-feedback">
+                                                                                            Đơn
+                                                                                            giá không được âm.</div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-4">
+                                                                                    <div class="form-group">
+                                                                                        <label>Thành tiền:</label>
+                                                                                        <span
+                                                                                            class="subtotal">0.00</span>
+                                                                                        VND
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-8 text-end">
+                                                                                    <button type="button"
+                                                                                        class="btn btn-danger btn-sm remove-detail">
+                                                                                        <i class="fas fa-trash"></i> Xóa
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                    </div>
+
+                                                                    <!-- Existing details will be loaded here by JavaScript -->
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-12 text-end">
-                                                                <button type="submit" class="btn btn-primary">Cập nhật
-                                                                    phiếu nhập</button>
-                                                                <a href="${ctx}/admin/receipt-mgr/list"
-                                                                    class="btn btn-secondary">Hủy</a>
-                                                            </div>
-                                                        </div>
-                                                        <input type="hidden" id="detailsJson" name="detailsJson"
-                                                            value="" />
-                                                    </form:form>
+
+                                                                <hr>
+
+                                                                <div class="row">
+                                                                    <div class="col-md-12 text-end">
+                                                                        <div class="form-group">
+                                                                            <label>Tổng tiền phiếu nhập:</label>
+                                                                            <span id="totalAmount"
+                                                                                class="total-amount">0.00 VND</span>
+                                                                            <%-- Hidden input to send total amount to
+                                                                                controller --%>
+                                                                                <input type="hidden"
+                                                                                    id="totalAmountInput"
+                                                                                    name="totalAmount" value="0.00" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <div class="col-md-12 text-end">
+                                                                        <button type="submit"
+                                                                            class="btn btn-primary">Cập nhật phiếu
+                                                                            nhập</button>
+                                                                        <a href="${ctx}/admin/receipt-mgr/list"
+                                                                            class="btn btn-secondary">Hủy</a>
+                                                                    </div>
+                                                                </div>
+
+                                                                <%-- Hidden input to send details as JSON --%>
+                                                                    <input type="hidden" id="detailsJson"
+                                                                        name="detailsJson" value="" />
+                                                        </form:form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                             <jsp:include page="../layout/footer.jsp" />
                         </div>
                     </div>
+
+                    <!-- Core JS Files -->
                     <script src="${ctx}/resources/assets/dashboard/js/core/jquery-3.7.1.min.js"></script>
                     <script src="${ctx}/resources/assets/dashboard/js/core/popper.min.js"></script>
                     <script src="${ctx}/resources/assets/dashboard/js/core/bootstrap.min.js"></script>
+
+                    <!-- Scrollbar Plugin -->
                     <script
                         src="${ctx}/resources/assets/dashboard/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+                    <!-- KaiAdmin JS -->
                     <script src="${ctx}/resources/assets/dashboard/js/kaiadmin.min.js"></script>
+
+                    <!-- Custom Script -->
                     <script>
                         $(document).ready(function () {
+                            // Loại bỏ thuộc tính required khỏi template ban đầu
                             $('#detail-template').find('.product-select').removeAttr('required');
                             $('#detail-template').find('.variant-select').removeAttr('required');
                             $('#detail-template').find('.quantity').removeAttr('required');
                             $('#detail-template').find('.unit-price').removeAttr('required');
+
+                            // Thêm thuộc tính name cho template ban đầu (chỉ để phân biệt với các dòng thực tế)
                             $('#detail-template').find('.product-select').attr('name', 'template-product');
                             $('#detail-template').find('.variant-select').attr('name', 'template-variant');
                             $('#detail-template').find('.quantity').attr('name', 'template-quantity');
                             $('#detail-template').find('.unit-price').attr('name', 'template-unitPrice');
                             $('#detail-template').find('.detail-id').attr('name', 'template-detailId');
 
-                            var detailRowIndex = ${ purchaseReceipt.purchaseReceiptDetails.size()
-                        };
 
+                            // Counter for detail rows to set correct names (used for new rows)
+                            var detailRowIndex = ${ purchaseReceipt.purchaseReceiptDetails.size()
+                        }; // Start index after existing details
+
+                        // Function to add a new detail row
                         function addDetailRow(detail = null) {
                             var $templateRow = $('#detail-template');
                             var $newRow = $templateRow.clone();
+
+                            // Remove display: none and update ID
                             $newRow.css('display', '').removeAttr('id');
+
+                            // Thêm lại thuộc tính required cho các phần tử trong dòng mới
                             $newRow.find('.product-select').attr('required', 'required');
                             $newRow.find('.variant-select').attr('required', 'required');
                             $newRow.find('.quantity').attr('required', 'required');
                             $newRow.find('.unit-price').attr('required', 'required');
+
+                            // Set names for form submission (using index)
                             $newRow.find('.detail-id').attr('name', 'details[' + detailRowIndex + '].id');
-                            $newRow.find('.product-select').attr('name', 'details[' + detailRowIndex + '].product.productId');
-                            $newRow.find('.variant-select').attr('name', 'details[' + detailRowIndex + '].productVariantId');
+                            $newRow.find('.product-select').attr('name', 'details[' + detailRowIndex + '].product.productId'); // Need product ID for variant fetching
+                            $newRow.find('.variant-select').attr('name', 'details[' + detailRowIndex + '].productVariantId'); // Send variant ID
                             $newRow.find('.quantity').attr('name', 'details[' + detailRowIndex + '].quantity');
                             $newRow.find('.unit-price').attr('name', 'details[' + detailRowIndex + '].unitPrice');
 
+                            // Populate with existing data if available (for update)
                             if (detail) {
-                                $newRow.find('.detail-id').val(detail.id || 0);
+                                $newRow.find('.detail-id').val(detail.id || 0); // Use 0 for new details added on update page
                                 $newRow.find('.product-select').val(detail.product.productId);
-                                $newRow.find('.variant-select').data('selected-variant-id', detail.productVariant.productVariantId);
+                                // Trigger product change to load variants
+                                $newRow.find('.product-select').trigger('change');
+                                // After variants are loaded, set the variant
+                                // This needs to be done asynchronously after the AJAX call completes
+                                $newRow.find('.variant-select').data('selected-variant-id', detail.productVariant.productVariantId); // Store variant ID temporarily
                                 $newRow.find('.quantity').val(detail.quantity);
                                 $newRow.find('.unit-price').val(detail.unitPrice);
                                 $newRow.find('.subtotal').text((detail.quantity * detail.unitPrice).toFixed(2));
                             }
 
+
+                            // Add remove button functionality
                             $newRow.find('.remove-detail').click(function () {
                                 $(this).closest('.detail-row').remove();
                                 updateTotalAmount();
+                                // Re-index rows after removal if needed for server-side binding,
+                                // but sending as JSON array is easier.
                             });
 
+                            // Append the new row to the container
                             $('#detailsContainer').append($newRow);
-                            detailRowIndex++;
 
-                            if (detail) {
-                                $newRow.find('.product-select').trigger('change');
-                            }
+                            // Increment index for the next row
+                            detailRowIndex++;
                         }
 
+                        // Load existing details when the page loads
                         <c:forEach items="${purchaseReceipt.purchaseReceiptDetails}" var="detail">
                             addDetailRow({
                                 id: ${detail.id},
@@ -347,77 +433,84 @@
                             productVariant: {productVariantId: ${detail.productVariant.productVariantId} },
                             quantity: ${detail.quantity},
                             unitPrice: ${detail.unitPrice}
-                });
+                                });
                         </c:forEach>
 
+
+                        // Add new detail row button click
                         $('#addDetail').click(function () {
                             addDetailRow();
                         });
 
+                        // Handle product selection change (existing code, ensure it's present)
                         $(document).on('change', '.product-select', function () {
-                            var $row = $(this).closest('.detail-row');
                             var selectedProductId = $(this).val();
-                            var $variantSelect = $row.find('.variant-select');
-                            var selectedVariantId = $variantSelect.data('selected-variant-id');
+                            var $variantSelect = $(this).closest('.detail-row').find('.variant-select');
+                            var selectedVariantId = $variantSelect.data('selected-variant-id'); // Get stored variant ID
 
+                            // Clear previous options except the default one
                             $variantSelect.find('option:not([value=""])').remove();
+                            // Disable variant select initially
                             $variantSelect.prop('disabled', true);
-                            // $variantSelect.append('<option value="">-- Đang tải biến thể --</option>');
+                            $variantSelect.append('<option value="">-- Đang tải biến thể --</option>');
+
 
                             if (selectedProductId) {
+                                // Make AJAX call to fetch variants
                                 $.ajax({
                                     url: "${ctx}/admin/receipt-mgr/api/products/" + selectedProductId + "/variants",
                                     type: "GET",
                                     success: function (variants) {
-                                        $variantSelect.find('option:not([value=""])').remove();
-                                        if (variants && variants.length > 0) {
-                                            // $variantSelect.append('<option value="">-- Chọn biến thể --</option>');
+                                        $variantSelect.find('option:not([value=""])').remove(); // Clear loading message
+                                        if (variants.length > 0) {
+                                            $variantSelect.append('<option value="">-- Chọn biến thể --</option>');
                                             $.each(variants, function (index, variant) {
-                                                var displayText = variant.SKU || variant.productVariantId;
-                                                if (variant.sizeName && variant.colorName) {
-                                                    displayText += ' - ' + variant.sizeName + ' - ' + variant.colorName;
-                                                } else if (variant.sizeName) {
-                                                    displayText += ' - ' + variant.sizeName;
-                                                } else if (variant.colorName) {
-                                                    displayText += ' - ' + variant.colorName;
-                                                }
-                                                $variantSelect.append('<option value="' + variant.productVariantId + '">' + displayText + '</option>');
+                                                $variantSelect.append($('<option>', {
+                                                    value: variant.productVariantId,
+                                                    text: variant.variantName // Assuming ProductVariantDto has variantName
+                                                }));
                                             });
                                             $variantSelect.prop('disabled', false);
+
+                                            // If loading existing detail, set the variant after options are populated
                                             if (selectedVariantId) {
                                                 $variantSelect.val(selectedVariantId);
-                                                $variantSelect.removeData('selected-variant-id');
+                                                $variantSelect.removeData('selected-variant-id'); // Remove stored ID
                                             }
+
                                         } else {
-                                            $variantSelect.append('<option value="">Không có biến thể</option>');
-                                            $variantSelect.prop('disabled', true);
+                                            $variantSelect.append('<option value="">-- Không có biến thể --</option>');
                                         }
                                     },
                                     error: function (xhr, status, error) {
                                         console.error("Error fetching product variants:", error);
-                                        $variantSelect.find('option:not([value=""])').remove();
+                                        $variantSelect.find('option:not([value=""])').remove(); // Clear loading message
                                         $variantSelect.append('<option value="">-- Lỗi tải biến thể --</option>');
                                     }
                                 });
                             } else {
-                                $variantSelect.find('option:not([value=""])').remove();
-                                // $variantSelect.append('<option value="">-- Chọn sản phẩm trước --</option>');
+                                $variantSelect.find('option:not([value=""])').remove(); // Clear loading message
+                                $variantSelect.append('<option value="">-- Chọn sản phẩm trước --</option>');
                             }
                         });
 
+                        // Trigger change for existing details to load variants
                         $('#detailsContainer .detail-row:not(#detail-template)').each(function () {
                             $(this).find('.product-select').trigger('change');
                         });
 
+
+                        // Handle quantity or unit price change to update subtotal and total
                         $(document).on('input', '.quantity, .unit-price', function () {
                             var $row = $(this).closest('.detail-row');
                             var quantity = parseFloat($row.find('.quantity').val()) || 0;
                             var unitPrice = parseFloat($row.find('.unit-price').val()) || 0;
                             var subtotal = quantity * unitPrice;
-                            $row.find('.subtotal').text(subtotal.toFixed(2));
+                            $row.find('.subtotal').text(subtotal.toFixed(2)); // Assuming you have a .subtotal element
                             updateTotalAmount();
                         });
 
+                        // Function to update the total amount
                         function updateTotalAmount() {
                             var total = 0;
                             $('#detailsContainer .detail-row:not(#detail-template)').each(function () {
@@ -425,16 +518,22 @@
                                 var unitPrice = parseFloat($(this).find('.unit-price').val()) || 0;
                                 total += quantity * unitPrice;
                             });
-                            $('#totalAmount').text(total.toFixed(2) + ' VND');
-                            $('#totalAmountInput').val(total.toFixed(2));
+                            $('#totalAmount').text(total.toFixed(2) + ' VND'); // Assuming you have an element with ID totalAmount
+                            $('#totalAmountInput').val(total.toFixed(2)); // Set giá trị vào input ẩn
                         }
 
+                        // Initial total amount calculation on page load
                         updateTotalAmount();
 
+
+                        // Form submission handler
                         $("#receiptForm").submit(function (event) {
+                            // Prevent default form submission để xử lý dữ liệu trước khi gửi
                             event.preventDefault();
+                            // Cập nhật tổng tiền lần cuối trước khi gửi
                             updateTotalAmount();
 
+                            // Basic client-side validation check
                             var isValid = true;
                             $('#detailsContainer .detail-row:not(#detail-template)').each(function () {
                                 if (!$(this).find('.product-select').val()) {
@@ -468,11 +567,12 @@
                                 return false;
                             }
 
+                            // Tạo mảng chi tiết phiếu nhập
                             var details = [];
                             $('#detailsContainer .detail-row:not(#detail-template)').each(function () {
                                 var $row = $(this);
                                 var detail = {
-                                    id: parseInt($row.find('.detail-id').val()) || 0,
+                                    id: parseInt($row.find('.detail-id').val()) || 0, // Include detail ID, 0 for new ones
                                     productVariantId: parseInt($row.find('.variant-select').val()),
                                     quantity: parseInt($row.find('.quantity').val()),
                                     unitPrice: parseFloat($row.find('.unit-price').val())
@@ -480,16 +580,25 @@
                                 details.push(detail);
                             });
 
+                            // Kiểm tra nếu không có chi tiết nào
                             if (details.length === 0) {
                                 alert("Phiếu nhập phải có ít nhất một chi tiết sản phẩm.");
                                 return false;
                             }
 
-                            $('#detailsJson').val(JSON.stringify(details));
+                            // Chuyển đổi mảng chi tiết thành chuỗi JSON
+                            var detailsJson = JSON.stringify(details);
+
+                            // Set chuỗi JSON vào input ẩn
+                            $('#detailsJson').val(detailsJson);
+
+                            // Submit form
                             this.submit();
                         });
-                    });
+                        });
+
                     </script>
+
                 </body>
 
                 </html>
