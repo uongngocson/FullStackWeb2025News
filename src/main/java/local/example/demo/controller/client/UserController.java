@@ -57,10 +57,10 @@ public class UserController {
         return "client/user/profile";
     }
 
-    @GetMapping("orderconfirm")
-    public String getOrderConfirmPage() {
-        return "client/user/orderconfirm";
-    }
+    // @GetMapping("orderconfirm")
+    // public String getOrderConfirmPage() {
+    // return "client/user/orderconfirm";
+    // }
 
     @GetMapping("productfavriote")
     public String getProductFavriotePage() {
