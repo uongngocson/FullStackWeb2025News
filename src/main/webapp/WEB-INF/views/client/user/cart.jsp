@@ -175,7 +175,7 @@
                                             <div class="col-span-11 md:col-span-4 flex items-center">
                                                 <div
                                                     class="w-20 h-20 md:w-24 md:h-24 bg-gray-50 mr-4 flex-shrink-0 border border-gray-100">
-                                                    <img src="${ctx}/${item.productVariant.imageUrl}"
+                                                    <img src="${item.productVariant.imageUrl}"
                                                         alt="${item.productVariant.product.productName}"
                                                         class="w-full h-full object-cover">
                                                 </div>
@@ -403,7 +403,7 @@
                                                 <spring:message code="cart.shipping" />
                                             </span>
                                             <span class="text-sm text-green-600 font-medium">
-                                                calculate...
+                                                $0.00
                                             </span>
                                         </div>
                                         <div class="border-t border-gray-200 my-4 pt-4"></div>

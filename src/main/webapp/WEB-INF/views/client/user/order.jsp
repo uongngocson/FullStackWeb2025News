@@ -1257,7 +1257,7 @@
                                     <div class="flex items-center py-3 border-b border-gray-100"
                                         data-product-id="${item.variant.product.productId}">
                                         <div class="w-16 h-16 bg-gray-100 mr-4">
-                                            <img src="${ctx}/${item.variant.imageUrl}"
+                                            <img src="${item.variant.imageUrl}"
                                                 alt="${item.variant.product.productName}"
                                                 data-variant-id="${item.variant.productVariantId}"
                                                 data-product-id="${item.variant.product.productId}"
@@ -2707,12 +2707,12 @@
                             <div class="space-y-3 mb-6">
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600">Subtotal</span>
-                                    <span id="cart-subtotal">Calculating...</span>
+                                    <span id="cart-subtotal">$110</span>
                                 </div>
 
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600">Shipping</span>
-                                    <span id="shipping-cost-summary">Calculating...</span>
+                                    <span id="shipping-cost-summary X">$5</span>
                                 </div>
 
                                 <!-- Discount row - initially hidden -->
@@ -2723,15 +2723,15 @@
 
                                 <div class="flex justify-between text-sm hidden">
                                     <span class="text-gray-600">Tax</span>
-                                    <span>Calculating...</span>
+                                    <span>$8.29</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600">Tax</span>
-                                    <span>Calculatinggg...</span>
+                                    <span>$8.29</span>
                                 </div>
                                 <div class="flex justify-between text-lg font-medium pt-3 border-t border-gray-200">
                                     <span>Total</span>
-                                    <span id="total-with-discount">Calculating...</span>
+                                    <span id="total-with-discount">$118.29</span>
                                 </div>
 
                                 <!-- Applied discount display -->

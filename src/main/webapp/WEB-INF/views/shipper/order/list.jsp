@@ -120,7 +120,7 @@
                                                                     ${order.customer.lastName}</td>
                                                                 <td>
                                                                     <fmt:parseDate value="${order.orderDate}"
-                                                                        pattern="yyyy-MM-dd'T'HH:mm:ss.SSS"
+                                                                        pattern="yyyy-MM-dd'T'HH:mm"
                                                                         var="parsedOrderDate" type="both" />
                                                                     <fmt:formatDate value="${parsedOrderDate}"
                                                                         pattern="dd/MM/yyyy HH:mm" />

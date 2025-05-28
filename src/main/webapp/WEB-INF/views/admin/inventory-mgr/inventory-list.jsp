@@ -113,7 +113,7 @@
                                                                         <td>${status.index+1}</td>
                                                                         <%-- Removed ID data --%>
                                                                             <td>
-                                                                                <img src="${ctx}/${inventory.productVariant.imageUrl}"
+                                                                                <img src="${inventory.productVariant.imageUrl}"
                                                                                     alt="Product Image"
                                                                                     style="width: 50px; height: auto;">
                                                                             </td>

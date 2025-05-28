@@ -58,7 +58,7 @@
 
                                     <div class="mb-4">
                                         <span class="text-2xl font-bold mr-2">$${product.price}</span>
-                                        <span class="text-gray-500 line-through">$399.99</span>
+                                        <span class="text-gray-500 line-through">$99.99</span>
                                     </div>
                                     <div class="flex items-center mb-4">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
