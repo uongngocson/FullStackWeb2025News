@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "addressv2")
+@Table(name = "Address")
 public class Addressv2 {
 
     @Id
@@ -33,6 +33,12 @@ public class Addressv2 {
 
     @Column(name = "country")
     private String country;
+
+    // @Column(name = "recipientName", length = 100)
+    // private String recipientName;
+
+    // @Column(name = "recipientPhone", length = 15)
+    // private String recipientPhone;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ward_id", insertable = false, updatable = false)

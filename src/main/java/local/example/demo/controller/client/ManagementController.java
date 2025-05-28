@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
@@ -25,6 +28,8 @@ import java.util.List;
 @RequestMapping("/management")
 public class ManagementController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ManagementController.class);
+
     @Autowired
     private CustomerService customerService;
 
@@ -33,58 +38,92 @@ public class ManagementController {
 
     @GetMapping("/profile")
     public String getProfilePage(Model model) {
+        logger.debug("Processing GET /management/profile");
         Customer customer = customerService.getCurrentLoggedInCustomer();
         if (customer == null) {
+            logger.warn("No authenticated customer found, redirecting to login");
             return "redirect:/login";
         }
-        // Nạp addresses để hiển thị
+        logger.debug("Found customer ID: {}", customer.getCustomerId());
+
         List<Address> addresses = customerService.findAddressesByCustomer(customer);
         customer.setAddresses(addresses);
         model.addAttribute("customer", customer);
+
+        logger.debug("Customer data: firstName={}, lastName={}, email={}, dateOfBirth={}",
+                customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getDateOfBirth());
+
         return "client/auth/profile";
     }
 
+    @GetMapping("/profile/update")
+    public String getUpdateProfilePage(Model model) {
+        logger.debug("Processing GET /management/profile/update");
+        Customer customer = customerService.getCurrentLoggedInCustomer();
+        if (customer == null) {
+            logger.warn("No authenticated customer found, redirecting to login");
+            return "redirect:/login";
+        }
+        logger.debug("Found customer ID: {}", customer.getCustomerId());
+
+        model.addAttribute("customer", customer);
+        return "client/auth/update_profile";
+    }
+
     @PostMapping("/profile/update")
-    public String updateProfile(
-            @Valid @ModelAttribute("customer") Customer customer,
-            BindingResult result,
+    public String updateProfile(@Valid @ModelAttribute("customer") Customer updatedCustomer,
+            BindingResult bindingResult,
             @RequestParam("image") MultipartFile image,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
-            model.addAttribute("customer", customer);
-            return "client/auth/profile";
+            RedirectAttributes redirectAttributes,
+            Model model) {
+        logger.debug("Processing POST /management/profile/update for customer ID: {}", updatedCustomer.getCustomerId());
+
+        if (bindingResult.hasErrors()) {
+            logger.warn("Validation failed for customer: {}", bindingResult.getAllErrors());
+            model.addAttribute("error", "Vui lòng sửa các lỗi trong form trước khi gửi.");
+            return "client/auth/update_profile";
         }
 
         try {
-            customerService.updateCustomerProfile(customer, image);
-            redirectAttributes.addFlashAttribute("success", "Hồ sơ đã được cập nhật thành công!");
-            return "redirect:/management/profile";
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("customer", customer);
-            return "client/auth/profile";
+            Customer updated = customerService.updateCustomerProfile(updatedCustomer, image);
+            logger.info("Profile updated successfully for customer ID: {}", updated.getCustomerId());
+            redirectAttributes.addFlashAttribute("success", "Cập nhật hồ sơ thành công!");
         } catch (IOException e) {
-            model.addAttribute("error", "Lỗi khi tải lên ảnh: " + e.getMessage());
-            model.addAttribute("customer", customer);
-            return "client/auth/profile";
+            logger.error("Failed to update profile due to IO error: {}", e.getMessage());
+            model.addAttribute("error", "Cập nhật hồ sơ thất bại: Lỗi khi xử lý ảnh.");
+            return "client/auth/update_profile";
+        } catch (Exception e) {
+            logger.error("Failed to update profile: {}", e.getMessage());
+            model.addAttribute("error", "Cập nhật hồ sơ thất bại: " + e.getMessage());
+            return "client/auth/update_profile";
         }
+        return "redirect:/management/profile";
+    }
+
+    @GetMapping("/profile/change-password")
+    public String getChangePasswordPage() {
+        logger.debug("Processing GET /management/profile/change-password");
+        return "client/auth/change_password";
     }
 
     @PostMapping("/profile/change-password")
-    public String changePassword(
-            @RequestParam("oldPassword") String oldPassword,
+    public String changePassword(@RequestParam("oldPassword") String oldPassword,
             @RequestParam("newPassword") String newPassword,
             @RequestParam("confirmPassword") String confirmPassword,
             RedirectAttributes redirectAttributes) {
+        logger.debug("Processing POST /management/profile/change-password");
         try {
             customerService.changePassword(oldPassword, newPassword, confirmPassword);
-            redirectAttributes.addFlashAttribute("passwordSuccess", "Password changed successfully!");
-            return "redirect:/management/profile";
+            logger.info("Password changed successfully");
+            redirectAttributes.addFlashAttribute("passwordSuccess", "Thay đổi mật khẩu thành công!");
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("passwordError", e.getMessage());
-            return "redirect:/management/profile";
+            logger.error("Failed to change password: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("passwordError", "Thay đổi mật khẩu thất bại: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected error during password change: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("passwordError", "Thay đổi mật khẩu thất bại: Lỗi không xác định.");
         }
+        return "redirect:/management/profile";
     }
 
     @GetMapping("/historyorder")

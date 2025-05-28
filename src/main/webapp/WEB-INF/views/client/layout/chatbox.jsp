@@ -8,7 +8,7 @@
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Simple Chatbot</title>
+                    <title>DDTS AI Chatbot</title>
                     <!-- For Spring Security CSRF Support -->
                     <meta name="_csrf" content="${_csrf.token}" />
                     <meta name="_csrf_header" content="${_csrf.headerName}" />
@@ -87,6 +87,28 @@
                             /* Light gray */
                             color: #1f2937;
                             border-radius: 18px 18px 18px 0;
+                        }
+
+                        /* RAG citation styling */
+                        .rag-citation {
+                            border-left: 3px solid #3b82f6;
+                            background-color: #eff6ff;
+                            padding: 8px 12px;
+                            margin-top: 8px;
+                            border-radius: 4px;
+                            font-size: 0.9em;
+                        }
+
+                        .rag-indicator {
+                            display: inline-flex;
+                            align-items: center;
+                            background-color: #dbeafe;
+                            color: #1e40af;
+                            padding: 2px 8px;
+                            border-radius: 12px;
+                            font-size: 0.75rem;
+                            margin-top: 4px;
+                            font-weight: 500;
                         }
 
                         /* Error styling */
@@ -252,6 +274,31 @@
                             opacity: 1;
                         }
 
+                        /* Toggle button for sources */
+                        .sources-toggle {
+                            display: inline-flex;
+                            align-items: center;
+                            margin-top: 8px;
+                            font-size: 0.75rem;
+                            color: #4b5563;
+                            cursor: pointer;
+                            user-select: none;
+                            transition: color 0.2s;
+                        }
+
+                        .sources-toggle:hover {
+                            color: #1d4ed8;
+                        }
+
+                        .sources-content {
+                            margin-top: 8px;
+                            background-color: #f9fafb;
+                            border-radius: 4px;
+                            padding: 8px;
+                            font-size: 0.85rem;
+                            border: 1px solid #e5e7eb;
+                        }
+
                         /* For larger product list display */
                         .products-container-large {
                             max-width: 100%;
@@ -284,12 +331,16 @@
                                 class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-3">
                                 <i class="fas fa-robot text-white text-lg"></i>
                             </div>
-                            <div id="chatbox-title">
-                                <h1 class="font-bold text-lg">DDTS Tư Vấn Thông Minh</h1>
+                            <div id="chatbox-title" class="flex-1">
+                                <h1 class="font-bold text-lg">DDTS AI Assistant</h1>
                                 <div class="flex items-center text-xs text-blue-100">
                                     <span class="h-2 w-2 bg-green-400 rounded-full mr-2"></span>
                                     <span id="chatbox-status">Online</span>
                                 </div>
+                            </div>
+                            <div id="rag-status" class="flex items-center bg-blue-500/30 px-2 py-1 rounded text-xs">
+                                <i class="fas fa-brain mr-1"></i>
+                                <span>RAG Enabled</span>
                             </div>
                         </div>
 
@@ -307,9 +358,15 @@
                                         <span class="text-xs ml-2 opacity-75 text-gray-500" id="current-time"></span>
                                     </div>
                                     <div class="bot-bubble p-3 shadow-sm message-animation">
-                                        <p>Hello! I'm your DDTS Shop AI assistant. How can I help you today?</p>
-                                        <p class="text-xs mt-2 text-gray-500">You can ask me about products, or type
-                                            something like "show me some shirts" or "find shoes under $100"</p>
+                                        <p>Hello! I'm your DDTS Shop AI assistant powered by RAG technology. I can help
+                                            you with fashion advice and product recommendations based on our knowledge
+                                            base.</p>
+                                        <p class="text-xs mt-2 text-gray-500">You can ask me about products, fashion
+                                            trends, or type something like "show me some shirts" or "find shoes under
+                                            $100"</p>
+                                        <div class="rag-indicator mt-2">
+                                            <i class="fas fa-brain mr-1"></i> Knowledge-Enhanced
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -330,7 +387,6 @@
 
                     <script>
                         $(document).ready(function () {
-                            console.log("Chat interface initialized");
 
                             // Set current time for first message
                             const now = new Date();
@@ -343,7 +399,6 @@
                             const prefilledQuestion = urlParams.get('question');
 
                             if (prefilledQuestion) {
-                                console.log("Found prefilled question:", prefilledQuestion);
                                 // Fill the input with the question
                                 $("#user-input").val(decodeURIComponent(prefilledQuestion));
                                 // Auto-send after a short delay
@@ -354,7 +409,6 @@
 
                             // Add user message to chat
                             function addUserMessage(message) {
-                                console.log("Adding user message:", message);
                                 const now = new Date();
                                 const hours = now.getHours().toString().padStart(2, '0');
                                 const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -392,13 +446,11 @@
                                 scrollToBottom();
 
                                 // For debugging
-                                console.log("Added user message with ID:", messageId);
                                 return messageId;
                             }
 
                             // Add bot message to chat
-                            function addBotMessage(message, time) {
-                                console.log("Adding bot message:", message);
+                            function addBotMessage(message, time, ragInfo) {
                                 const messageId = 'bot-msg-' + Date.now(); // Unique ID based on timestamp
 
                                 // Sanitize message to prevent XSS
@@ -408,13 +460,60 @@
                                     .replace(/>/g, "&gt;")
                                     .replace(/"/g, "&quot;")
                                     .replace(/'/g, "&#039;");
-                                console.log("Safe message:", safeMessage);
 
-                                // Append HTML manually instead of using template literals
+                                // Create bot message container
                                 const messageDiv = document.createElement('div');
                                 messageDiv.className = 'flex justify-start';
                                 messageDiv.id = messageId;
 
+                                // Prepare RAG indicator if RAG was used
+                                let ragIndicator = '';
+                                let sourcesToggle = '';
+                                let sourcesContent = '';
+
+                                if (ragInfo && ragInfo.usedRag) {
+                                    ragIndicator = '<div class="rag-indicator mt-2">' +
+                                        '<i class="fas fa-brain mr-1"></i> Knowledge-Enhanced' +
+                                        '</div>';
+
+                                    if (ragInfo.sources && ragInfo.sources.length > 0) {
+                                        const sourcesId = 'sources-' + Date.now();
+                                        const contentId = 'content-' + sourcesId;
+
+                                        // Create toggle for sources
+                                        sourcesToggle = '<div class="sources-toggle" onclick="toggleSources(\'' + contentId + '\')">' +
+                                            '<i class="fas fa-info-circle mr-1"></i> ' +
+                                            'View ' + ragInfo.sources.length + ' knowledge sources' +
+                                            '</div>';
+
+                                        // Create sources content (initially hidden)
+                                        sourcesContent = '<div id="' + contentId + '" class="sources-content" style="display: none;">';
+
+                                        // Add each source
+                                        ragInfo.sources.forEach((source, index) => {
+                                            const safeSourceText = (source.text || "")
+                                                .replace(/&/g, "&amp;")
+                                                .replace(/</g, "&lt;")
+                                                .replace(/>/g, "&gt;")
+                                                .replace(/"/g, "&quot;")
+                                                .replace(/'/g, "&#039;");
+
+                                            const sourceType = source.type || "Document";
+                                            const sourceTitle = source.title || ("Source " + (index + 1));
+
+                                            sourcesContent += '<div class="rag-citation">' +
+                                                '<strong>' + sourceTitle + '</strong> (' + sourceType + ')<br>' +
+                                                '<span class="text-xs">' +
+                                                (safeSourceText.length > 150 ? safeSourceText.substring(0, 150) + '...' : safeSourceText) +
+                                                '</span>' +
+                                                '</div>';
+                                        });
+
+                                        sourcesContent += '</div>';
+                                    }
+                                }
+
+                                // Build message HTML
                                 messageDiv.innerHTML =
                                     '<div class="flex flex-col max-w-[80%] bot-message-container">' +
                                     '<div class="flex items-center mb-1 ml-2 bot-message-header">' +
@@ -426,6 +525,9 @@
                                     '</div>' +
                                     '<div class="bot-bubble p-3 shadow-sm message-animation bot-message-content">' +
                                     '<p class="bot-message-text">' + safeMessage + '</p>' +
+                                    ragIndicator +
+                                    sourcesToggle +
+                                    sourcesContent +
                                     '</div>' +
                                     '</div>';
 
@@ -433,13 +535,25 @@
                                 scrollToBottom();
 
                                 // For debugging
-                                console.log("Added bot message with ID:", messageId);
                                 return messageId;
                             }
 
+                            // Toggle sources visibility
+                            window.toggleSources = function (contentId) {
+                                const content = document.getElementById(contentId);
+                                if (content) {
+                                    if (content.style.display === 'none') {
+                                        content.style.display = 'block';
+                                    } else {
+                                        content.style.display = 'none';
+                                    }
+                                    // Scroll to ensure visibility
+                                    setTimeout(scrollToBottom, 100);
+                                }
+                            };
+
                             // Add product results to chat
-                            function addProductResults(products, time, introText) {
-                                console.log("Adding product results:", products);
+                            function addProductResults(products, time, introText, ragInfo) {
                                 const messageId = 'products-msg-' + Date.now();
                                 const now = new Date();
                                 const timeString = time || now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
@@ -453,6 +567,53 @@
                                 let introHtml = '';
                                 if (introText) {
                                     introHtml = '<p class="mb-3">' + introText + '</p>';
+                                }
+
+                                // Prepare RAG indicator if RAG was used
+                                let ragIndicator = '';
+                                let sourcesToggle = '';
+                                let sourcesContent = '';
+
+                                if (ragInfo && ragInfo.usedRag) {
+                                    ragIndicator = '<div class="rag-indicator mt-2">' +
+                                        '<i class="fas fa-brain mr-1"></i> Knowledge-Enhanced' +
+                                        '</div>';
+
+                                    if (ragInfo.sources && ragInfo.sources.length > 0) {
+                                        const sourcesId = 'sources-' + Date.now();
+                                        const contentId = 'content-' + sourcesId;
+
+                                        // Create toggle for sources
+                                        sourcesToggle = '<div class="sources-toggle" onclick="toggleSources(\'' + contentId + '\')">' +
+                                            '<i class="fas fa-info-circle mr-1"></i> ' +
+                                            'View ' + ragInfo.sources.length + ' knowledge sources' +
+                                            '</div>';
+
+                                        // Create sources content (initially hidden)
+                                        sourcesContent = '<div id="' + contentId + '" class="sources-content" style="display: none;">';
+
+                                        // Add each source
+                                        ragInfo.sources.forEach((source, index) => {
+                                            const safeSourceText = (source.text || "")
+                                                .replace(/&/g, "&amp;")
+                                                .replace(/</g, "&lt;")
+                                                .replace(/>/g, "&gt;")
+                                                .replace(/"/g, "&quot;")
+                                                .replace(/'/g, "&#039;");
+
+                                            const sourceType = source.type || "Document";
+                                            const sourceTitle = source.title || ("Source " + (index + 1));
+
+                                            sourcesContent += '<div class="rag-citation">' +
+                                                '<strong>' + sourceTitle + '</strong> (' + sourceType + ')<br>' +
+                                                '<span class="text-xs">' +
+                                                (safeSourceText.length > 150 ? safeSourceText.substring(0, 150) + '...' : safeSourceText) +
+                                                '</span>' +
+                                                '</div>';
+                                        });
+
+                                        sourcesContent += '</div>';
+                                    }
                                 }
 
                                 // Create base message structure
@@ -479,7 +640,6 @@
                                     const price = product.price || '0.00';
                                     const imageUrl = product.imageUrl || 'https://via.placeholder.com/150';
 
-                                    console.log("Rendering product:", { productId, productName, price });
 
                                     messageHtml +=
                                         '<div class="product-card">' +
@@ -505,6 +665,9 @@
                                     messageHtml += '<p class="text-center py-4">No products found</p>';
                                 }
 
+                                // Add RAG indicators and sources
+                                messageHtml += ragIndicator + sourcesToggle + sourcesContent;
+
                                 // Close the message container
                                 messageHtml += '</div></div>';
 
@@ -517,7 +680,6 @@
 
                             // Add loading indicator
                             function addLoadingIndicator() {
-                                console.log("Adding loading indicator");
                                 const loadingId = 'loading-indicator'; // Use a fixed ID for the loading indicator
 
                                 // Create loading indicator element
@@ -543,7 +705,6 @@
                                 $("#messages-container").append(loadingDiv);
                                 scrollToBottom();
 
-                                console.log("Added loading indicator with ID:", loadingId);
                                 return loadingId;
                             }
 
@@ -576,13 +737,11 @@
                                 $("#messages-container").append(errorDiv);
                                 scrollToBottom();
 
-                                console.log("Added error message with ID:", errorId);
                                 return errorId;
                             }
 
                             // Remove loading indicator
                             function removeLoadingIndicator() {
-                                console.log("Removing loading indicator");
                                 $("#loading-indicator").remove();
                             }
 
@@ -594,14 +753,12 @@
 
                             // Handle send button click
                             $("#send-button").click(function () {
-                                console.log("Send button clicked");
                                 sendMessage();
                             });
 
                             // Handle enter key press
                             $("#user-input").keypress(function (e) {
                                 if (e.which == 13) { // Enter key
-                                    console.log("Enter key pressed");
                                     sendMessage();
                                     return false;
                                 }
@@ -612,11 +769,9 @@
                                 const userInput = $("#user-input").val().trim();
 
                                 if (userInput === '') {
-                                    console.log("Empty input, ignoring");
                                     return;
                                 }
 
-                                console.log("Sending message:", userInput);
 
                                 // Add user message to chat
                                 const userMessageId = addUserMessage(userInput);
@@ -646,23 +801,39 @@
                                         },
                                         headers: headers,
                                         success: function (response) {
-                                            console.log("Response received:", response);
 
                                             // Remove loading indicator
                                             removeLoadingIndicator();
 
                                             // Check if response contains products
                                             if (response && response.products && Array.isArray(response.products)) {
+                                                // Extract RAG information if available for product results
+                                                const ragInfo = {
+                                                    usedRag: response.usedRag === true,
+                                                    sources: response.sources || []
+                                                };
+
                                                 // Handle product search results
                                                 const botMessageId = addProductResults(
                                                     response.products,
                                                     response.time || "now",
-                                                    response.message || "Here are some products that match your search:"
+                                                    response.message || "Here are some products that match your search:",
+                                                    ragInfo
                                                 );
                                             }
                                             // Regular text response
                                             else if (response && response.message) {
-                                                const botMessageId = addBotMessage(response.message, response.time || "now");
+                                                // Extract RAG information if available
+                                                const ragInfo = {
+                                                    usedRag: response.usedRag === true,
+                                                    sources: response.sources || []
+                                                };
+
+                                                const botMessageId = addBotMessage(
+                                                    response.message,
+                                                    response.time || "now",
+                                                    ragInfo
+                                                );
                                             }
                                             else {
                                                 console.error("Invalid response format:", response);

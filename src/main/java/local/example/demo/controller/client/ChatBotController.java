@@ -64,14 +64,58 @@ public class ChatBotController {
             // Format thời gian hiện tại để hiển thị
             String currentTime = new SimpleDateFormat("HH:mm").format(new Date());
 
-            // Check if the message is a product search query
-            if (isProductQuery(message)) {
+            // Lấy phản hồi từ RAG trước để phân tích nội dung
+            Map<String, Object> ragResult = chatbotService.getResponseWithSources(message);
+            String botResponse = (String) ragResult.get("response");
+            boolean usedRag = (boolean) ragResult.getOrDefault("usedRag", false);
+            List<Map<String, Object>> sources = (List<Map<String, Object>>) ragResult.getOrDefault("sources",
+                    new ArrayList<>());
+
+            // Trích xuất metadata từ sources để cải thiện phân tích ngữ cảnh
+            Map<String, Object> extractedMetadata = extractMetadataFromSources(sources);
+
+            // Phân loại chính xác ý định của truy vấn với context từ RAG
+            QueryIntent queryIntent = analyzeQueryIntent(message, botResponse);
+
+            // Tinh chỉnh phân loại dựa trên metadata nếu có
+            if (!extractedMetadata.isEmpty()) {
+                queryIntent = refineQueryIntentWithMetadata(queryIntent, extractedMetadata, message);
+            }
+
+            // Trường hợp là truy vấn TƯ VẤN về sản phẩm (không phải tìm kiếm sản phẩm)
+            if (queryIntent == QueryIntent.PRODUCT_ADVICE) {
+                // Trả về phản hồi từ RAG mà không hiển thị sản phẩm
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", botResponse);
+                response.put("time", currentTime);
+                response.put("usedRag", usedRag);
+
+                // Add formatted sources if RAG was used
+                if (usedRag && sources != null && !sources.isEmpty()) {
+                    response.put("sources", formatSources(sources));
+                }
+
+                // Thêm metadata đã trích xuất vào phản hồi để frontend có thể sử dụng
+                if (!extractedMetadata.isEmpty()) {
+                    response.put("extractedMetadata", extractedMetadata);
+                }
+
+                return ResponseEntity.ok(response);
+            }
+            // Trường hợp là truy vấn TÌM KIẾM sản phẩm cụ thể
+            else if (queryIntent == QueryIntent.PRODUCT_SEARCH) {
                 // Extract search term from the message
                 String searchTerm = extractSearchTerm(message);
                 System.out.println("Extracted search term: " + searchTerm);
 
                 // Determine the product category if possible
                 String category = determineProductCategory(message);
+
+                // Sử dụng category từ metadata nếu không xác định được
+                if (category == null && extractedMetadata.containsKey("category")) {
+                    category = (String) extractedMetadata.get("category");
+                }
+
                 System.out.println("Determined category: " + (category != null ? category : "none"));
 
                 // Get product results
@@ -84,30 +128,56 @@ public class ChatBotController {
 
                 // Process and filter products based on category
                 List<Map<String, Object>> processedProducts = processAndFilterProductData(rawProducts, category);
+
+                // Áp dụng bộ lọc thêm từ metadata nếu có
+                if (!extractedMetadata.isEmpty()) {
+                    processedProducts = applyMetadataFilters(processedProducts, extractedMetadata);
+                }
+
                 int filteredCount = processedProducts.size();
 
-                // Create response with products
+                // Tạo response object
                 Map<String, Object> response = new HashMap<>();
+
+                // Thêm thông tin RAG vào kết quả truy vấn sản phẩm
+                response.put("usedRag", usedRag);
+                if (usedRag && sources != null && !sources.isEmpty()) {
+                    response.put("sources", formatSources(sources));
+                }
+
+                // Thêm metadata đã trích xuất vào phản hồi
+                if (!extractedMetadata.isEmpty()) {
+                    response.put("extractedMetadata", extractedMetadata);
+                }
 
                 // Add user-friendly message
                 if (processedProducts != null && !processedProducts.isEmpty()) {
-                    // If we filtered by category, indicate that in the response
-                    if (category != null) {
-                        response.put("message",
-                                "Here are some " + getCategoryDisplayName(category) + " products that match \""
-                                        + searchTerm + "\". I found " + filteredCount + " products for you:");
+                    // Sử dụng phản hồi RAG nếu có thể
+                    if (usedRag && !botResponse.isEmpty()) {
+                        response.put("message", botResponse);
                     } else {
-                        response.put("message", "Here are some products that match \"" + searchTerm + "\". I found "
-                                + totalRecords + " products in total:");
+                        // Sử dụng phản hồi có định dạng cũ nếu không có RAG
+                        if (category != null) {
+                            response.put("message",
+                                    "Here are some " + getCategoryDisplayName(category) + " products that match \""
+                                            + searchTerm + "\". I found " + filteredCount + " products for you:");
+                        } else {
+                            response.put("message", "Here are some products that match \"" + searchTerm + "\". I found "
+                                    + totalRecords + " products in total:");
+                        }
                     }
                 } else {
-                    if (category != null) {
-                        response.put("message",
-                                "I couldn't find any " + getCategoryDisplayName(category) + " products matching \""
-                                        + searchTerm + "\". Try a different search term or browse our categories.");
+                    if (usedRag && !botResponse.isEmpty()) {
+                        response.put("message", botResponse);
                     } else {
-                        response.put("message", "I couldn't find any products matching \"" + searchTerm
-                                + "\". Try a different search term or browse our categories.");
+                        if (category != null) {
+                            response.put("message",
+                                    "I couldn't find any " + getCategoryDisplayName(category) + " products matching \""
+                                            + searchTerm + "\". Try a different search term or browse our categories.");
+                        } else {
+                            response.put("message", "I couldn't find any products matching \"" + searchTerm
+                                    + "\". Try a different search term or browse our categories.");
+                        }
                     }
                 }
 
@@ -117,16 +187,26 @@ public class ChatBotController {
 
                 return ResponseEntity.ok(response);
             }
+            // Trường hợp là các truy vấn thông thường khác
+            else {
+                // Tạo response object cho truy vấn không phải sản phẩm
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", botResponse);
+                response.put("time", currentTime);
+                response.put("usedRag", usedRag);
 
-            // For non-product queries, use regular chatbot response
-            String botResponse = chatbotService.getResponse(message);
+                // Add formatted sources if RAG was used
+                if (usedRag && sources != null && !sources.isEmpty()) {
+                    response.put("sources", formatSources(sources));
+                }
 
-            // Tạo response object
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", botResponse);
-            response.put("time", currentTime);
+                // Thêm metadata đã trích xuất vào phản hồi
+                if (!extractedMetadata.isEmpty()) {
+                    response.put("extractedMetadata", extractedMetadata);
+                }
 
-            return ResponseEntity.ok(response);
+                return ResponseEntity.ok(response);
+            }
         } catch (Exception e) {
             // Log lỗi
             e.printStackTrace();
@@ -135,9 +215,50 @@ public class ChatBotController {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("message", "Xảy ra lỗi: " + e.getMessage());
             errorResponse.put("time", new SimpleDateFormat("HH:mm").format(new Date()));
+            errorResponse.put("usedRag", false);
 
             return ResponseEntity.ok(errorResponse);
         }
+    }
+
+    /**
+     * Format source documents for display in the frontend
+     */
+    private List<Map<String, Object>> formatSources(List<Map<String, Object>> rawSources) {
+        List<Map<String, Object>> formattedSources = new ArrayList<>();
+
+        for (Map<String, Object> source : rawSources) {
+            Map<String, Object> formatted = new HashMap<>();
+
+            // Extract text content
+            String text = (String) source.get("text");
+            if (text != null) {
+                // Truncate if too long
+                if (text.length() > 300) {
+                    text = text.substring(0, 300) + "...";
+                }
+                formatted.put("text", text);
+            } else {
+                formatted.put("text", "No text available");
+            }
+
+            // Extract document type
+            String type = (String) source.get("type");
+            formatted.put("type", type != null ? type : "Document");
+
+            // Extract title
+            String title = (String) source.get("title");
+            formatted.put("title", title != null ? title : "Untitled Source");
+
+            // Add metadata if available
+            if (source.containsKey("metadata")) {
+                formatted.put("metadata", source.get("metadata"));
+            }
+
+            formattedSources.add(formatted);
+        }
+
+        return formattedSources;
     }
 
     /**
@@ -314,7 +435,9 @@ public class ChatBotController {
     }
 
     /**
-     * Determines if a message is likely a product search query
+     * Determines if a message is likely a product search query by analyzing message
+     * and context.
+     * Uses both keyword and intent-based detection.
      */
     private boolean isProductQuery(String message) {
         // Convert message to lowercase for case-insensitive matching
@@ -326,16 +449,37 @@ public class ChatBotController {
                 "where can i find", "do you have", "show", "i want", "i need",
                 "i'm looking for", "recommend", "suggest", "áo", "quần", "giày", "phụ kiện",
                 "túi", "mũ", "shirt", "shoes", "pants", "jacket", "hoodie", "dress",
-                "what products", "display", "list", "available"
+                "what products", "display", "list", "available", "buy", "purchase"
         };
 
+        // Tìm kiếm từ khóa sản phẩm trong truy vấn
         for (String keyword : productKeywords) {
             if (lowercaseMessage.contains(keyword)) {
                 return true;
             }
         }
 
-        return false;
+        // Kiểm tra xem truy vấn có ý định tìm kiếm sản phẩm không (phân tích ngữ nghĩa)
+        boolean hasSearchIntent = lowercaseMessage.contains("tìm") ||
+                lowercaseMessage.contains("mua") ||
+                lowercaseMessage.contains("kiếm") ||
+                (lowercaseMessage.contains("có") && lowercaseMessage.contains("không"));
+
+        boolean mentionsClothing = false;
+        // Kiểm tra tất cả các từ khóa danh mục để xem liệu có đề cập đến quần áo không
+        for (List<String> categoryKeywordList : categoryKeywords.values()) {
+            for (String keyword : categoryKeywordList) {
+                if (lowercaseMessage.contains(keyword)) {
+                    mentionsClothing = true;
+                    break;
+                }
+            }
+            if (mentionsClothing)
+                break;
+        }
+
+        // Kết hợp ý định tìm kiếm với đề cập đến quần áo
+        return hasSearchIntent && mentionsClothing;
     }
 
     /**
@@ -412,5 +556,471 @@ public class ChatBotController {
         }
 
         return false;
+    }
+
+    /**
+     * Phân loại ý định của truy vấn
+     */
+    private enum QueryIntent {
+        PRODUCT_SEARCH, // Tìm kiếm sản phẩm để mua
+        PRODUCT_ADVICE, // Tư vấn về sản phẩm (phong cách, xu hướng, cách chọn)
+        GENERAL_QUERY // Các truy vấn thông thường khác
+    }
+
+    /**
+     * Phân tích ý định của truy vấn dựa trên nội dung tin nhắn và phản hồi RAG
+     */
+    private QueryIntent analyzeQueryIntent(String message, String ragResponse) {
+        String lowerMessage = message.toLowerCase();
+        String lowerResponse = ragResponse.toLowerCase();
+
+        // Phát hiện và trích xuất các thuộc tính từ truy vấn
+        Map<String, String> extractedAttributes = extractProductAttributes(lowerMessage);
+
+        // Đánh giá chất lượng phản hồi RAG
+        boolean ragContainsHighQualityInfo = evaluateRagResponseQuality(lowerResponse);
+
+        // Nhận biết câu hỏi trực tiếp về sản phẩm cụ thể (ưu tiên cao nhất)
+        boolean isDirectProductQuestion = (lowerMessage.contains("có") && lowerMessage.contains("không")
+                && mentionsClothingCategory(lowerMessage)) ||
+                (lowerMessage.contains("bán") && lowerMessage.contains("không")
+                        && mentionsClothingCategory(lowerMessage))
+                ||
+                ((lowerMessage.contains("shop") || lowerMessage.contains("cửa hàng") || lowerMessage.contains("bạn")) &&
+                        lowerMessage.contains("có") && mentionsClothingCategory(lowerMessage));
+
+        // Nhận biết các mẫu TƯ VẤN sản phẩm
+        boolean isAdviceQuery = lowerMessage.contains("tư vấn") ||
+                lowerMessage.contains("gợi ý") ||
+                lowerMessage.contains("nên chọn") ||
+                lowerMessage.contains("nên mua") ||
+                lowerMessage.contains("phù hợp với") ||
+                lowerMessage.contains("hợp với") ||
+                lowerMessage.contains("xu hướng") ||
+                lowerMessage.contains("trend") ||
+                lowerMessage.contains("style") ||
+                lowerMessage.contains("phong cách") ||
+                lowerMessage.contains("fashion") ||
+                lowerMessage.contains("outfit") ||
+                lowerMessage.contains("kết hợp") ||
+                lowerMessage.contains("match") ||
+                lowerMessage.contains("coordinate") ||
+                lowerMessage.contains("advice") ||
+                // Các mẫu câu hỏi tư vấn
+                lowerMessage.matches(".*\\b(nên|should)\\b.*\\b(mặc|wear|đi)\\b.*") ||
+                lowerMessage.matches(".*\\b(cách|how)\\b.*\\b(chọn|select|pick)\\b.*") ||
+                lowerMessage.matches(".*\\b(như thế nào|what)\\b.*\\b(phù hợp|suitable)\\b.*") ||
+                // Các câu hỏi về chất lượng, đặc điểm sản phẩm (không phải tìm kiếm)
+                ((lowerMessage.contains("chất lượng") || lowerMessage.contains("quality")) && !isDirectProductQuestion)
+                ||
+                ((lowerMessage.contains("đặc điểm") || lowerMessage.contains("feature")) && !isDirectProductQuestion) ||
+                ((lowerMessage.contains("so sánh") || lowerMessage.contains("compare")) && !isDirectProductQuestion) ||
+                ((lowerMessage.contains("khác nhau") || lowerMessage.contains("difference"))
+                        && !isDirectProductQuestion);
+
+        // Nhận biết các mẫu TÌM KIẾM sản phẩm cụ thể
+        boolean isExplicitSearchQuery = isDirectProductQuestion ||
+                (lowerMessage.contains("tìm") && !lowerMessage.contains("tư vấn")) ||
+                lowerMessage.contains("search") ||
+                lowerMessage.contains("find") ||
+                lowerMessage.contains("show me") ||
+                lowerMessage.contains("hiển thị") ||
+                lowerMessage.contains("liệt kê") ||
+                lowerMessage.contains("list") ||
+                lowerMessage.contains("các sản phẩm") ||
+                lowerMessage.contains("sản phẩm nào") ||
+                lowerMessage.contains("bán ") ||
+                lowerMessage.contains("mua ở đâu") ||
+                lowerMessage.contains("order") ||
+                // Câu hỏi trực tiếp về mua bán
+                lowerMessage.matches(".*\\b(có bán|sell)\\b.*") ||
+                lowerMessage.matches(".*\\b(giá|price|cost)\\b.*") ||
+                (lowerMessage.contains("có") && lowerMessage.contains("không") &&
+                        (lowerMessage.contains("bán") || lowerMessage.contains("sell")));
+
+        // Truy vấn ngầm định là tìm kiếm sản phẩm
+        boolean isImplicitSearchQuery = !isAdviceQuery &&
+                !lowerMessage.contains("?") &&
+                extractedAttributes.size() >= 2 &&
+                mentionsClothingCategory(lowerMessage);
+
+        boolean isSearchQuery = isExplicitSearchQuery || isImplicitSearchQuery;
+
+        // Xem xét cả nội dung phản hồi RAG để đưa ra quyết định tốt hơn
+        boolean responseContainsAdvice = lowerResponse.contains("nên chọn") ||
+                lowerResponse.contains("phù hợp") ||
+                lowerResponse.contains("gợi ý") ||
+                lowerResponse.contains("xu hướng") ||
+                lowerResponse.contains("phong cách") ||
+                lowerResponse.contains("kết hợp") ||
+                lowerResponse.contains("style") ||
+                lowerResponse.contains("thời trang") ||
+                lowerResponse.contains("fashion") ||
+                lowerResponse.contains("thiết kế") ||
+                lowerResponse.contains("outfit");
+
+        // Phát hiện nếu câu trả lời của RAG đã có đề cập đến sản phẩm cụ thể
+        boolean responseContainsProducts = lowerResponse.contains("sản phẩm") ||
+                lowerResponse.contains("product") ||
+                lowerResponse.contains("item") ||
+                lowerResponse.contains("collection");
+
+        // Log phân tích
+        System.out.println("Query analysis - isAdviceQuery: " + isAdviceQuery +
+                ", isSearchQuery: " + isSearchQuery +
+                ", isDirectProductQuestion: " + isDirectProductQuestion +
+                ", extractedAttributes: " + extractedAttributes +
+                ", responseContainsAdvice: " + responseContainsAdvice +
+                ", ragContainsHighQualityInfo: " + ragContainsHighQualityInfo);
+
+        // Ưu tiên phân loại theo thứ tự:
+        // 0. Nếu là câu hỏi trực tiếp về sản phẩm cụ thể
+        if (isDirectProductQuestion) {
+            return QueryIntent.PRODUCT_SEARCH;
+        }
+        // 1. Nếu rõ ràng là truy vấn tư vấn
+        else if (isAdviceQuery) {
+            return QueryIntent.PRODUCT_ADVICE;
+        }
+        // 2. Nếu rõ ràng là truy vấn tìm kiếm
+        else if (isExplicitSearchQuery && !isAdviceQuery) {
+            return QueryIntent.PRODUCT_SEARCH;
+        }
+        // 3. Nếu RAG trả về thông tin chất lượng cao và không rõ ràng là tìm kiếm, ưu
+        // tiên tư vấn
+        else if (ragContainsHighQualityInfo && responseContainsAdvice) {
+            return QueryIntent.PRODUCT_ADVICE;
+        }
+        // 4. Dựa vào phản hồi RAG để quyết định
+        else if (responseContainsAdvice && !responseContainsProducts) {
+            return QueryIntent.PRODUCT_ADVICE;
+        }
+        // 5. Nếu là truy vấn tìm kiếm ngầm định
+        else if (isImplicitSearchQuery) {
+            return QueryIntent.PRODUCT_SEARCH;
+        }
+        // 6. Các truy vấn không rõ ràng khác
+        else {
+            return QueryIntent.GENERAL_QUERY;
+        }
+    }
+
+    /**
+     * Đánh giá chất lượng phản hồi RAG
+     */
+    private boolean evaluateRagResponseQuality(String response) {
+        if (response == null || response.isEmpty()) {
+            return false;
+        }
+
+        // Kiểm tra độ dài phản hồi
+        boolean hasGoodLength = response.length() > 100;
+
+        // Kiểm tra có chứa từ khóa chuyên ngành thời trang
+        boolean containsFashionTerms = response.contains("thời trang") ||
+                response.contains("phong cách") ||
+                response.contains("xu hướng") ||
+                response.contains("fashion") ||
+                response.contains("style") ||
+                response.contains("trend");
+
+        // Kiểm tra có chứa từ khóa chuyên sâu về sản phẩm
+        boolean containsDetailedInfo = response.contains("chất liệu") ||
+                response.contains("thiết kế") ||
+                response.contains("mẫu mã") ||
+                response.contains("kết cấu") ||
+                response.contains("material") ||
+                response.contains("design") ||
+                response.contains("texture");
+
+        // Kiểm tra có chứa cấu trúc đánh giá, đề xuất
+        boolean containsRecommendation = response.contains("nên") ||
+                response.contains("phù hợp") ||
+                response.contains("recommend") ||
+                response.contains("suitable");
+
+        // Tính điểm chất lượng
+        int qualityScore = 0;
+        if (hasGoodLength)
+            qualityScore += 1;
+        if (containsFashionTerms)
+            qualityScore += 2;
+        if (containsDetailedInfo)
+            qualityScore += 2;
+        if (containsRecommendation)
+            qualityScore += 1;
+
+        return qualityScore >= 3; // Điểm chất lượng từ 3 trở lên được coi là cao
+    }
+
+    /**
+     * Trích xuất các thuộc tính sản phẩm từ truy vấn
+     */
+    private Map<String, String> extractProductAttributes(String query) {
+        Map<String, String> attributes = new HashMap<>();
+        String lowerQuery = query.toLowerCase();
+
+        // Trích xuất màu sắc
+        extractColorAttribute(lowerQuery, attributes);
+
+        // Trích xuất kích thước
+        extractSizeAttribute(lowerQuery, attributes);
+
+        // Trích xuất phong cách
+        extractStyleAttribute(lowerQuery, attributes);
+
+        // Trích xuất mùa
+        extractSeasonAttribute(lowerQuery, attributes);
+
+        // Trích xuất giá
+        extractPriceAttribute(lowerQuery, attributes);
+
+        // Trích xuất thương hiệu
+        extractBrandAttribute(lowerQuery, attributes);
+
+        // Trích xuất danh mục
+        String category = determineProductCategory(query);
+        if (category != null) {
+            attributes.put("category", category);
+        }
+
+        return attributes;
+    }
+
+    /**
+     * Trích xuất thông tin màu sắc từ truy vấn
+     */
+    private void extractColorAttribute(String query, Map<String, String> attributes) {
+        String[] colors = { "đen", "trắng", "đỏ", "xanh", "vàng", "tím", "hồng", "nâu", "xám", "cam",
+                "black", "white", "red", "blue", "yellow", "purple", "pink", "brown", "gray", "orange",
+                "xanh dương", "xanh lá", "navy", "beige", "cream" };
+
+        for (String color : colors) {
+            if (query.contains(color)) {
+                attributes.put("color", color);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Trích xuất thông tin kích thước từ truy vấn
+     */
+    private void extractSizeAttribute(String query, Map<String, String> attributes) {
+        // Kích thước chuẩn
+        String[] standardSizes = { "xs", "s", "m", "l", "xl", "xxl", "size s", "size m", "size l" };
+        for (String size : standardSizes) {
+            if (query.contains(size)) {
+                attributes.put("size", size);
+                return;
+            }
+        }
+
+        // Kích thước số
+        Pattern sizePattern = Pattern.compile("\\b(size)? ?\\d{1,2}\\b");
+        Matcher matcher = sizePattern.matcher(query);
+        if (matcher.find()) {
+            attributes.put("size", matcher.group());
+        }
+    }
+
+    /**
+     * Trích xuất thông tin phong cách từ truy vấn
+     */
+    private void extractStyleAttribute(String query, Map<String, String> attributes) {
+        String[] styles = { "casual", "formal", "sport", "business", "vintage", "retro", "streetwear",
+                "thể thao", "công sở", "dự tiệc", "đi chơi", "hàng ngày", "lịch sự", "vintage",
+                "đường phố", "thời trang", "basic", "cơ bản", "minimalist", "tối giản" };
+
+        for (String style : styles) {
+            if (query.contains(style)) {
+                attributes.put("style", style);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Trích xuất thông tin mùa từ truy vấn
+     */
+    private void extractSeasonAttribute(String query, Map<String, String> attributes) {
+        String[] seasons = { "summer", "winter", "spring", "fall", "autumn",
+                "mùa hè", "mùa đông", "mùa xuân", "mùa thu" };
+
+        for (String season : seasons) {
+            if (query.contains(season)) {
+                attributes.put("season", season);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Trích xuất thông tin giá từ truy vấn
+     */
+    private void extractPriceAttribute(String query, Map<String, String> attributes) {
+        // Mẫu "dưới X đồng/VND/k/nghìn/USD/$"
+        Pattern underPattern = Pattern.compile("(dưới|under|less than|<) ?(\\d+)[kK]? ?(đồng|vnd|nghìn|ngàn|\\$|usd)?");
+        Matcher underMatcher = underPattern.matcher(query);
+        if (underMatcher.find()) {
+            String price = underMatcher.group(2);
+            attributes.put("price_max", price);
+            return;
+        }
+
+        // Mẫu "trên X đồng/VND/k/nghìn/USD/$"
+        Pattern overPattern = Pattern.compile("(trên|over|more than|>) ?(\\d+)[kK]? ?(đồng|vnd|nghìn|ngàn|\\$|usd)?");
+        Matcher overMatcher = overPattern.matcher(query);
+        if (overMatcher.find()) {
+            String price = overMatcher.group(2);
+            attributes.put("price_min", price);
+            return;
+        }
+
+        // Mẫu "từ X đến Y đồng/VND/k/nghìn/USD/$"
+        Pattern rangePattern = Pattern
+                .compile("(từ|from) ?(\\d+)[kK]? ?(đến|to) ?(\\d+)[kK]? ?(đồng|vnd|nghìn|ngàn|\\$|usd)?");
+        Matcher rangeMatcher = rangePattern.matcher(query);
+        if (rangeMatcher.find()) {
+            String minPrice = rangeMatcher.group(2);
+            String maxPrice = rangeMatcher.group(4);
+            attributes.put("price_min", minPrice);
+            attributes.put("price_max", maxPrice);
+        }
+    }
+
+    /**
+     * Trích xuất thông tin thương hiệu từ truy vấn
+     */
+    private void extractBrandAttribute(String query, Map<String, String> attributes) {
+        String[] brands = { "nike", "adidas", "puma", "gucci", "zara", "h&m", "louis vuitton", "balenciaga",
+                "uniqlo", "levi's", "calvin klein", "tommy hilfiger", "lacoste", "dior" };
+
+        for (String brand : brands) {
+            if (query.toLowerCase().contains(brand.toLowerCase())) {
+                attributes.put("brand", brand);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Kiểm tra xem tin nhắn có đề cập đến danh mục quần áo không
+     */
+    private boolean mentionsClothingCategory(String message) {
+        // Tìm từ khóa danh mục trong tin nhắn
+        for (List<String> keywords : categoryKeywords.values()) {
+            for (String keyword : keywords) {
+                if (message.toLowerCase().contains(keyword.toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Trích xuất metadata từ sources để cải thiện phân tích ngữ cảnh
+     */
+    private Map<String, Object> extractMetadataFromSources(List<Map<String, Object>> sources) {
+        Map<String, Object> extractedMetadata = new HashMap<>();
+
+        for (Map<String, Object> source : sources) {
+            if (source.containsKey("metadata")) {
+                extractedMetadata.putAll((Map<String, Object>) source.get("metadata"));
+            }
+        }
+
+        return extractedMetadata;
+    }
+
+    /**
+     * Tinh chỉnh phân loại dựa trên metadata nếu có
+     */
+    private QueryIntent refineQueryIntentWithMetadata(QueryIntent queryIntent, Map<String, Object> extractedMetadata,
+            String message) {
+        String lowerMessage = message.toLowerCase();
+
+        // Nếu đã là truy vấn tìm kiếm rõ ràng, thì giữ nguyên
+        if (queryIntent == QueryIntent.PRODUCT_SEARCH) {
+            // Kiểm tra các mẫu câu hỏi trực tiếp về việc cửa hàng có sản phẩm hay không
+            boolean isDirectProductAvailabilityQuestion = (lowerMessage.contains("có")
+                    && lowerMessage.contains("không")) ||
+                    lowerMessage.contains("bán không") ||
+                    lowerMessage.contains("có bán") ||
+                    lowerMessage.contains("có hàng") ||
+                    (lowerMessage.contains("shop") && lowerMessage.contains("có")) ||
+                    (lowerMessage.contains("bạn") && lowerMessage.contains("có")) ||
+                    lowerMessage.matches(".*\\b(sell|available|in stock)\\b.*");
+
+            // Nếu là câu hỏi về tính sẵn có của sản phẩm, đảm bảo nó được phân loại là
+            // PRODUCT_SEARCH
+            if (isDirectProductAvailabilityQuestion && mentionsClothingCategory(lowerMessage)) {
+                return QueryIntent.PRODUCT_SEARCH;
+            }
+
+            return QueryIntent.PRODUCT_SEARCH;
+        }
+
+        // Nếu là truy vấn chung nhưng có metadata với từ khóa sản phẩm rõ ràng
+        if (queryIntent == QueryIntent.GENERAL_QUERY) {
+            boolean mentionsClothing = mentionsClothingCategory(message);
+
+            boolean hasProductSearchKeywords = lowerMessage.contains("tìm") ||
+                    lowerMessage.contains("mua") ||
+                    lowerMessage.contains("bán") ||
+                    lowerMessage.contains("có không") ||
+                    lowerMessage.contains("shop có") ||
+                    lowerMessage.contains("bán không");
+
+            if (mentionsClothing && hasProductSearchKeywords) {
+                return QueryIntent.PRODUCT_SEARCH;
+            }
+        }
+
+        return queryIntent;
+    }
+
+    /**
+     * Áp dụng bộ lọc thêm từ metadata nếu có
+     */
+    private List<Map<String, Object>> applyMetadataFilters(List<Map<String, Object>> products,
+            Map<String, Object> metadata) {
+        List<Map<String, Object>> filteredProducts = new ArrayList<>();
+
+        for (Map<String, Object> product : products) {
+            Map<String, Object> filteredProduct = new HashMap<>(product);
+
+            // Apply filters based on metadata
+            for (Map.Entry<String, Object> entry : metadata.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+
+                if (product.containsKey(key)) {
+                    Object productValue = product.get(key);
+                    if (productValue instanceof String) {
+                        String productStringValue = (String) productValue;
+                        if (!productStringValue.contains(value.toString())) {
+                            continue;
+                        }
+                    } else if (productValue instanceof Number) {
+                        Number productNumberValue = (Number) productValue;
+                        Number valueNumber = (Number) value;
+                        if (productNumberValue.doubleValue() < valueNumber.doubleValue()) {
+                            continue;
+                        }
+                    } else if (productValue instanceof List) {
+                        List<String> productListValue = (List<String>) productValue;
+                        if (!productListValue.contains(value.toString())) {
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            filteredProducts.add(filteredProduct);
+        }
+
+        return filteredProducts;
     }
 }

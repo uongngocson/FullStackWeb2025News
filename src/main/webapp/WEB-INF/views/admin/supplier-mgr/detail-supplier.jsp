@@ -128,16 +128,6 @@
                                             <div class="d-flex align-items-center">
                                                 <h4 class="card-title">#${supplier.supplierId} -
                                                     ${supplier.supplierName}</h4>
-                                                <div class="ms-auto">
-                                                    <a href="/admin/supplier-mgr/update/${supplier.supplierId}"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-edit"></i> Update Supplier
-                                                    </a>
-                                                    <button class="btn btn-danger btn-sm"
-                                                        onclick="confirmDelete('${supplier.supplierId}')">
-                                                        <i class="fas fa-trash"></i> Delete Supplier
-                                                    </button>
-                                                </div>
                                             </div>
                                         </div>
                                         <!-- end card header -->
@@ -152,11 +142,11 @@
                                                         <c:choose>
                                                             <c:when test="${not empty supplier.logoUrl}">
                                                                 <c:set var="logoUrl"
-                                                                    value="${ctx}/${supplier.logoUrl}" />
+                                                                    value="${ctx}${supplier.logoUrl}" />
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <c:set var="logoUrl"
-                                                                    value="${ctx}/resources/images/logo-is-empty.jpg" />
+                                                                    value="${ctx}/resources/images-upload/logo-is-empty.jpg" />
                                                             </c:otherwise>
                                                         </c:choose>
 
@@ -208,10 +198,6 @@
                                             <div class="card-header">
                                                 <div class="d-flex align-items-center">
                                                     <h4 class="card-title">Products from this Supplier</h4>
-                                                    <a href="/product-mgr/create?supplierId=${supplier.supplierId}"
-                                                        class="btn btn-primary btn-round ms-auto">
-                                                        <i class="fas fa-plus"></i> Add New Product
-                                                    </a>
                                                 </div>
                                             </div>
                                             <div class="card-body">
@@ -220,13 +206,13 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>No.</th>
-                                                                <th>ID</th>
-                                                                <th>Image</th>
+
+
                                                                 <th>Name</th>
                                                                 <th>Category</th>
                                                                 <th>Price</th>
                                                                 <th>Stock</th>
-                                                                <th>Actions</th>
+                                                                <!-- <th>Actions</th> -->
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -234,16 +220,14 @@
                                                                 varStatus="status">
                                                                 <tr>
                                                                     <td>${status.index+1}</td>
-                                                                    <td><a href="/product-mgr/${product.productId}"
-                                                                            class="text-primary">#${product.productId}</a>
-                                                                    </td>
+
 
                                                                     <td>${product.productName}</td>
                                                                     <td>${product.category.categoryName}</td>
                                                                     <td>$${product.price}</td>
                                                                     <td>${product.quantitySold}</td>
 
-                                                                    <td>
+                                                                    <!-- <td>
                                                                         <div class="btn-group">
                                                                             <a href="/product-mgr/${product.productId}"
                                                                                 class="btn btn-sm btn-info">
@@ -259,7 +243,7 @@
                                                                                 <i class="fas fa-trash"></i>
                                                                             </button>
                                                                         </div>
-                                                                    </td>
+                                                                    </td> -->
                                                                 </tr>
                                                             </c:forEach>
                                                         </tbody>
@@ -295,49 +279,49 @@
 
                 <script>
 
-                    // function delete supplier
-                    function confirmDelete(supplierId) {
-                        swal({
-                            title: "Are you sure you want to delete this supplier?",
-                            text: "This action cannot be undone and will also delete all products associated with this supplier.",
-                            icon: "warning",
-                            buttons: ["Cancel", "Delete"],
-                            dangerMode: true,
-                        }).then((confirmed) => {
-                            if (confirmed) {
-                                $.post(`/admin/supplier-mgr/delete/${supplierId}`)
-                                    .done(() => {
-                                        swal("Deleted!", "The supplier has been successfully deleted.", "success")
-                                            .then(() => window.location.href = "/admin/supplier-mgr/list");
-                                    })
-                                    .fail(() => {
-                                        swal("Error!", "Something went wrong. Please try again.", "error");
-                                    });
-                            }
-                        });
-                    }
+                    // // function delete supplier
+                    // function confirmDelete(supplierId) {
+                    //     swal({
+                    //         title: "Are you sure you want to delete this supplier?",
+                    //         text: "This action cannot be undone and will also delete all products associated with this supplier.",
+                    //         icon: "warning",
+                    //         buttons: ["Cancel", "Delete"],
+                    //         dangerMode: true,
+                    //     }).then((confirmed) => {
+                    //         if (confirmed) {
+                    //             $.post(`/admin/supplier-mgr/delete/${supplierId}`)
+                    //                 .done(() => {
+                    //                     swal("Deleted!", "The supplier has been successfully deleted.", "success")
+                    //                         .then(() => window.location.href = "/admin/supplier-mgr/list");
+                    //                 })
+                    //                 .fail(() => {
+                    //                     swal("Error!", "Something went wrong. Please try again.", "error");
+                    //                 });
+                    //         }
+                    //     });
+                    // }
 
-                    // function delete product
-                    function deleteProduct(productId) {
-                        swal({
-                            title: "Are you sure you want to delete this product?",
-                            text: "This action cannot be undone.",
-                            icon: "warning",
-                            buttons: ["Cancel", "Delete"],
-                            dangerMode: true,
-                        }).then((confirmed) => {
-                            if (confirmed) {
-                                $.post(`/product-mgr/delete/${productId}`)
-                                    .done(() => {
-                                        swal("Deleted!", "The product has been successfully deleted.", "success")
-                                            .then(() => location.reload());
-                                    })
-                                    .fail(() => {
-                                        swal("Error!", "Something went wrong. Please try again.", "error");
-                                    });
-                            }
-                        });
-                    }
+                    // // function delete product
+                    // function deleteProduct(productId) {
+                    //     swal({
+                    //         title: "Are you sure you want to delete this product?",
+                    //         text: "This action cannot be undone.",
+                    //         icon: "warning",
+                    //         buttons: ["Cancel", "Delete"],
+                    //         dangerMode: true,
+                    //     }).then((confirmed) => {
+                    //         if (confirmed) {
+                    //             $.post(`/product-mgr/delete/${productId}`)
+                    //                 .done(() => {
+                    //                     swal("Deleted!", "The product has been successfully deleted.", "success")
+                    //                         .then(() => location.reload());
+                    //                 })
+                    //                 .fail(() => {
+                    //                     swal("Error!", "Something went wrong. Please try again.", "error");
+                    //                 });
+                    //         }
+                    //     });
+                    // }
 
 
                     $(document).ready(function () {

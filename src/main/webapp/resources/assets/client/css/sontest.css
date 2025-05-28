@@ -397,7 +397,7 @@ nav .logo img {
 }
 
 .arrivals-slider .slider-img.off::before {
-    content: '$50 FOR MEMBERS';
+    content: '';
     color: #00A3E0;
     background-color: #fff;
     padding: 3px;
@@ -409,7 +409,7 @@ nav .logo img {
 }
 
 .arrivals-slider .slider-img::after {
-    content: '$60';
+    content: '';
     background-color: #fff;
     padding: 3px;
     position: absolute;
@@ -420,7 +420,7 @@ nav .logo img {
 }
 
 .arrivals-slider .slider-img.off::after {
-    content: '$60';
+    content: '';
     background-color: #fff;
     padding: 3px;
     position: absolute;

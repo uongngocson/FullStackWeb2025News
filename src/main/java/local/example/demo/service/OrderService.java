@@ -389,7 +389,7 @@ public class OrderService {
             sql.append("DECLARE @OutputErrorMessage NVARCHAR(500); ");
 
             // Execute stored procedure
-            sql.append("EXEC [dbo].[usp_CreateOrderTestV1] ");
+            sql.append("EXEC [dbo].[usp_CreateOrderFull] ");
             sql.append("@customer_id = ").append(customerId).append(", ");
             sql.append("@payment_id = ").append(paymentId).append(", ");
             sql.append("@TotalAmount = ").append(totalAmount).append(", ");

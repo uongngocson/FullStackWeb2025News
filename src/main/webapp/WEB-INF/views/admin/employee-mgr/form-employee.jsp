@@ -265,7 +265,7 @@
                                                         </script>
 
                                                         <!-- Hire Date -->
-                                                        <div class="col-md-6">
+                                                        <!-- <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label for="hireDate">
                                                                     <i
@@ -276,7 +276,7 @@
                                                                     class="form-control" id="hireDate" />
                                                                 <form:errors path="hireDate" cssClass="text-danger" />
                                                             </div>
-                                                        </div>
+                                                        </div> -->
 
                                                         <!-- Salary -->
                                                         <div class="col-md-6">
@@ -310,6 +310,26 @@
                                                                     </c:forEach>
                                                                 </form:select>
                                                                 <form:errors path="manager" cssClass="text-danger" />
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="account">
+                                                                    <i class="fas fa-user-tie mr-1 text-primary"></i>
+                                                                    account
+                                                                </label>
+                                                                <form:select path="account" class="form-control"
+                                                                    id="account">
+                                                                    <form:option value=""
+                                                                        label="-- Select account --" />
+                                                                    <c:forEach items="${accounts}" var="account">
+                                                                        <form:option value="${account.accountId}"
+                                                                            label="${account.getLoginName()}"
+                                                                            selected="${employee.account != null && employee.account.accountId == account.accountId ? 'selected' : ''}" />
+                                                                    </c:forEach>
+                                                                </form:select>
+                                                                <form:errors path="account" cssClass="text-danger" />
                                                             </div>
                                                         </div>
 

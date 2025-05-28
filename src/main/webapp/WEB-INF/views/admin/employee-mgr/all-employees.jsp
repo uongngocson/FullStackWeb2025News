@@ -22,7 +22,7 @@
                 <!-- Add Font Awesome for better icons -->
                 <link rel="stylesheet"
                     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-
+                <!-- Fonts and icons -->
                 <script>
                     WebFont.load({
                         google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -40,7 +40,7 @@
                         },
                     });
                 </script>
-
+                <!-- Custom CSS for Employee Management -->
                 <style>
                     .employee-avatar {
                         width: 45px;
@@ -132,7 +132,6 @@
 
                     .table th {
                         font-weight: 600;
-                        color: #4e73df;
                     }
 
                     .table-hover tbody tr:hover {
@@ -188,82 +187,122 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <div class="card-title">
-                                                    <i class="fas fa-users mr-2 text-primary"></i>
-                                                    Employee List
+                                        <%-- Display Success and Error Messages --%>
+                                            <c:if test="${not empty successMessage}">
+                                                <div class="alert alert-success alert-dismissible fade show"
+                                                    role="alert">
+                                                    ${successMessage}
+                                                    <button type="button" class="close" data-dismiss="alert"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table id="employee-table" class="table table-hover">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th>Employee</th>
-                                                                <th>Hire Date</th>
-                                                                <th>Salary</th>
-                                                                <th>Status</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <c:forEach var="employee" items="${employees}">
+                                            </c:if>
+                                            <c:if test="${not empty errorMessage}">
+                                                <div class="alert alert-danger alert-dismissible fade show"
+                                                    role="alert">
+                                                    ${errorMessage}
+                                                    <button type="button" class="close" data-dismiss="alert"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                            </c:if>
+
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <div class="card-title">
+                                                        <i class="fas fa-users mr-2 text-primary"></i>
+                                                        Employee List
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table id="employee-table" class="table table-hover">
+                                                            <thead>
                                                                 <tr>
-                                                                    <td>#${employee.employeeId}</td>
-                                                                    <td>
-                                                                        <div class="employee-info">
-                                                                            <img src="${not empty employee.imageUrl ? employee.imageUrl : ctx.concat('/resources/assets/dashboard/img/profile.jpg')}"
-                                                                                class="employee-avatar"
-                                                                                alt="${employee.firstName}">
-                                                                            <div class="employee-details">
-                                                                                <div class="employee-name">
-                                                                                    ${employee.firstName}
-                                                                                    ${employee.lastName}</div>
-                                                                                <div class="employee-position">
-                                                                                    ${employee.email}</div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-
-
-                                                                    <td>
-                                                                        <fmt:formatDate
-                                                                            value="${employee.getHireDateAsDate()}"
-                                                                            pattern="MMM dd, yyyy" />
-                                                                    </td>
-                                                                    <td>$${employee.salary}</td>
-                                                                    <td>
-                                                                        <span
-                                                                            class="badge badge-${employee.status ? 'success' : 'danger'}">
-                                                                            ${employee.status ? 'Active' : 'Inactive'}
-                                                                        </span>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="btn-group">
-                                                                            <a href="/admin/employee-mgr/detail/${employee.employeeId}"
-                                                                                class="btn btn-sm btn-info">
-                                                                                <i class="fas fa-eye"></i>
-                                                                            </a>
-                                                                            <a href="/admin/employee-mgr/update/${employee.employeeId}"
-                                                                                class="btn btn-sm btn-primary">
-                                                                                <i class="fas fa-edit"></i>
-                                                                            </a>
-                                                                            <button type="button"
-                                                                                class="btn btn-sm btn-danger"
-                                                                                onclick="confirmDelete('${employee.employeeId}')">
-                                                                                <i class="fas fa-trash"></i>
-                                                                            </button>
-                                                                        </div>
-                                                                    </td>
+                                                                    <th>No.</th>
+                                                                    <th>Employee</th>
+                                                                    <th>Hire Date</th>
+                                                                    <th>Salary</th>
+                                                                    <th>Status</th>
+                                                                    <th>Actions</th>
                                                                 </tr>
-                                                            </c:forEach>
-                                                        </tbody>
-                                                    </table>
+                                                            </thead>
+                                                            <tbody>
+                                                                <c:forEach var="employee" items="${employees}"
+                                                                    varStatus="status">
+                                                                    <tr>
+                                                                        <td>${status.index + 1}</td>
+                                                                        <td>
+                                                                            <div class="employee-info">
+
+                                                                                <img src="${not empty employee.imageUrl ? employee.imageUrl 
+                                                                                                                    : (ctx.concat(employee.gender ? '/resources/images-upload/employee/avatar-default-male.jpg' 
+                                                                                                                                                   : '/resources/images-upload/employee/avatar-default-female.jpg'))}"
+                                                                                    class="employee-avatar"
+                                                                                    alt="${employee.firstName}">
+                                                                                <div class="employee-details">
+                                                                                    <div class="employee-name">
+                                                                                        ${employee.firstName}
+                                                                                        ${employee.lastName}</div>
+                                                                                    <div class="employee-position">
+                                                                                        ${employee.email}</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+
+
+                                                                        <td>
+                                                                            <fmt:formatDate
+                                                                                value="${employee.getHireDateAsDate()}"
+                                                                                pattern="MMM dd, yyyy" />
+                                                                        </td>
+                                                                        <td>$${employee.salary}</td>
+                                                                        <td>
+                                                                            <span
+                                                                                class="badge badge-${employee.status ? 'success' : 'danger'}">
+                                                                                ${employee.status ? 'Active' :
+                                                                                'Inactive'}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="btn-group">
+                                                                                <a href="/admin/employee-mgr/detail/${employee.employeeId}"
+                                                                                    class="btn btn-sm btn-info">
+                                                                                    <i class="fas fa-eye"></i>
+                                                                                </a>
+                                                                                <a href="/admin/employee-mgr/update/${employee.employeeId}"
+                                                                                    class="btn btn-sm btn-primary">
+                                                                                    <i class="fas fa-edit"></i>
+                                                                                </a>
+                                                                                <%-- Form for delete action --%>
+                                                                                    <form
+                                                                                        id="deleteForm-${employee.employeeId}"
+                                                                                        action="${ctx}/admin/employee-mgr/delete/${employee.employeeId}"
+                                                                                        method="POST"
+                                                                                        style="display:inline;">
+                                                                                        <%-- Removed onsubmit here --%>
+                                                                                            <%-- Add CSRF token --%>
+                                                                                                <input type="hidden"
+                                                                                                    name="${_csrf.parameterName}"
+                                                                                                    value="${_csrf.token}" />
+                                                                                                <button type="button"
+                                                                                                    class="btn btn-sm btn-danger"
+                                                                                                    onclick="confirmDeleteEmployee('${employee.employeeId}', '${employee.firstName} ${employee.lastName}')">
+                                                                                                    <i
+                                                                                                        class="fas fa-trash"></i>
+                                                                                                </button>
+                                                                                    </form>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </c:forEach>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -279,71 +318,64 @@
                 <script src="${ctx}/resources/assets/dashboard/js/core/jquery-3.7.1.min.js"></script>
                 <script src="${ctx}/resources/assets/dashboard/js/core/popper.min.js"></script>
                 <script src="${ctx}/resources/assets/dashboard/js/core/bootstrap.min.js"></script>
-
-                <!-- jQuery Scrollbar -->
                 <script
                     src="${ctx}/resources/assets/dashboard/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
-                <!-- DataTables -->
                 <script src="${ctx}/resources/assets/dashboard/js/plugin/datatables/datatables.min.js"></script>
+                <%-- SweetAlert script is already included in head, or ensure it is --%>
+                    <script src="${ctx}/resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
 
-                <!-- Sweet Alert -->
-                <script src="${ctx}/resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
+                    <script>
+                        $(document).ready(function () {
+                            $('#employee-table').DataTable({
+                                "pageLength": 10,
+                                "lengthMenu": [5, 10, 15, 20, 50, 100],
+                                "columnDefs": [
+                                    { "orderable": false, "targets": [4] }, // Status column
+                                    { "orderable": false, "targets": [5] }  // Actions column
+                                ]
+                            });
 
-                <!-- Kaiadmin JS -->
-                <script src="${ctx}/resources/assets/dashboard/js/kaiadmin.min.js"></script>
-
-                <script>
-                    $(document).ready(function () {
-                        $('#employee-table').DataTable({
-                            "pageLength": 10,
-                            "lengthMenu": [5, 10, 15, 20, 50, 100],
-                            "order": [[0, "desc"]],
-                            "columnDefs": [
-                                { "orderable": false, "targets": [4] },
-                                { "orderable": false, "targets": [5] } // Corrected target index for Actions column
-                            ]
+                            // Remove the URL parameter based message handling
+                            // const urlParams = new URLSearchParams(window.location.search);
+                            // if (urlParams.has('deleteSuccess')) { ... }
+                            // if (urlParams.has('deleteError')) { ... }
                         });
-                    });
 
-                    function confirmDelete(employeeId) {
-                        swal({
-                            title: 'Are you sure?',
-                            text: "You won't be able to revert this!",
-                            icon: 'warning',
-                            buttons: {
-                                cancel: {
-                                    visible: true,
-                                    text: 'Cancel',
-                                    className: 'btn btn-secondary'
-                                },
-                                confirm: {
-                                    text: 'Yes, delete it!',
-                                    className: 'btn btn-danger'
-                                }
-                            }
-                        }).then((willDelete) => {
-                            if (willDelete) {
-                                $.ajax({
-                                    url: '/admin/employee-mgr/delete/' + employeeId,
-                                    type: 'POST',
-                                    success: function (result) {
-                                        swal({
-                                            title: 'Deleted!',
-                                            text: 'Employee has been deleted.',
-                                            icon: 'success'
-                                        }).then(() => {
-                                            location.reload();
-                                        });
+                        // Optional: If you want to keep SweetAlert for confirmation before submitting the form
+                        // You can keep the onsubmit="return confirm(...)" on the form itself
+                        // or implement a more advanced SweetAlert confirmation that then submits the form.
+                        // For simplicity, the current form uses a standard browser confirm.
+
+                        function confirmDeleteEmployee(employeeId, employeeName) {
+                            swal({
+                                title: "Bạn có chắc chắn?",
+                                text: "Bạn có thực sự muốn xóa nhân viên '" + employeeName + "'? Hành động này không thể hoàn tác.",
+                                icon: "warning",
+                                buttons: {
+                                    cancel: {
+                                        text: "Hủy",
+                                        value: null,
+                                        visible: true,
+                                        className: "btn btn-secondary",
+                                        closeModal: true,
                                     },
-                                    error: function (error) {
-                                        swal('Error!', 'Something went wrong.', 'error');
+                                    confirm: {
+                                        text: "Xóa",
+                                        value: true,
+                                        visible: true,
+                                        className: "btn btn-danger",
+                                        closeModal: true
                                     }
-                                });
-                            }
-                        });
-                    }
-                </script>
+                                },
+                                dangerMode: true,
+                            }).then((willDelete) => {
+                                if (willDelete) {
+                                    // Submit the form if confirmed
+                                    document.getElementById('deleteForm-' + employeeId).submit();
+                                }
+                            });
+                        }
+                    </script>
             </body>
 
             </html>

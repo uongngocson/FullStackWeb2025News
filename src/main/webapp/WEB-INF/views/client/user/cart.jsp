@@ -374,9 +374,9 @@
 
                                 <!-- Continue Shopping -->
                                 <div class="mt-8">
-                                    <a href="#"
+                                    <a href="${ctx}/product/category"
                                         class="text-sm flex items-center text-gray-600 hover:text-black transition-colors">
-                                        <i class="fas fa-arrow-left mr-2"></i> Continue Shopping
+                                        <i class="fas fa-arrow-left mr-2"></i> Tiếp Tục Mua Hàng
                                     </a>
                                 </div>
                             </div>
@@ -417,10 +417,10 @@
                                         </div>
                                     </div>
 
-                                    <!-- Promo Code -->
+                                    <!-- Mã Giảm Giá -->
                                     <div class="mt-6">
                                         <label for="promo-code" class="block text-sm text-gray-500 mb-2">
-                                            Promo Code
+                                            Mã Giảm Giá
                                         </label>
                                         <div class="flex">
                                             <input type="text" id="promo-code"
@@ -428,7 +428,7 @@
                                                 placeholder="Enter code">
                                             <button
                                                 class="bg-black text-white px-6 py-2 text-sm font-medium hover:bg-gray-800 transition-colors rounded-r">
-                                                Apply
+                                                Áp Dụng
                                             </button>
                                         </div>
                                     </div>
@@ -436,26 +436,22 @@
                                     <!-- Checkout Button -->
                                     <button id="checkout-btn"
                                         class="btn-checkout w-full bg-black text-white py-3 px-4 mt-6 font-medium hover:bg-gray-800 transition-colors shadow-sm inline-block text-center">
-                                        PROCEED TO CHECKOUT
+                                        CHUYỂN QUA THANH TOÁN
                                     </button>
 
-                                    <!-- Legacy API-based checkout button -->
-                                    <a href="${ctx}/user/order"
-                                        class="w-full bg-gray-500 text-white py-3 px-4 mt-3 font-medium hover:bg-gray-600 transition-colors shadow-sm inline-block text-center">
-                                        PROCEED TO CHECKOUT (API)
-                                    </a>
+
                                 </div>
 
                                 <!-- Customer Service -->
                                 <div class="mt-6 p-6 bg-gray-50 border border-gray-200 rounded shadow-sm">
-                                    <h3 class="heading-font font-medium text-sm mb-3">NEED HELP?</h3>
+                                    <h3 class="heading-font font-medium text-sm mb-3">CẦN GIÚP ĐỠ?</h3>
                                     <p class="text-sm text-gray-600 mb-3">
-                                        Our customer service is available to assist you with any questions about your
-                                        order.
+                                        Dịch vụ khách hàng của chúng tôi sẵn sàng giúp bạn với bất kỳ câu hỏi nào về đơn
+                                        hàng của bạn.
                                     </p>
                                     <a href="#"
                                         class="text-sm underline flex items-center text-gray-600 hover:text-black transition-colors">
-                                        <i class="fas fa-comment mr-2"></i> Contact Us
+                                        <i class="fas fa-comment mr-2"></i> Liên Hệ Chúng Tôi
                                     </a>
                                 </div>
                             </div>

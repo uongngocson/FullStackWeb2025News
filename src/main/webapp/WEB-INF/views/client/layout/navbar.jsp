@@ -53,14 +53,26 @@
 
                     <header>
                         <div class="offer">
-                            <a href="">30% OFF KIDS STYLES*</a>
-                            <a href=""><i class="uil uil-truck"></i> FREE STANDARD SHIPPING & RETURNS | JOIN NOW</a>
+                            <a href="">
+                                <spring:message code="navbar.offer.discount" />
+                            </a>
+                            <a href=""><i class="uil uil-truck"></i>
+                                <spring:message code="navbar.offer.shipping" />
+                            </a>
                         </div>
                         <div class="header-menu">
-                            <a href="">help</a>
-                            <a href="">exchanges & returns</a>
-                            <a href="">order tracker</a>
-                            <a href="">join adiclub</a>
+                            <a href="">
+                                <spring:message code="navbar.menu.help" />
+                            </a>
+                            <a href="">
+                                <spring:message code="navbar.menu.exchangesReturns" />
+                            </a>
+                            <a href="">
+                                <spring:message code="navbar.menu.orderTracker" />
+                            </a>
+                            <a href="">
+                                <spring:message code="navbar.menu.joinAdiclub" />
+                            </a>
                         </div>
                         <nav>
                             <i class="uil uil-bars"></i>
@@ -402,7 +414,7 @@
                                     <div class=" relative search-more flex flex-col items-center">
                                         <form class="flex items-center" id="searchForm"
                                             action="${pageContext.request.contextPath}/products/search" method="get">
-                                            <input type="text" name="keyword" id="searchInput" placeholder="Search"
+                                            <input type="text" name="keyword" id="searchInput" placeholder="Tìm kiếm"
                                                 value="${searchKeyword != null ? searchKeyword : ''}">
                                             <button type="submit"
                                                 style="background: none; border: none; cursor: pointer;">
@@ -417,7 +429,9 @@
                                                     <c:when test="${empty searchProducts}">
                                                         <div
                                                             class="flex items-center justify-center bg-white p-4 rounded-lg">
-                                                            <p class="text-gray-500">No products found</p>
+                                                            <p class="text-gray-500">
+                                                                <spring:message code="navbar.noProductsFound" />
+                                                            </p>
                                                         </div>
                                                     </c:when>
                                                     <c:otherwise>
@@ -482,11 +496,12 @@
                                             <div class=""> <!-- Tăng padding lên -->
                                                 <div class="flex flex-col items-center">
                                                     <c:if test="${not empty customer.imageUrl}">
-                                                            <div>
-                                                                <p class="text-gray-500 text-sm">Profile Image</p>
-                                                                <img src="${ctx}${customer.imageUrl}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover" onerror="this.src='${ctx}/resources/assets/client/images/default-avatar.jpg'">
-                                                            </div>
-                                                        </c:if>
+                                                        <div>
+                                                            <p class="text-gray-500 text-sm">Profile Image</p>
+                                                            <img src="${ctx}${customer.imageUrl}" alt="Profile Image"
+                                                                class="w-24 h-24 rounded-full object-cover">
+                                                        </div>
+                                                    </c:if>
                                                     <div class="text-center font-semibold text-gray-800 text-lg mt-3">
                                                         <c:out value="${sessionScope.fullName}" />
                                                     </div>

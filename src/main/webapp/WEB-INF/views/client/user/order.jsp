@@ -365,7 +365,6 @@
                                             if (storedAddress) {
                                                 const addressData = JSON.parse(storedAddress);
                                                 currentlySelectedAddressId = addressData.addressId;
-                                                console.log('Set current selected address ID to:', currentlySelectedAddressId);
                                             }
                                         } catch (e) {
                                             console.error('Error getting current address ID:', e);
@@ -441,7 +440,6 @@
                                                     address: recipientAddress ? recipientAddress.textContent : ''
                                                 };
 
-                                                console.log('Saved current address state before modal open:', window.currentAddressState);
 
                                                 // Ensure the correct address is visually selected in the modal
                                                 setTimeout(() => {
@@ -477,7 +475,6 @@
                                                         }
                                                     });
 
-                                                    console.log('Updated address selections in modal, found current address:', foundSelected);
                                                 }, 100);
                                             }
                                         });
@@ -494,7 +491,6 @@
                                                 if (recipientName) recipientName.textContent = window.currentAddressState.name;
                                                 if (recipientPhone) recipientPhone.textContent = window.currentAddressState.phone;
                                                 if (recipientAddress) recipientAddress.textContent = window.currentAddressState.address;
-                                                console.log('Restored original address state after modal canceled');
                                             }
                                         }
                                     }
@@ -511,7 +507,6 @@
 
                                             // If no address was selected, just close the modal
                                             if (!selectedAddressId) {
-                                                console.log('No address selected, closing modal without changes');
                                                 closeModal(false);
                                                 return;
                                             }
@@ -521,7 +516,6 @@
 
                                             // The actual implementation for confirming address selection
                                             // is in handle.jsp, this just ensures the event is properly connected
-                                            console.log('Confirmed address selection, ID:', selectedAddressId);
                                             closeModal(true); // Pass true to indicate confirmation
                                         });
                                     }
@@ -632,7 +626,6 @@
                                                         circle.classList.remove('bg-transparent');
                                                     }
 
-                                                    console.log('Selected address ID in modal:', addressId, '(Not yet confirmed)');
                                                 }
                                             });
                                         }
@@ -918,7 +911,7 @@
                                             } else {
                                                 // Invalid code - show error message and DO NOT apply
                                                 showToast('Mã giảm giá không hợp lệ hoặc không áp dụng được cho đơn hàng này', false);
-                                                console.log('Invalid promo code:', promoCode);
+
                                             }
 
                                             // Clear the input field
@@ -951,7 +944,7 @@
 
                                                 // Get shipping fee value from window.ghnState (same as in updateOrderTotalWithMultipleDiscounts)
                                                 const shippingFee = (window.ghnState && window.ghnState.shippingFeeValue !== null) ? window.ghnState.shippingFeeValue : 0;
-                                                console.log('shippingFee--------------------------', shippingFee);
+
                                                 // Calculate total with shipping fee included
                                                 const newTotal = subtotal + shippingFee;
                                                 totalElement.textContent = '$' + newTotal.toFixed(2);
@@ -963,7 +956,7 @@
 
                                             // Show feedback
                                             showToast('Đã xóa tất cả mã giảm giá');
-                                            console.log('Removed all promo codes');
+
                                         });
 
                                         // Event delegation for individual remove buttons
@@ -1041,7 +1034,6 @@
 
                                                 // Show feedback
                                                 showToast('Đã xóa mã giảm giá: ' + codeToRemove);
-                                                console.log('Removed promo code:', codeToRemove, 'Remaining discounts:', window.appliedDiscounts);
                                             }
                                         });
                                     }
@@ -1051,7 +1043,6 @@
                                         const productIds = [];
                                         const itemElements = document.querySelectorAll('.flex.items-center.py-3');
 
-                                        console.log('Found ' + itemElements.length + ' product items in order');
 
                                         itemElements.forEach((element, index) => {
                                             try {
@@ -1065,7 +1056,6 @@
                                                     const cleanProductId = productId.toString().replace(/[^0-9]/g, '');
 
                                                     if (cleanProductId) {
-                                                        console.log('Product #' + (index + 1) + ' has product ID:', cleanProductId);
 
                                                         // Add to the array if it's not already there
                                                         if (!productIds.includes(cleanProductId)) {
@@ -1073,11 +1063,9 @@
                                                         }
                                                     }
                                                 } else {
-                                                    console.log('Product #' + (index + 1) + ' - could not find product ID in element');
 
                                                     // Try to get product ID from the nearest heading or any other metadata
                                                     const productName = element.querySelector('.flex-1 h3')?.textContent.trim();
-                                                    console.log('Product #' + (index + 1) + ' name:', productName);
                                                 }
                                             } catch (error) {
                                                 console.error('Error processing product item #' + (index + 1) + ':', error);
@@ -1090,15 +1078,12 @@
                                             const variantId = urlParams.get('variantId');
 
                                             if (variantId) {
-                                                console.log('Using variant ID from URL as fallback:', variantId);
                                                 productIds.push(variantId);
                                             } else {
-                                                console.log('No product IDs found, using default value: 1');
                                                 productIds.push('1');
                                             }
                                         }
 
-                                        console.log('Final product IDs array:', productIds);
                                         return productIds;
                                     }
 
@@ -2376,7 +2361,7 @@
                                 </div>
 
                                 <!-- Applied discount display -->
-                                <div id="discount-display" class="text-sm text-green-600 mt-2 hidden"></div>
+                                <div id="discount-display" class=" text-sm text-green-600 mt-2 hidden"></div>
                             </div>
 
                             <!-- Test Button for Order Data -->

@@ -39,7 +39,7 @@
                         <section class="pt-24 pb-16 pt-[64px]">
                             <div class="max-w-7xl mx-auto px-6">
                                 <div class="relative h-96 w-full bg-gray-50 flex items-center justify-center">
-                                    <img src="${ctx}/resources/assets/client/images/image2.avif"
+                                    <img src="https://intphcm.com/data/upload/banner-thoi-trang-nam.jpg"
                                         alt="Women's Collection"
                                         class="absolute inset-0 w-full h-full object-cover opacity-90">
                                     <div class="relative text-center px-6">
@@ -599,8 +599,7 @@
                                                         <div class="relative overflow-hidden mb-4 h-96">
                                                             <!-- Product Image -->
                                                             <%-- Sử dụng đường dẫn tương đối hoặc tuyệt đối phù hợp --%>
-                                                                <img src="<c:url value='/${p.imageUrl}'/>"
-                                                                    alt="${p.productName}"
+                                                                <img src="${p.imageUrl}" alt="${p.productName}"
                                                                     class="w-full h-full object-cover transition duration-500 group-hover:opacity-75">
 
                                                                 <!-- Dark Overlay (appears on hover) -->

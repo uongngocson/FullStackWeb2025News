@@ -15,6 +15,18 @@
                     <link rel="stylesheet"
                         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                     <link rel="stylesheet" href="${ctx}/resources/assets/client/css/productDetail.css">
+                    <script>
+                        // Create a JavaScript product object from JSP data
+                        const product = {
+                            productId: "${product.productId}",
+                            productName: "${product.productName}",
+                            price: "${product.price}",
+                            description: "${product.description}",
+                            imageUrl: "${product.imageUrl}",
+                            quantitySold: "${product.quantitySold}"
+                        };
+                        
+                    </script>
                     <script id="variantsData" type="application/json">
                     ${variantsJson}
                 </script>
@@ -32,28 +44,30 @@
                             <div class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex flex-wrap -mx-4">
                                 <!-- Product Images -->
                                 <div class="w-full md:w-1/2 px-4 mb-8">
-                                    <div class="image-container">
-                                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwxfHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
+                                    <div class="image-container relative">
+                                        <button id="view3dButton" class="absolute top-3 left-3 bg-black bg-opacity-70 hover:bg-opacity-90 text-white p-2 rounded-lg z-10 transition-all duration-300 flex items-center space-x-2 transform hover:scale-105 shadow-lg">
+                                            <i class="fas fa-cube"></i>
+                                            <span class="text-sm font-medium">XEM 3D</span>
+                                        </button>
+                                        <img src="${product.imageUrl}" alt="${product.productName}"
                                             alt="${product.productName}" class="w-full h-auto rounded-lg shadow-md mb-4"
                                             id="mainImage">
                                     </div>
                                     <div class="flex gap-4 py-4 justify-center overflow-x-auto">
-                                        <img src="https://images.unsplash.com/photo-1505751171710-1f6d0ace5a85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwxMnx8aGVhZHBob25lfGVufDB8MHx8fDE3MjEzMDM2OTB8MA&ixlib=rb-4.0.3&q=80&w=1080"
-                                            alt="Thumbnail 1"
-                                            class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                            onclick="changeImage(this.src)">
-                                        <img src="https://images.unsplash.com/photo-1484704849700-f032a568e944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw0fHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
-                                            alt="Thumbnail 2"
-                                            class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                            onclick="changeImage(this.src)">
-                                        <img src="https://images.unsplash.com/photo-1496957961599-e35b69ef5d7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw4fHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
-                                            alt="Thumbnail 3"
-                                            class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                            onclick="changeImage(this.src)">
-                                        <img src="https://images.unsplash.com/photo-1528148343865-51218c4a13e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwzfHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
-                                            alt="Thumbnail 4"
-                                            class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                            onclick="changeImage(this.src)">
+                                        <c:forEach var="image" items="${productImages}" varStatus="status">
+                                            <img src="${image.imageUrl}"
+                                                alt="${product.productName} - Image ${status.index + 1}"
+                                                class="size-12 sm:size-16 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
+                                                onclick="changeImage(this.src)">
+                                        </c:forEach>
+
+                                        <c:if test="${empty productImages}">
+                                            <!-- Fallback images if no product images are available -->
+                                            <img src="${product.imageUrl}" alt="${product.productName}"
+                                                class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
+                                                onclick="changeImage(this.src)">
+                                        </c:if>
+                                      
                                     </div>
                                 </div>
 
@@ -105,7 +119,7 @@
                                     <p class="text-gray-700 mb-6">${product.description}</p>
 
                                     <div class="mb-6">
-                                        <h3 class="text-lg font-semibold mb-2">COLOR: <span id="selectedColor2"
+                                        <h3 class="text-lg font-semibold mb-2">MÀU SẮC: <span id="selectedColor2"
                                                 style="display:none;"></span></h3>
                                         <div class="flex space-x-2">
                                             <c:forEach var="color" items="${colors}">
@@ -133,7 +147,7 @@
 
                                     <!-- Quantity -->
                                     <div class="mb-6">
-                                        <h3 class="text-lg font-semibold mb-2">QUANTITY:</h3>
+                                        <h3 class="text-lg font-semibold mb-2">SỐ LƯỢNG:</h3>
                                         <div
                                             class="quantity-selector flex items-center border border-gray-200 w-24 shadow-sm">
                                             <button type="button"
@@ -156,7 +170,7 @@
                                             <input type="hidden" name="quantity" id="cartQuantityInput2" value="1" />
                                             <button type="submit"
                                                 class="w-full bg-black text-white py-3 font-medium hover:bg-gray-800 rounded-md">
-                                                <i class="fas fa-shopping-cart mr-2"></i> ADD TO CART
+                                                <i class="fas fa-shopping-cart mr-2"></i> THÊM VÀO GIỎ HÀNG
                                             </button>
                                         </form>
 
@@ -166,17 +180,17 @@
                                             <input type="hidden" name="quantity" id="quantityInput2" value="1" />
                                             <button type="submit" id="buyNowButton2" disabled
                                                 class="w-full bg-red-600 text-white py-3 font-medium hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md">
-                                                <i class="fas fa-credit-card mr-2"></i> BUY NOW
+                                                <i class="fas fa-credit-card mr-2"></i> MUA NGAY
                                             </button>
                                         </form>
                                     </div>
 
                                     <div class="flex items-center gap-4 mb-8">
                                         <button class="flex items-center text-sm text-gray-700 hover:text-black">
-                                            <i class="far fa-heart mr-2"></i> Add to Wishlist
+                                            <i class="far fa-heart mr-2"></i> THÊM VÀO YÊU THÍCH
                                         </button>
                                         <div class="flex items-center gap-3">
-                                            <span class="text-sm text-gray-700">Share:</span>
+                                            <span class="text-sm text-gray-700">Chia sẻ:</span>
                                             <a href="#" class="text-gray-500 hover:text-black"><i
                                                     class="fab fa-facebook-f"></i></a>
                                             <a href="#" class="text-gray-500 hover:text-black"><i
@@ -186,7 +200,7 @@
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <!-- <div>
                                         <h3 class="text-lg font-semibold mb-2">Key Features:</h3>
                                         <ul class="list-disc list-inside text-gray-700">
                                             <li>Industry-leading noise cancellation</li>
@@ -194,7 +208,7 @@
                                             <li>Touch sensor controls</li>
                                             <li>Speak-to-chat technology</li>
                                         </ul>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -205,6 +219,13 @@
                             function changeImage(src) {
                                 document.getElementById('mainImage').src = src;
                             }
+
+                            // 3D View button click handler
+                            document.addEventListener('DOMContentLoaded', function() {
+                                document.getElementById('view3dButton').addEventListener('click', function() {
+                                    window.location.href = "/product/image3d?id=${product.productId}";
+                                });
+                            });
 
                             // Apply background colors to color options
                             document.addEventListener('DOMContentLoaded', function () {
@@ -249,7 +270,6 @@
                                 document.getElementById('quantityInput2').value = val;
                                 document.getElementById('cartQuantityInput2').value = val;
 
-                                console.log("Quantity updated to:", val);
                             }
 
                             // Hàm lấy variant đã chọn hiện tại
@@ -270,8 +290,8 @@
                             try {
                                 const rawJson = document.getElementById("variantsData").textContent.trim();
                                 variants = JSON.parse(rawJson);
-                                console.log("Variants loaded:", variants);
 
+                                
                                 // Kiểm tra tình trạng hàng hóa khi trang được tải
                                 checkInitialStockStatus();
                             } catch (e) {
@@ -328,8 +348,7 @@
                                     if (found) {
                                         document.getElementById('selectedVariantId2').value = found.productVariantId;
                                         document.getElementById('cartVariantId2').value = found.productVariantId;
-                                        console.log("Selected variant ID:", found.productVariantId);
-                                        console.log("Quantity Stock:", found.quantityStock);
+                                     
 
                                         // Kiểm tra số lượng tồn kho
                                         if (found.quantityStock && found.quantityStock > 0) {
@@ -389,7 +408,6 @@
                                     addToCartButton.classList.remove('bg-black', 'hover:bg-gray-800');
                                 }
 
-                                console.log("Hidden input value set to:", document.getElementById('selectedVariantId2').value);
                             }
 
                             // Add event listeners when the document is fully loaded
@@ -406,8 +424,7 @@
                                     // Update quantity one more time to be sure
                                     quantityInput.value = quantityValue;
 
-                                    console.log("Buy Now - Variant ID:", variantInput.value);
-                                    console.log("Buy Now - Quantity:", quantityInput.value);
+                               
 
                                     if (!variantInput.value) {
                                         e.preventDefault();
@@ -430,7 +447,6 @@
                                     updateSelectedVariant2(); // Update variant ID when form is submitted
 
                                     const variantInput = document.getElementById('cartVariantId2');
-                                    console.log("Cart variant to submit:", variantInput.value);
 
                                     if (!variantInput.value) {
                                         e.preventDefault();
@@ -592,7 +608,6 @@
                             document.getElementById('quantityInput').value = val;
                             document.getElementById('cartQuantityInput').value = val;
 
-                            console.log("Quantity updated to:", val);
                         }
 
                         function updateSelectedVariant() {
@@ -615,7 +630,6 @@
                                 if (found) {
                                     document.getElementById('selectedVariantId').value = found.productVariantId;
                                     document.getElementById('cartVariantId').value = found.productVariantId;
-                                    console.log("Selected variant ID:", found.productVariantId);
 
                                     // Enable BUY NOW button if variant is found
                                     buyNowButton.disabled = false;
@@ -624,7 +638,6 @@
                                 }
                             }
 
-                            console.log("Hidden input value set to:", document.getElementById('selectedVariantId').value);
                         }
 
                         // Add event listeners when the document is fully loaded
@@ -633,7 +646,7 @@
                             try {
                                 const rawJson = document.getElementById("variantsData").textContent.trim();
                                 variants = JSON.parse(rawJson);
-                                console.log("Variants loaded:", variants);
+
 
                                 // Kiểm tra tình trạng hàng hóa khi trang được tải
                                 checkInitialStockStatus();
@@ -653,8 +666,7 @@
                                 // Update quantity one more time to be sure
                                 quantityInput.value = quantityValue;
 
-                                console.log("Buy Now - Variant ID:", variantInput.value);
-                                console.log("Buy Now - Quantity:", quantityInput.value);
+                              
 
                                 if (!variantInput.value) {
                                     e.preventDefault();
@@ -677,7 +689,6 @@
                                 updateSelectedVariant(); // Update variant ID when form is submitted
 
                                 const variantInput = document.getElementById('cartVariantId');
-                                console.log("Cart variant to submit:", variantInput.value);
 
                                 if (!variantInput.value) {
                                     e.preventDefault();

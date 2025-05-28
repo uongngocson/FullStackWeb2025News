@@ -46,7 +46,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "shipping_address_id")
     @NotNull(message = "Shipping address is required")
-    private Address shippingAddress;
+    private Addressv2 shippingAddress;
 
     @ManyToOne
     @JoinColumn(name = "payment_id")

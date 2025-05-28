@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const slides = document.querySelectorAll(".slider-item");
 
     if (slider && prevBtn && nextBtn && slides.length > 0) {
-        console.log("check", slider)
         const slideCount = slides.length;
         const slideWidth = slides[0].offsetWidth;
         const slidesInView = 4;
@@ -50,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function () {
         prevBtn.style.display = 'none';
 
         prevBtn.addEventListener("click", function () {
-            console.log(currentSlide)
             if (currentSlide > 1) {
                 nextBtn.style.display = 'block'
                 currentSlide--;
@@ -62,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         nextBtn.addEventListener("click", function () {
-            console.log(currentSlide)
             if (currentSlide < totalSlides) {
                 prevBtn.style.display = 'block'
                 currentSlide++;

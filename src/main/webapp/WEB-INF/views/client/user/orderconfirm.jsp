@@ -274,7 +274,7 @@
                                                         </p>
                                                     </div>
 
-                                                    <div
+                                                    <!-- <div
                                                         class="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4">
                                                         <p
                                                             class="text-base font-semibold leading-4 text-center md:text-left text-gray-800">
@@ -285,7 +285,7 @@
                                                             <c:out value="${shippingAddress}"
                                                                 default="Same as shipping address" />
                                                         </p>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
 
                                                 <div

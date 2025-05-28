@@ -122,7 +122,9 @@
                     <main>
 
                         <section class="popular">
-                            <h1>POPULAR RIGHT NOW</h1>
+                            <h1>
+                                <spring:message code="navbar.offer.popular" />
+                            </h1>
                             <div class="popular-product">
                                 <a href="">ULTRABOOST</a>
                                 <a href="">NMD</a>
@@ -135,181 +137,228 @@
                             <div class="clothes-item">
                                 <img src="${pageContext.request.contextPath}/resources/assets/client/images/shoes.webp"
                                     alt="">
-                                <a>SHOES</a>
+                                <a>
+                                    <spring:message code="navbar.offer.shoes" />
+                                </a>
                             </div>
                             <div class="clothes-item">
                                 <img src="${pageContext.request.contextPath}/resources/assets/client/images/clothing.webp"
                                     alt="">
-                                <a>CLOTHING</a>
+                                <a>
+                                    <spring:message code="navbar.offer.clothing" />
+                                </a>
                             </div>
                             <div class="clothes-item">
                                 <img src="${pageContext.request.contextPath}/resources/assets/client/images/bestsellers.webp"
                                     alt="">
-                                <a>BEST SELLERS</a>
+                                <a>
+                                    <spring:message code="navbar.offer.bestsellers" />
+                                </a>
                             </div>
                             <div class="clothes-item">
                                 <img src="${pageContext.request.contextPath}/resources/assets/client/images/new-arrivals.webp"
                                     alt="">
-                                <a>NEW ARRIVALS</a>
+                                <a>
+                                    <spring:message code="navbar.offer.newArrivals" />
+                                </a>
                             </div>
                         </section>
                         <section class="arrivals-section">
                             <div class="arrivals">
                                 <div class="new-arrivals">
-                                    <a href="" class="active">NEW ARRIVALS</a>
-                                    <a href="" class="trending">WHAT's TRENDING</a>
+                                    <a href="" class="active">
+                                        <spring:message code="navbar.offer.newArrivals" />
+                                    </a>
+                                    <a href="" class="trending">
+                                        <spring:message code="navbar.offer.trending" />
+                                    </a>
                                 </div>
                                 <div class="view-all">
-                                    <a href="">VIEW ALL</a>
+                                    <a href="">
+                                        <spring:message code="navbar.offer.viewAll" />
+                                    </a>
                                 </div>
                             </div>
                             <div class="wrapper">
                                 <div class="arrivals-slider">
-                                    <div class="slider-item">
-                                        <div class="slider-img off">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img1.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>NMD_V3 Shoes</h5>
-                                            <p>Men's Originals</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img off">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img2.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>NMD_V3 Shoes</h5>
-                                            <p>Woen's Originals</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img3.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>COLLEGIATE SKIRT</h5>
-                                            <p>Women's Originals</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img4.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>adidas Originals Class of 72 Crop Vest</h5>
-                                            <p>Women's Originals</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img5.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>Capable of Greatness Joggers</h5>
-                                            <p>Men's Training</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img6.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>adidas x Peloton jacket</h5>
-                                            <p>Men's Training</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img7.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>adidas x Peloton jacket</h5>
-                                            <p>Men's Training</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img8.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>Capable of Greatness 7/8 Tights</h5>
-                                            <p>Women's Training</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img9.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>Dust Coat (Gender Neutral)</h5>
-                                            <p>Sportswear</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img10.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>Adilette Slides</h5>
-                                            <p>Men's Originals</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img12.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>adidas x LEGO® Sport Pro Shoes</h5>
-                                            <p>Youth Sportswear</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
-                                    <div class="slider-item">
-                                        <div class="slider-img">
-                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img13.webp"
-                                                alt="">
-                                        </div>
-                                        <div class="slider-content">
-                                            <h5>Ultraboost 19.5 DNA Shoes</h5>
-                                            <p>Men's Sportswear</p>
-                                            <span>new</span>
-                                        </div>
-                                        <i class="uil uil-heart"></i>
-                                    </div>
+                                    <c:choose>
+                                        <c:when test="${empty featuredProducts}">
+                                            <!-- Original slider items when no products are available -->
+                                            <div class="slider-item">
+                                                <div class="slider-img off">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img1.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>NMD_V3 Shoes</h5>
+                                                    <p>Men's Originals</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img off">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img2.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>NMD_V3 Shoes</h5>
+                                                    <p>Woen's Originals</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img3.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>COLLEGIATE SKIRT</h5>
+                                                    <p>Women's Originals</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img4.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>adidas Originals Class of 72 Crop Vest</h5>
+                                                    <p>Women's Originals</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img5.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>Capable of Greatness Joggers</h5>
+                                                    <p>Men's Training</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img6.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>adidas x Peloton jacket</h5>
+                                                    <p>Men's Training</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img7.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>adidas x Peloton jacket</h5>
+                                                    <p>Men's Training</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img8.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>Capable of Greatness 7/8 Tights</h5>
+                                                    <p>Women's Training</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img9.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>Dust Coat (Gender Neutral)</h5>
+                                                    <p>Sportswear</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img10.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>Adilette Slides</h5>
+                                                    <p>Men's Originals</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img12.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>adidas x LEGO® Sport Pro Shoes</h5>
+                                                    <p>Youth Sportswear</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                            <div class="slider-item">
+                                                <div class="slider-img">
+                                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/arrivals-img13.webp"
+                                                        alt="">
+                                                </div>
+                                                <div class="slider-content">
+                                                    <h5>Ultraboost 19.5 DNA Shoes</h5>
+                                                    <p>Men's Sportswear</p>
+                                                    <span>new</span>
+                                                </div>
+                                                <i class="uil uil-heart"></i>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <!-- Use featuredProducts data for slider -->
+                                            <c:forEach items="${featuredProducts}" var="product" varStatus="status">
+                                                <div class="slider-item">
+                                                    <div class="slider-img ${status.index < 2 ? 'off' : ''}">
+                                                        <img src="${product.image_url}" alt="${product.product_name}">
+                                                        <div class="price-tag">$${product.price}</div>
 
+                                                        <!-- Quick View Button -->
+                                                        <div class="quick-view-overlay">
+                                                            <c:url var="detailUrl" value="/product/detail">
+                                                                <c:param name="id" value="${product.product_id}" />
+                                                            </c:url>
+                                                            <a href="${detailUrl}" class="quick-view-btn">
+                                                                <spring:message code="category.quickView"
+                                                                    text="QUICK VIEW" />
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slider-content">
+                                                        <h5>${product.product_name}</h5>
+                                                        <p>${product.category_name != null ? product.category_name :
+                                                            'Originals'}</p>
+                                                        <span>new</span>
+                                                    </div>
+                                                    <i class="uil uil-heart"></i>
+                                                </div>
+                                            </c:forEach>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                                 <a class="prev">&larr;</a>
                                 <a class="next">&rarr;</a>
@@ -322,6 +371,80 @@
 
                     <script src="https://kit.fontawesome.com/73713bf219.js" crossorigin="anonymous"></script>
                     <script src="${pageContext.request.contextPath}/resources/assets/client/js/mainson.js"></script>
+
+                    <style>
+                        .slider-img {
+                            position: relative;
+                            overflow: hidden;
+                            width: 275px;
+                            height: 366px;
+                        }
+
+                        .slider-img img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            object-position: center;
+                        }
+
+                        .price-tag {
+                            position: absolute;
+                            top: 10px;
+                            left: 10px;
+                            background-color: rgba(0, 0, 0, 0.7);
+                            color: white;
+                            padding: 4px 8px;
+                            font-size: 14px;
+                            font-weight: bold;
+                            border-radius: 4px;
+                            z-index: 5;
+                        }
+
+                        .quick-view-overlay {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background-color: rgba(0, 0, 0, 0.5);
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            opacity: 0;
+                            visibility: hidden;
+                            transition: opacity 0.5s ease, visibility 0.5s ease;
+                            z-index: 10;
+                        }
+
+                        .slider-img:hover .quick-view-overlay {
+                            opacity: 1;
+                            visibility: visible;
+                        }
+
+                        .quick-view-btn {
+                            background-color: white;
+                            color: black;
+                            padding: 8px 12px;
+                            border: 1px solid black;
+                            text-transform: uppercase;
+                            font-size: 12px;
+                            letter-spacing: 1px;
+                            transition: all 0.4s ease;
+                            transform: translateY(20px);
+                            opacity: 0;
+                        }
+
+                        .slider-img:hover .quick-view-btn {
+                            transform: translateY(0);
+                            opacity: 1;
+                            transition-delay: 0.1s;
+                        }
+
+                        .quick-view-btn:hover {
+                            background-color: black;
+                            color: white;
+                        }
+                    </style>
                 </body>
 
                 </html>

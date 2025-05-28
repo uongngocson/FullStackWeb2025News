@@ -42,10 +42,8 @@ public class Product {
     @Min(value = 0, message = "Quantity sold must be greater than or equal to 0")
     private Integer quantitySold;
 
-
     @NotBlank(message = "Warranty cannot be blank")
     private String warranty;
-
 
     @NotBlank(message = "Return policy cannot be blank")
     private String returnPolicy;
@@ -53,7 +51,6 @@ public class Product {
     private String imageUrl;
 
     private Integer rating;
-    
 
     private Boolean type;
 

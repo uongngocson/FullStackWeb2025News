@@ -35,6 +35,8 @@ public class ProductVariant {
     private String SKU;
 
     private String imageUrl;
+    
+    private String image_url3d;
 
     @NotNull(message = "Size is required")
     @Min(value = 0, message = "Size must be greater than or equal to 0")

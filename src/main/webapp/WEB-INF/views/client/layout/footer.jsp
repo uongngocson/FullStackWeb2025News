@@ -8,7 +8,9 @@
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                             <div>
                                 <img src="/client/img/logo.webp" alt="Logo" class="h-12 mb-4">
-                                <p class="text-gray-400 mb-4 text-sm">Your one-stop shop for affordable and stylish clothing.</p>
+                                <p class="text-gray-400 mb-4 text-sm">
+                                    <spring:message code="footer.description" />
+                                </p>
                                 <div class="flex space-x-4">
                                     <a href="#" class="text-gray-400 hover:text-white transition">
                                         <i class="fab fa-facebook-f"></i>
@@ -26,36 +28,64 @@
                             </div>
 
                             <div>
-                                <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                                <h4 class="text-lg font-semibold mb-4">
+                                    <spring:message code="footer.shop" />
+                                </h4>
                                 <ul class="space-y-2 text-sm text-gray-400">
-                                    <li><a href="#" class="hover:text-white transition">Home</a></li>
-                                    <li><a href="#" class="hover:text-white transition">Shop</a></li>
-                                    <li><a href="#" class="hover:text-white transition">Categories</a></li>
-                                    <li><a href="#" class="hover:text-white transition">About Us</a></li>
-                                    <li><a href="#" class="hover:text-white transition">Contact</a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="navbar.home" />
+                                        </a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="footer.women" />
+                                        </a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="footer.men" />
+                                        </a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="footer.accessories" />
+                                        </a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="footer.newArrivals" />
+                                        </a></li>
                                 </ul>
                             </div>
 
                             <div>
-                                <h4 class="text-lg font-semibold mb-4">Customer Service</h4>
+                                <h4 class="text-lg font-semibold mb-4">
+                                    <spring:message code="footer.customerService" />
+                                </h4>
                                 <ul class="space-y-2 text-sm text-gray-400">
-                                    <li><a href="#" class="hover:text-white transition">FAQ</a></li>
-                                    <li><a href="#" class="hover:text-white transition">Shipping & Returns</a></li>
-                                    <li><a href="#" class="hover:text-white transition">Store Policy</a></li>
-                                    <li><a href="#" class="hover:text-white transition">Payment Methods</a></li>
-                                    <li><a href="#" class="hover:text-white transition">Loyalty Program</a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="footer.faq" />
+                                        </a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="footer.shippingReturns" />
+                                        </a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="footer.storePolicy" />
+                                        </a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="footer.paymentMethods" />
+                                        </a></li>
+                                    <li><a href="#" class="hover:text-white transition">
+                                            <spring:message code="footer.contact" />
+                                        </a></li>
                                 </ul>
                             </div>
 
                             <div>
-                                <h4 class="text-lg font-semibold mb-4">Subscribe to Our Newsletter</h4>
-                                <p class="text-gray-400 mb-4 text-sm">Get updates on new arrivals, special offers and more.</p>
+                                <h4 class="text-lg font-semibold mb-4">
+                                    <spring:message code="home.magazine" />
+                                </h4>
+                                <p class="text-gray-400 mb-4 text-sm">
+                                    <spring:message code="home.minimalistFashionDesc" />
+                                </p>
                                 <form class="flex">
                                     <input type="email" placeholder="Your email address"
                                         class="px-4 py-2 bg-zinc-700 text-white placeholder-gray-400 rounded-l-md flex-grow text-sm focus:outline-none">
                                     <button type="submit"
                                         class="bg-purple-600 text-white px-4 py-2 rounded-r-md hover:bg-purple-700 transition text-sm">
-                                        Subscribe
+                                        <spring:message code="cart.proceedToCheckout" />
                                     </button>
                                 </form>
                             </div>
@@ -64,11 +94,19 @@
                         <hr class="border-zinc-700 my-8">
 
                         <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-                            <div>© 2023 AlphaMart. All rights reserved.</div>
+                            <div>
+                                <spring:message code="footer.copyright" />
+                            </div>
                             <div class="mt-4 md:mt-0 flex space-x-4">
-                                <a href="#" class="hover:text-white transition">Privacy Policy</a>
-                                <a href="#" class="hover:text-white transition">Terms of Service</a>
-                                <a href="#" class="hover:text-white transition">Cookie Policy</a>
+                                <a href="#" class="hover:text-white transition">
+                                    <spring:message code="footer.privacyPolicy" />
+                                </a>
+                                <a href="#" class="hover:text-white transition">
+                                    <spring:message code="footer.termsOfUse" />
+                                </a>
+                                <a href="#" class="hover:text-white transition">
+                                    <spring:message code="footer.sustainability" />
+                                </a>
                             </div>
                         </div>
                     </div>
