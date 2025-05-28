@@ -57,14 +57,14 @@ public class HomeController {
         return "client/layout/faq";
     }
 
+    // @GetMapping("image3d")
+    // public String getImage3DPage() {
+    // return "client/product/image3d";
+    // }
+
     @GetMapping("test")
     public String getAboutPageTest() {
         return "client/datatest";
-    }
-
-    @GetMapping("blog")
-    public String getBlogPage() {
-        return "client/layout/blog";
     }
 
     @GetMapping("blogpage")

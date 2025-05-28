@@ -44,6 +44,7 @@ public class SummaryOrderDTO {
     }
 
     public static class ShippingAddress {
+        private String id;
         private String recipientName;
         private String recipientPhone;
         private String provinceId;
@@ -51,6 +52,15 @@ public class SummaryOrderDTO {
         private String districtName;
         private String wardCode;
         private String wardName;
+        private String fullAddress;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
 
         public String getRecipientName() {
             return recipientName;
@@ -106,6 +116,14 @@ public class SummaryOrderDTO {
 
         public void setWardName(String wardName) {
             this.wardName = wardName;
+        }
+
+        public String getFullAddress() {
+            return fullAddress;
+        }
+
+        public void setFullAddress(String fullAddress) {
+            this.fullAddress = fullAddress;
         }
     }
 

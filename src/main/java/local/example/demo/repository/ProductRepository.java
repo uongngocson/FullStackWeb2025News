@@ -35,13 +35,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
     List<Product> findProductsByTypeWomen();
 
     Page<Product> findAll(Pageable pageable);
+
     Page<Product> findAll(Specification<Product> spec, Pageable pageable);
+
     // get product type=1 - men by page
     @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.supplier s WHERE p.type = true")
     Page<Product> findProductsByTypeMen(Pageable pageable);
+
     // get product type=0 - women by page
     @Query("SELECT p FROM Product p JOIN FETCH p.brand b JOIN FETCH p.category c JOIN FETCH p.supplier s WHERE p.type = false")
     Page<Product> findProductsByTypeWomen(Pageable pageable);
 
-    boolean existsBySupplier(Supplier supplier); // Changed type 
+    boolean existsBySupplier(Supplier supplier); // Changed type
 }

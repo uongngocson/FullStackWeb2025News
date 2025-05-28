@@ -29,7 +29,7 @@
 
                     <!-- Right Side - Login Form -->
                     <div class="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
-                        <div class="form-container w-full max-w-md p-10 border border-gray-100 rounded-sm">
+                        <div class="form-container w-full max-w-lg p-10 border border-gray-100 rounded-sm">
                             <div class="text-center mb-10">
                                 <h1 class="playfair text-3xl mb-2">Sign In to DDTS</h1>
                                 <p class="text-sm text-gray-500">Access your exclusive fashion portal</p>
@@ -56,17 +56,12 @@
                                         class="w-full px-0 py-2 border-b border-gray-300 focus:border-black focus:outline-none transition-colors duration-300">
                                 </div>
 
-                                <div class="mb-6">
-                                    <input type="checkbox" id="remember-me" name="remember-me" class="mr-2">
-                                    <label for="remember-me" class="text-xs">Remember Me</label>
-                                </div>
-
                                 <div>
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                                 </div>
 
                                 <div class="flex justify-end mb-8">
-                                    <a href="#" class="forgot-link text-xs">Forgot Password?</a>
+                                    <a href="/forwardPassword" class="forgot-link text-xs">Forgot Password?</a>
                                 </div>
 
                                 <button type="submit"
@@ -82,14 +77,22 @@
                                         <span class="px-2 bg-white text-gray-500">OR</span>
                                     </div>
                                 </div>
-                                <button type="button"
-                                    class="google-btn w-full py-3 border border-gray-200 rounded-sm flex items-center justify-center transition-all duration-300 bg-red-500 text-white">
-                                    <img src="../../../../resources/assets/client/images/google-brands.svg"
-                                        alt="Google Logo" class="w-4 h-4 mr-2">
-                                    <a href="/oauth2/authorization/google"><span class="text-sm">Sign in with
-                                            Google</span></a>
-                                </button>
-
+                                <div class="flex space-x-4">
+                                    <button type="button"
+                                        class="google-btn w-full py-3 border border-gray-200 rounded-sm flex items-center justify-center transition-all duration-300 bg-red-500 text-white">
+                                        <img src="../../../../resources/assets/client/images/google-brands.svg"
+                                            alt="Google Logo" class="w-4 h-4 mr-2">
+                                        <a href="/oauth2/authorization/google"><span class="text-sm">Sign in with
+                                                Google</span></a>
+                                    </button>
+                                    <button type="button"
+                                        class="facebook-btn w-full py-3 border border-gray-200 rounded-sm flex items-center justify-center transition-all duration-300 bg-blue-500 text-white">
+                                        <img src="../../../../resources/assets/client/images/facebook-f-brands.svg"
+                                            alt="Facebook Logo" class="w-4 h-4 mr-2">
+                                        <a href="/oauth2/authorization/facebook"><span class="text-sm">Sign in with
+                                                Facebook</span></a>
+                                    </button>
+                                </div>
                                 <div class="text-center mt-6">
                                     <p class="text-xs text-gray-500">Don't have an account? <a href="/register"
                                             class="text-black hover:underline">Sign Up</a></p>

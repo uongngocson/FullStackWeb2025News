@@ -101,14 +101,16 @@ public class ProductMgrController {
     }
 
     @PostMapping("delete/{productId}")
-    public String deleteProduct(Model model, @PathVariable("productId") Integer productId, RedirectAttributes redirectAttributes) {
+    public String deleteProduct(Model model, @PathVariable("productId") Integer productId,
+            RedirectAttributes redirectAttributes) {
         try {
             productService.deleteProductById(productId);
             redirectAttributes.addFlashAttribute("successMessage", "Product deleted successfully.");
         } catch (ProductInUseException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete product. An unexpected error occurred.");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Failed to delete product. An unexpected error occurred.");
         }
         return "redirect:/admin/product-mgr/list";
     }

@@ -21,6 +21,16 @@ public class SummaryService {
         validateOrderData(orderDTO);
         System.out.println("✓ Order data validated successfully");
 
+        // Print shipping address details including new fields
+        System.out.println("\n===== SHIPPING ADDRESS DETAILS =====");
+        System.out.println("✓ Address ID: " + orderDTO.getShippingAddress().getId());
+        System.out.println("✓ Recipient: " + orderDTO.getShippingAddress().getRecipientName());
+        System.out.println("✓ Phone: " + orderDTO.getShippingAddress().getRecipientPhone());
+        System.out.println("✓ Full Address: " + orderDTO.getShippingAddress().getFullAddress());
+        System.out.println("✓ District: " + orderDTO.getShippingAddress().getDistrictName());
+        System.out.println("✓ Ward: " + orderDTO.getShippingAddress().getWardName());
+        System.out.println("===== END OF ADDRESS DETAILS =====\n");
+
         // Process order data (in a real application, this would interact with
         // repositories)
         // For example: save to database, generate order number, etc.
@@ -29,6 +39,9 @@ public class SummaryService {
         // Calculate final amounts with detailed logic
         recalculateOrderAmounts(orderDTO);
         System.out.println("✓ Final amounts calculated");
+
+        // Categorize order items by discount availability and get product variant IDs
+        Map<String, List<Integer>> categorizedIds = categorizeOrderItemsByDiscounts(orderDTO.getOrderItems());
 
         // Generate order ID
         String orderId = "ORD-" + System.currentTimeMillis();
@@ -134,8 +147,8 @@ public class SummaryService {
         }
 
         // 6. Calculate Final Total
-        int finalTotal = totalAfterDiscount + shippingFee + taxAmount;
-        System.out.println("✓ Final Total: " + finalTotal);
+        int finalTotal = totalAfterDiscount + shippingFee;
+        System.out.println("✓ Final Totalllllll: " + finalTotal);
 
         // 7. Update the orderDTO with calculated values
         if (orderDTO.getOrderCalculation() == null) {
@@ -320,5 +333,74 @@ public class SummaryService {
         } else {
             System.out.println("   ✗ No order calculation data available");
         }
+    }
+
+    /**
+     * Categorize order items into two arrays:
+     * 1. Items with applied discounts
+     * 2. Items without applied discounts
+     * 
+     * @param orderItems List of order items to categorize
+     * @return Map containing lists of product variant IDs categorized by discount
+     *         status
+     */
+    private Map<String, List<Integer>> categorizeOrderItemsByDiscounts(List<SummaryOrderDTO.OrderItem> orderItems) {
+        if (orderItems == null || orderItems.isEmpty()) {
+            System.out.println("❌ No order items to categorize.");
+            return Map.of(
+                    "itemsWithDiscounts", List.of(),
+                    "itemsWithoutDiscounts", List.of());
+        }
+
+        System.out.println("\n===== ORDER ITEMS CATEGORIZATION =====");
+
+        // Lists to store product variant IDs
+        List<Integer> itemsWithDiscounts = new java.util.ArrayList<>();
+        List<Integer> itemsWithoutDiscounts = new java.util.ArrayList<>();
+
+        for (SummaryOrderDTO.OrderItem item : orderItems) {
+            List<Object> appliedDiscounts = item.getApplied_discounts();
+            int productVariantId = item.getProduct_variant_id();
+            int quantity = item.getQuantity();
+
+            if (appliedDiscounts != null && !appliedDiscounts.isEmpty()) {
+                itemsWithDiscounts.add(productVariantId);
+                System.out.println("✓ Item " + productVariantId + " has " + appliedDiscounts.size()
+                        + " discount(s), Quantity=" + quantity);
+            } else {
+                itemsWithoutDiscounts.add(productVariantId);
+                System.out.println("✓ Item " + productVariantId + " has no discounts, Quantity=" + quantity);
+            }
+        }
+
+        // Print summary of categorized items
+        System.out.println("\n--- Items WITH Discounts (" + itemsWithDiscounts.size() + " items) ---");
+        for (Integer variantId : itemsWithDiscounts) {
+            // Find the original item to get its quantity
+            for (SummaryOrderDTO.OrderItem item : orderItems) {
+                if (item.getProduct_variant_id() == variantId) {
+                    System.out.println("➤ Product Variant ID: " + variantId + ", Quantity=" + item.getQuantity());
+                    break;
+                }
+            }
+        }
+
+        System.out.println("\n--- Items WITHOUT Discounts (" + itemsWithoutDiscounts.size() + " items) ---");
+        for (Integer variantId : itemsWithoutDiscounts) {
+            // Find the original item to get its quantity
+            for (SummaryOrderDTO.OrderItem item : orderItems) {
+                if (item.getProduct_variant_id() == variantId) {
+                    System.out.println("➤ Product Variant ID: " + variantId + ", Quantity=" + item.getQuantity());
+                    break;
+                }
+            }
+        }
+
+        System.out.println("===== END OF CATEGORIZATION =====\n");
+
+        // Return Map containing both lists of product variant IDs
+        return Map.of(
+                "itemsWithDiscounts", itemsWithDiscounts,
+                "itemsWithoutDiscounts", itemsWithoutDiscounts);
     }
 }

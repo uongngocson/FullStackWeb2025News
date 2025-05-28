@@ -27,4 +27,5 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Inte
     void clearDefaultImageFlagByProductIdAndExclude(@Param("productId") Integer productId,
             @Param("productImageIdToExclude") Integer productImageIdToExclude);
 
+    List<ProductImage> findByProductProductId(Integer productId);
 }

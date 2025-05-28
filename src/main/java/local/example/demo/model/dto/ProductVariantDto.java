@@ -13,6 +13,7 @@ public class ProductVariantDto {
     private Integer productVariantId;
     private String SKU;
     private String imageUrl;
+    private String image_url3d;
     private Integer quantityStock;
 
     // Chỉ lấy thông tin cần thiết từ các đối tượng liên quan

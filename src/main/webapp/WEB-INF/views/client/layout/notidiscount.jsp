@@ -137,8 +137,13 @@
                     <footer>
                         <section class="adiclub">
                             <div class="wrapper">
-                                <h1>JOIN OUR ADICLUB & GET 15% OFF</h1>
-                                <a href="" class="sign-up"> SIGN UP FOR FREE <i class="uil uil-arrow-right"></i></a>
+                                <h1>
+                                    <spring:message code="navbar.joinAdiclub" />
+                                </h1>
+                                <a href="/login" class="sign-up">
+                                    <spring:message code="navbar.signUpForFree" />
+                                    <i class="uil uil-arrow-right"></i>
+                                </a>
                             </div>
                         </section>
 

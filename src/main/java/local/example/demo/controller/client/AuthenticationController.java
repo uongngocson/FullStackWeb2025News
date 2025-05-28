@@ -1,12 +1,9 @@
 package local.example.demo.controller.client;
 
-import java.net.http.HttpRequest;
-
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,20 +13,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import jakarta.validation.Valid;
 import local.example.demo.model.dto.RegisterDTO;
 import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Customer;
+import local.example.demo.repository.AccountRepository;
 import local.example.demo.service.AccountService;
 import local.example.demo.service.CustomerService;
 import local.example.demo.service.RegisterService;
 import local.example.demo.service.RoleService;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RequiredArgsConstructor
@@ -49,24 +43,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("page-not-found")
-    public String getPageNotFoundPage(HttpServletRequest request) {
-        // Lấy thông tin xác thực từ SecurityContextHolder
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Kiểm tra xem người dùng đã đăng nhập và có vai trò EMPLOYEE không
-        if (authentication != null && authentication.isAuthenticated() &&
-                !(authentication instanceof AnonymousAuthenticationToken)) {
-
-            // Kiểm tra vai trò EMPLOYEE
-            boolean isEmployee = authentication.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYEE"));
-
-            if (isEmployee) {
-                return "employee/auth/page-not-found";
-            }
-        }
-
-        // Mặc định trả về view client
+    public String getPageNotFoundPage() {
         return "client/auth/page-not-found";
     }
 
@@ -88,6 +65,9 @@ public class AuthenticationController {
         session.setAttribute("pending_email", registerDTO.getEmail());
         session.setAttribute("pending_password", registerDTO.getPassword());
         session.setAttribute("pending_username", registerDTO.getLoginName());
+        session.setAttribute("pending_firstName", registerDTO.getFirstName());
+        session.setAttribute("pending_lastName", registerDTO.getLastName());
+        session.setAttribute("pending_phoneNumber", registerDTO.getPhoneNumber());
 
         // Generate and send verification code
         String verificationCode = registerService.generateVerificationCode();
@@ -112,7 +92,9 @@ public class AuthenticationController {
         String email = (String) session.getAttribute("pending_email");
         String password = (String) session.getAttribute("pending_password");
         String username = (String) session.getAttribute("pending_username");
-
+        String phone = (String) session.getAttribute("pending_phoneNumber");
+        String firstName = (String) session.getAttribute("pending_firstName");
+        String lastName = (String) session.getAttribute("pending_lastName");
         if (storedCode == null || email == null) {
             redirectAttributes.addFlashAttribute("verificationError", "Session expired. Please register again.");
             return "redirect:/register";
@@ -129,7 +111,9 @@ public class AuthenticationController {
         registerDTO.setEmail(email);
         registerDTO.setPassword(password);
         registerDTO.setLoginName(username);
-        // Set other fields...
+        registerDTO.setFirstName(firstName);
+        registerDTO.setLastName(lastName);
+        registerDTO.setPhoneNumber(phone);
 
         // Process registration
         registerDTO.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
@@ -146,7 +130,9 @@ public class AuthenticationController {
         session.removeAttribute("pending_email");
         session.removeAttribute("pending_password");
         session.removeAttribute("pending_username");
-        // Remove other stored fields...
+        session.removeAttribute("pending_phoneNumber");
+        session.removeAttribute("pending_firstName");
+        session.removeAttribute("pending_lastName");
 
         redirectAttributes.addFlashAttribute("message", "Registration successful! Please login.");
         return "redirect:/login";
@@ -169,16 +155,51 @@ public class AuthenticationController {
     }
 
     @GetMapping("/oauth2-login")
-    public String accountList(Model model, @AuthenticationPrincipal OAuth2User principal) {
+    public String oauth2Login(Model model, @AuthenticationPrincipal OAuth2User principal,
+            OAuth2AuthenticationToken authentication) {
         if (principal != null) {
-            String email = principal.getAttribute("email");
-            String name = principal.getAttribute("name");
-            String googleId = principal.getAttribute("sub"); // ID duy nhất từ Google
-
-            // Đồng bộ với database
-            Account account = accountService.findOrCreateAccount(googleId, email, name);
-
+            Account account = accountService.findOrCreateAccount(principal,
+                    authentication.getAuthorizedClientRegistrationId());
         }
-        return "redirect:/"; // Trả về trang danh sách account
+
+        return "redirect:/";
     }
+
+    @GetMapping("forwardPassword")
+    public String forwardPassword() {
+        return "client/auth/forwardPassword";
+    }
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @PostMapping("forwardPassword")
+    public String postForwardPassword(@RequestParam("emailForward") String email,
+            @RequestParam("username") String username,
+            Model model) {
+
+        Account account = accountRepository.findByLoginName(username);
+
+        if (account != null) {
+            // 1. Tạo mật khẩu mới
+            String newPassword = AccountService.generateRandomPassword();
+
+            // 2. Mã hóa và cập nhật mật khẩu mới
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            account.setPassword(encodedPassword);
+            accountRepository.save(account);
+
+            // 3. Gửi email
+            accountService.sendNewPassword(email, newPassword);
+            System.out.println("Sending new password to: " + email);
+            System.out.println("New password is: " + newPassword);
+
+            model.addAttribute("message", "✅ Mật khẩu mới đã được gửi đến email của bạn.");
+            return "client/auth/login";
+        } else {
+            model.addAttribute("error", "❌ Không tìm thấy tài khoản với thông tin đã cung cấp.");
+            return "client/auth/forwardPassword";
+        }
+    }
+
 }

@@ -252,6 +252,7 @@ public class ProductController {
                     "sizeId", v.getSize().getSizeId(),
                     "name", v.getSize().getSizeName()));
             map.put("quantityStock", v.getQuantityStock());
+            map.put("image_url", v.getImageUrl());
             return map;
         }).collect(Collectors.toList());
         ObjectMapper mapper = new ObjectMapper();
@@ -270,5 +271,71 @@ public class ProductController {
         model.addAttribute("productImages", productImages); // Thêm danh sách ảnh vào model
 
         return "client/product/detail";
+    }
+
+    @GetMapping("image3d")
+    public String showProductImage3d(@RequestParam("id") Integer productId, Model model) {
+        System.out.println("=== LOADING PRODUCT DETAIL PAGE FOR PRODUCT ID: " + productId + " ===");
+
+        Product product = productService.findProductById(productId);
+        List<ProductVariant> variants = productVariantService.findVariantsByProductId(product.getProductId());
+
+        // Lấy danh sách ảnh sản phẩm từ ProductImageService
+        List<ProductImage> productImages = productImageService.getProductImagesByProductId(productId);
+
+        // Lọc các variant có hình ảnh
+        variants = variants.stream()
+                .filter(v -> v.getImageUrl() != null && !v.getImageUrl().isEmpty())
+                .collect(Collectors.toList());
+        System.out.println("variants size = " + variants.size());
+        for (ProductVariant v : variants) {
+            System.out.println(
+                    "Variant: " + v.getProductVariantId() +
+                            ", Color: " + v.getColor() +
+                            ", Size: " + v.getSize() +
+                            ", Quantity Stock: " + v.getQuantityStock());
+        }
+
+        Set<Color> colors = variants.stream()
+                .map(ProductVariant::getColor)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        Set<Size> sizes = variants.stream()
+                .map(ProductVariant::getSize)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        List<Map<String, Object>> variantDTOs = variants.stream().map(v -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("productVariantId", v.getProductVariantId());
+            map.put("color", Map.of(
+                    "colorId", v.getColor().getColorId(),
+                    "name", v.getColor().getColorName(),
+                    "hex", v.getColor().getColorHex()));
+            map.put("size", Map.of(
+                    "sizeId", v.getSize().getSizeId(),
+                    "name", v.getSize().getSizeName()));
+            map.put("quantityStock", v.getQuantityStock());
+            map.put("image_url", v.getImageUrl());
+            map.put("image_url3d", v.getImage_url3d());
+            return map;
+        }).collect(Collectors.toList());
+        ObjectMapper mapper = new ObjectMapper();
+        String variantsJson = "";
+        try {
+            variantsJson = mapper.writeValueAsString(variantDTOs);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        model.addAttribute("product", product);
+        model.addAttribute("variants", variants);
+        model.addAttribute("colors", colors);
+        model.addAttribute("sizes", sizes);
+        model.addAttribute("variantsJson", variantsJson);
+        model.addAttribute("productImages", productImages); // Thêm danh sách ảnh vào model
+
+        return "client/product/image3d";
     }
 }

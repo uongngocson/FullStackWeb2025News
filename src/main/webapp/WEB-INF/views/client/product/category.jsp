@@ -38,7 +38,7 @@
                         <section class="pt-24 pb-16 pt-[64px]">
                             <div class="max-w-7xl mx-auto px-6">
                                 <div class="relative h-96 w-full bg-gray-50 flex items-center justify-center">
-                                    <img src="${ctx}/resources/assets/client/images/image2.avif"
+                                    <img src="https://upcontent.vn/wp-content/uploads/2024/06/banner-thoi-trang-nu-3.jpg"
                                         alt="Women's Collection"
                                         class="absolute inset-0 w-full h-full object-cover opacity-90">
                                     <div class="relative text-center px-6">
@@ -83,8 +83,9 @@
                                                     <c:if test="${not empty selectedColorId}">
                                                         <c:param name="colorId" value="${selectedColorId}" />
                                                     </c:if>
-                                                    <c:if test="${selectedType != null}">
-                                                        <c:param name="type" value="${selectedType}" />
+                                                    <c:if test="${selectedType != null}"> <%-- Thêm điều kiện cho type
+                                                            --%>
+                                                            <c:param name="type" value="${selectedType}" />
                                                     </c:if>
                                                     <c:if
                                                         test="${not empty selectedPriceRange && selectedPriceRange != 'all'}">
@@ -132,8 +133,9 @@
                                                         <c:if test="${not empty selectedColorId}">
                                                             <c:param name="colorId" value="${selectedColorId}" />
                                                         </c:if>
-                                                        <c:if test="${selectedType != null}">
-                                                            <c:param name="type" value="${selectedType}" />
+                                                        <c:if test="${selectedType != null}"> <%-- Thêm điều kiện cho
+                                                                type --%>
+                                                                <c:param name="type" value="${selectedType}" />
                                                         </c:if>
                                                         <c:if
                                                             test="${not empty selectedPriceRange && selectedPriceRange != 'all'}">
@@ -183,8 +185,9 @@
                                                             <c:if test="${not empty selectedColorId}">
                                                                 <c:param name="colorId" value="${selectedColorId}" />
                                                             </c:if>
-                                                            <c:if test="${selectedType != null}">
-                                                                <c:param name="type" value="${selectedType}" />
+                                                            <c:if test="${selectedType != null}"> <%-- Thêm điều kiện
+                                                                    cho type --%>
+                                                                    <c:param name="type" value="${selectedType}" />
                                                             </c:if>
                                                             <c:if
                                                                 test="${not empty selectedPriceRange && selectedPriceRange != 'all'}">
@@ -235,8 +238,9 @@
                                                                 <c:if test="${not empty selectedSizeId}">
                                                                     <c:param name="sizeId" value="${selectedSizeId}" />
                                                                 </c:if>
-                                                                <c:if test="${selectedType != null}">
-                                                                    <c:param name="type" value="${selectedType}" />
+                                                                <c:if test="${selectedType != null}"> <%-- Thêm điều
+                                                                        kiện cho type --%>
+                                                                        <c:param name="type" value="${selectedType}" />
                                                                 </c:if>
                                                                 <c:if
                                                                     test="${not empty selectedPriceRange && selectedPriceRange != 'all'}">
@@ -622,8 +626,7 @@
                                                         <div class="relative overflow-hidden mb-4 h-96">
                                                             <!-- Product Image -->
                                                             <%-- Sử dụng đường dẫn tương đối hoặc tuyệt đối phù hợp --%>
-                                                                <img src="<c:url value='${p.primaryImageUrl}'/>"
-                                                                    alt="${p.productName}"
+                                                                <img src="${p.imageUrl}" alt="${p.productName}"
                                                                     class="w-full h-full object-cover transition duration-500 group-hover:opacity-75">
 
                                                                 <!-- Dark Overlay (appears on hover) -->

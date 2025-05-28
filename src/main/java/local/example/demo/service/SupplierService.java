@@ -45,7 +45,8 @@ public class SupplierService {
         }
         if (productRepository.existsBySupplier(supplier)) {
             // Nếu có sản phẩm thuộc nhà cung cấp này, không cho phép xóa
-            throw new SupplierInUseException("Không thể xóa nhà cung cấp '" + supplier.getSupplierName() + "' vì có sản phẩm thuộc nhà cung cấp này.");
+            throw new SupplierInUseException("Không thể xóa nhà cung cấp '" + supplier.getSupplierName()
+                    + "' vì có sản phẩm thuộc nhà cung cấp này.");
         }
         supplierRepository.deleteById(supplierId);
     }

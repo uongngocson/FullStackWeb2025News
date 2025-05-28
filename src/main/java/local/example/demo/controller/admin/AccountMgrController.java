@@ -43,8 +43,8 @@ public class AccountMgrController {
     @GetMapping("update/{accountId}")
     public String updateAccount(Model model, @PathVariable("accountId") Integer accountId) {
         Account account = accountService.getAccountById(accountId);
-        if (account == null || account.getRole() == null) { 
-            return "redirect:/admin/account-mgr/list"; 
+        if (account == null || account.getRole() == null) {
+            return "redirect:/admin/account-mgr/list";
         }
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("account", account);
@@ -52,9 +52,10 @@ public class AccountMgrController {
     }
 
     @PostMapping("save")
-    public String saveAccount(@ModelAttribute("account") @Valid Account account, BindingResult bindingResult, Model model) { 
+    public String saveAccount(@ModelAttribute("account") @Valid Account account, BindingResult bindingResult,
+            Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("roles", roleService.getAllRoles()); 
+            model.addAttribute("roles", roleService.getAllRoles());
             return "admin/account-mgr/form-account";
         }
         account.setPassword(passwordEncoder.encode(account.getPassword()));

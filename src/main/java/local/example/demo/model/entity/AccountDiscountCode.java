@@ -15,13 +15,13 @@ public class AccountDiscountCode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="account_discount_id")
+    @Column(name = "account_discount_id")
     private Integer id;
-    
+
     private LocalDateTime usedAt;
 
     private String status;
-    
+
     @ManyToOne
     @JoinColumn(name = "product_variant_id")
     private ProductVariant productVariant;
@@ -29,5 +29,5 @@ public class AccountDiscountCode {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    
+
 }

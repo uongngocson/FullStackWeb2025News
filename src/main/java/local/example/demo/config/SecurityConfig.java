@@ -66,19 +66,32 @@ public class SecurityConfig {
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
                                 .authorizeHttpRequests(authorize -> authorize
-                                                .dispatcherTypeMatchers(DispatcherType.FORWARD,
-                                                                DispatcherType.INCLUDE)
+                                                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE)
                                                 .permitAll()
 
-                                                .requestMatchers("/", "/about", "/login", "/oauth2/**", "/register",
+                                                .requestMatchers(
+                                                                "/",
+                                                                "/about",
+                                                                "/login",
+                                                                "/oauth2/**",
+                                                                "/register",
                                                                 "/register-auth",
-                                                                "/resend-verification", "/product/**",
-                                                                "/resources/**", "/product/category", "/api/**")
+                                                                "/resend-verification",
+                                                                "/product/**",
+                                                                "/resources/**",
+                                                                "/product/category",
+                                                                "/api/**",
+                                                                "/chatbot/**",
+                                                                "/chatbot/send",
+                                                                "/chatbot/demo",
+                                                                "/forwardPassword")
                                                 .permitAll()
+
                                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                                 .requestMatchers("/employee/**").hasRole("EMPLOYEE")
                                                 .requestMatchers("/shipper/**").hasRole("SHIPPER")
                                                 .requestMatchers("/management/**").authenticated()
+
                                                 .anyRequest().authenticated())
 
                                 .sessionManagement((sessionManagement) -> sessionManagement
@@ -94,12 +107,9 @@ public class SecurityConfig {
 
                                 .rememberMe(r -> r.rememberMeServices(rememberMeServices()))
 
-                                /*
-                                 * Temporarily disable OAuth2 login configuration
-                                 * .oauth2Login(oauth -> oauth
-                                 * .loginPage("/login")
-                                 * .defaultSuccessUrl("/oauth2-login", true))
-                                 */
+                                .oauth2Login(oauth -> oauth
+                                                .loginPage("/login")
+                                                .defaultSuccessUrl("/oauth2-login", true))
 
                                 .formLogin(form -> form
                                                 .loginPage("/login")// Ensure redirect to the correct home page
@@ -107,8 +117,7 @@ public class SecurityConfig {
                                                 .successHandler(authenticationSuccess())
                                                 .permitAll())
                                 .exceptionHandling(ex -> ex.accessDeniedPage("/page-not-found"))
-                                .csrf(csrf -> csrf
-                                                .ignoringRequestMatchers("/api/**"));
+                                .csrf(csrf -> csrf.disable());
 
                 return http.build();
         }

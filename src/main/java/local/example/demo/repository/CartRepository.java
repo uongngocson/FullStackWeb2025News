@@ -9,5 +9,6 @@ import local.example.demo.model.entity.Customer;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer> {
     Cart findByCustomer(Customer customer);
+
     void deleteByCustomer_CustomerId(Integer customerId);
 }
