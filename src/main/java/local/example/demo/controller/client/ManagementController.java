@@ -123,7 +123,7 @@ public class ManagementController {
             logger.error("Unexpected error during password change: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("passwordError", "Thay đổi mật khẩu thất bại: Lỗi không xác định.");
         }
-        return "redirect:/management/profile";
+        return "redirect:/management/profile/change-password";
     }
 
     @GetMapping("/historyorder")

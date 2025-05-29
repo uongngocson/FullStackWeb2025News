@@ -6,9 +6,8 @@ import org.springframework.stereotype.Service;
 
 import local.example.demo.model.entity.Address;
 import local.example.demo.repository.AddressRepository;
-import local.example.demo.model.entity.Addressv2;
-import local.example.demo.repository.Addressv2Repository;
-import local.example.demo.service.CustomerService;
+//import local.example.demo.model.entity.Addressv2;
+//import local.example.demo.repository.Addressv2Repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,28 +18,22 @@ public class AddressService {
 
     private final CustomerService customerService;
     private final AddressRepository addressRepository;
-    private final Addressv2Repository addressv2Repository;
+    // private final Addressv2Repository addressv2Repository;
 
-    /**
-     * Retrieves addresses for a customer and formats them as a string
-     * 
-     * @param customerId The ID of the customer
-     * @return Formatted string with address details
-     */
     public String getFormattedAddressesForCustomer(Integer customerId) {
         log.info("Retrieving addresses for customerId: {}", customerId);
 
         // Lấy địa chỉ từ bảng mới với thông tin chi tiết
-        // List<Address> addresses =
-        // addressRepository.findByCustomerIdWithDetails(customerId);
-        List<Addressv2> addresses = addressv2Repository.findByCustomerIdWithDetails(customerId);
+        List<Address> addresses = addressRepository.findByCustomerIdWithDetails(customerId);
+        // List<Addressv2> addresses =
+        // addressv2Repository.findByCustomerIdWithDetails(customerId);
 
         StringBuilder result = new StringBuilder();
         result.append("Retrieved ").append(addresses.size()).append(" addresses for customerId ").append(customerId)
                 .append(":\n");
 
-        // for (Address address : addresses) {
-        for (Addressv2 address : addresses) {
+        for (Address address : addresses) {
+            // for (Addressv2 address : addresses) {
             result.append("\nAddress ID: ").append(address.getAddressId())
                     .append("\nStreet: ").append(address.getStreet())
                     .append("\nWard: ").append(address.getWard() != null ? address.getWard().getWardName() : "N/A")
@@ -67,28 +60,14 @@ public class AddressService {
         return result.toString();
     }
 
-    /**
-     * Retrieves the list of addresses for a customer
-     * 
-     * @param customerId The ID of the customer
-     * @return List of addresses for the customer
-     */
     public List<Address> getAddressesForCustomer(Integer customerId) {
         log.info("Retrieving addresses for customerId: {}", customerId);
-
-        // Gọi phương thức cũ để giữ nguyên logic hiện tại
         return customerService.findAddressesByCustomerId(customerId);
     }
 
-    /**
-     * Retrieves the list of new addresses (addressv2) for a customer
-     * 
-     * @param customerId The ID of the customer
-     * @return List of new addresses for the customer
-     */
+    // public List<Addressv2> getAddressesv2ForCustomer(Integer customerId) {
+    // log.info("Retrieving addressesv2 for customerId: {}", customerId);
+    // return addressv2Repository.findByCustomerIdWithDetails(customerId);
+    // }
 
-    public List<Addressv2> getAddressesv2ForCustomer(Integer customerId) {
-        log.info("Retrieving addressesv2 for customerId: {}", customerId);
-        return addressv2Repository.findByCustomerIdWithDetails(customerId);
-    }
 }

@@ -25,4 +25,5 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
     // delete by customerId
     @Query("DELETE FROM Address a WHERE a.customer.customerId = ?1")
     void deleteByCustomerId(Integer customerId);
+
 }
