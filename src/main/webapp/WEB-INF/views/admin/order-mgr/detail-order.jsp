@@ -190,6 +190,10 @@
                                             <a href="/admin/order-mgr/list" class="btn btn-secondary">
                                                 <i class="fas fa-arrow-left"></i> Back to List
                                             </a>
+                                            <c:if test="${order.orderStatus == 'COMPLETED'}"><a
+                                                    href="/admin/order-mgr/invoice/${order.orderId}"
+                                                    class="btn btn-success" target="_blank"><i class="fas fa-print"></i>
+                                                    Print Invoice</a></c:if>
                                         </div>
                                     </div>
                                 </c:if>

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import local.example.demo.model.dto.ProductVariantDto;
 import local.example.demo.model.dto.PurchaseReceiptDetailDto;
 import local.example.demo.model.entity.Employee;
+import local.example.demo.model.entity.Product;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -110,17 +111,17 @@ public class PurchaseReceiptController {
             }
             PurchaseReceipt purchaseReceipt = receiptOpt.get();
             List<PurchaseReceiptDetail> details = purchaseReceiptService.getReceiptDetails(receiptId);
+            List<Product> products = productService.findProductsBySupplierId(purchaseReceipt.getSupplier().getSupplierId());
 
             model.addAttribute("purchaseReceipt", purchaseReceipt);
             model.addAttribute("details", details); // Truyền chi tiết hiện có
             model.addAttribute("suppliers", supplierService.findAllSuppliers());
-            model.addAttribute("products", productService.findAllProducts());
+            model.addAttribute("products", products);
             model.addAttribute("allProductVariantsList", productService.findAllProductVariants()); // Cần cho dropdown
                                                                                                    // biến thể
 
             // Chuyển đổi details thành JSON string để dễ dàng xử lý ở frontend
-            String detailsJson = objectMapper.writeValueAsString(
-                    details.stream().map(PurchaseReceiptDetailDto::new).collect(Collectors.toList()));
+            String detailsJson = objectMapper.writeValueAsString(details.stream().map(PurchaseReceiptDetailDto::new).collect(Collectors.toList()));
             model.addAttribute("detailsJson", detailsJson);
 
             return "admin/receipt-mgr/update-receipt"; // Sử dụng file JSP đã cung cấp

@@ -170,7 +170,7 @@
                                                 class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md hover:text-neutral-900 focus:outline-none disabled:opacity-50 disabled:pointer-events-none bg-background hover:bg-neutral-100 group w-max">
                                                 <span>
                                         <li><a href="/product/category" class="active">
-                                                DANH MỤC
+                                                <spring:message code="navbar.categories" />
                                             </a></li></span>
                                         <svg :class="{ '-rotate-180' : navigationMenuOpen==true && navigationMenu == 'categories' }"
                                             class="relative top-[1px] ml-1 h-3 w-3 ease-out duration-300"
@@ -414,7 +414,7 @@
                                     <div class=" relative search-more flex flex-col items-center">
                                         <form class="flex items-center" id="searchForm"
                                             action="${pageContext.request.contextPath}/products/search" method="get">
-                                            <input type="text" name="keyword" id="searchInput" placeholder="Tìm kiếm"
+                                            <input type="text" name="keyword" id="searchInput" placeholder="Search..."
                                                 value="${searchKeyword != null ? searchKeyword : ''}">
                                             <button type="submit"
                                                 style="background: none; border: none; cursor: pointer;">

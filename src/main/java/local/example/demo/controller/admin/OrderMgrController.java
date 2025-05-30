@@ -9,14 +9,21 @@ import local.example.demo.model.entity.OrderDetail;
 import local.example.demo.model.entity.Payment;
 import local.example.demo.service.AddressService; // Import AddressService
 import local.example.demo.service.CustomerService;
+import local.example.demo.service.EmailService;
 import local.example.demo.service.OrderService;
 import local.example.demo.service.PaymentService;
+import local.example.demo.service.PdfService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.mail.MessagingException;
 
 import java.util.ArrayList; // Import ArrayList
 import java.util.List; // Import List
@@ -160,5 +167,49 @@ public class OrderMgrController {
             redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while deleting the order.");
         }
         return "redirect:/admin/order-mgr/list";
+    }
+
+    // Thêm vào OrderController :
+    private final PdfService pdfService;
+    private final EmailService emailService;
+
+    @GetMapping("invoice/{orderId}")
+    public ResponseEntity<byte[]> generateInvoice(@PathVariable("orderId") String orderId,
+            RedirectAttributes redirectAttributes) {
+        List<OrderDetailDTO> orderDetails = orderService.getOrderDetails(orderId);
+
+        if (orderDetails == null || orderDetails.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Order not found or no details available.");
+            return ResponseEntity.badRequest().build();
+        }
+
+        OrderDetailDTO order = orderDetails.get(0);
+        if (!"COMPLETED".equals(order.getOrderStatus())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Invoice can only be generated for COMPLETED orders.");
+            return ResponseEntity.badRequest().build();
+        }
+
+        byte[] pdfBytes = pdfService.generateInvoicePdf(orderDetails);
+
+        // Construct customer name
+        String customerName = order.getFirstName() + " " + order.getLastName();
+
+        // Send email with PDF attachment
+        try {
+            emailService.sendInvoiceEmail(order.getEmail(), orderId, customerName, pdfBytes);
+            redirectAttributes.addFlashAttribute("successMessage", "Invoice generated and sent to " + order.getEmail());
+        } catch (MessagingException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to send invoice email: " + e.getMessage());
+        }
+
+        // Return PDF for browser display/download
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "invoice_" + orderId + ".pdf");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
     }
 }
