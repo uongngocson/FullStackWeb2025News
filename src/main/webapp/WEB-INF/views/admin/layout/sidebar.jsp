@@ -164,6 +164,24 @@
                             </ul>
                         </div>
                     </li>
+
+                    <!-- Account Management -->
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#reports">
+                            <i class="fas fa-user-cog"></i>
+                            <p>Report</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="reports">
+                            <ul class="nav nav-collapse">
+                                <li>
+                                    <a href="/admin/product-stats">
+                                        <span class="sub-item">Generate report</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>

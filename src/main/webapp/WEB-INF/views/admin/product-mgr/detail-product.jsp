@@ -198,7 +198,7 @@
                                                                                             <td>
                                                                                                 <c:if
                                                                                                     test="${not empty variant.imageUrl}">
-                                                                                                    <img src="${ctx}/${variant.imageUrl}"
+                                                                                                    <img src="${variant.imageUrl}"
                                                                                                         alt="Variant Image"
                                                                                                         style="max-width: 50px; max-height: 50px;">
                                                                                                 </c:if>
@@ -281,7 +281,7 @@
                                                                                     items="${product.images}">
                                                                                     <div
                                                                                         class="col-md-3 col-sm-4 mb-3 text-center">
-                                                                                        <img src="${ctx}/${image.imageUrl}"
+                                                                                        <img src="${image.imageUrl}"
                                                                                             class="img-fluid img-thumbnail mb-2"
                                                                                             alt="Product Image"
                                                                                             style="max-height: 150px;">

@@ -177,6 +177,10 @@ public class ShipperController {
             Optional<Shipment> shipmentOpt = shipperService.getShipmentById(shipmentId);
             if (shipmentOpt.isPresent()) {
                 Shipment shipment = shipmentOpt.get();
+                if (shipment.getStatus().equals("COMPLETED") || shipment.getStatus().equals("RETURNED")) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa vận đơn đã hoàn thành!");
+                    return "redirect:/shipper/shipment/list";
+                }
                 Order order = shipment.getOrder();
 
                 // Đặt lại trạng thái order thành CONFIRMED

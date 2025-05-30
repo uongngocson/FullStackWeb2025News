@@ -70,6 +70,13 @@ public class PurchaseReceiptController {
         return "employee/receipt-mgr/create-receipt";
     }
 
+    // Thêm phương thức để lấy sản phẩm theo nhà cung cấp
+    @GetMapping("/get-products-by-supplier")
+    public String getProductsBySupplier(@RequestParam("supplierId") Integer supplierId, Model model) {
+        model.addAttribute("products", productService.findProductsBySupplierId(supplierId));
+        return "employee/receipt-mgr/product-list-fragment";
+    }
+
     // Thêm phương thức hiển thị chi tiết phiếu nhập
     @GetMapping("/detail/{receiptId}")
     public String showReceiptDetail(@PathVariable Integer receiptId, Model model,

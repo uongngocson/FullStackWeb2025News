@@ -48,14 +48,8 @@ public class PurchaseReceiptController {
             List<PurchaseReceipt> receipts = purchaseReceiptService.getAllReceipts();
             model.addAttribute("receipts", receipts);
             return "admin/receipt-mgr/receipt-list";
-        } catch (jakarta.persistence.EntityNotFoundException e) {
-            model.addAttribute("errorMessage",
-                    "Lỗi dữ liệu: Không tìm thấy thông tin nhân viên liên quan đến phiếu nhập");
-            model.addAttribute("receipts", List.of());
-            return "admin/receipt-mgr/receipt-list";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Lỗi khi tải danh sách phiếu nhập: " + e.getMessage());
-            model.addAttribute("receipts", List.of());
             return "admin/receipt-mgr/receipt-list";
         }
     }
@@ -74,6 +68,13 @@ public class PurchaseReceiptController {
         List<ProductVariant> allVariants = productService.findAllProductVariants();
         model.addAttribute("allProductVariantsList", allVariants);
         return "admin/receipt-mgr/create-receipt";
+    }
+
+    // Thêm phương thức để lấy sản phẩm theo nhà cung cấp
+    @GetMapping("/get-products-by-supplier")
+    public String getProductsBySupplier(@RequestParam("supplierId") Integer supplierId, Model model) {
+        model.addAttribute("products", productService.findProductsBySupplierId(supplierId));
+        return "admin/receipt-mgr/product-list-fragment";
     }
 
     // Thêm phương thức hiển thị chi tiết phiếu nhập

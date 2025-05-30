@@ -16,7 +16,6 @@
             <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/kaiadmin.min.css" />
             <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/demo.css" />
 
-            <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/js/plugin/datatables/datatables.min.js" />
             <!-- Add Font Awesome for better icons -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
@@ -127,16 +126,14 @@
                                                                                     value="${image.imageUrl}" />
                                                                             </c:if>
                                                                         </c:forEach>
-                                                                        <%-- Nếu không tìm thấy ảnh default, dùng ảnh
-                                                                            đầu tiên nếu có --%>
-                                                                            <c:if
-                                                                                test="${empty defaultImageUrl && not empty product.images}">
-                                                                                <c:set var="defaultImageUrl"
-                                                                                    value="${product.images[0].imageUrl}" />
-                                                                            </c:if>
-                                                                            <img src="${ctx}/${defaultImageUrl}"
-                                                                                alt="${product.productName}"
-                                                                                style="max-width: 100px; max-height: 100px;">
+                                                                        <c:if
+                                                                            test="${empty defaultImageUrl && not empty product.images}">
+                                                                            <c:set var="defaultImageUrl"
+                                                                                value="${product.images[0].imageUrl}" />
+                                                                        </c:if>
+                                                                        <img src="${defaultImageUrl}"
+                                                                            alt="${product.productName}"
+                                                                            style="max-width: 100px; max-height: 100px;">
                                                                     </td>
                                                                     <td>${product.category.categoryName}</td>
                                                                     <td>${product.brand.brandName}</td>
@@ -209,7 +206,7 @@
                         lengthMenu: [5, 10, 25, 50, 100],
                         columnDefs: [
                             {
-                                targets: [7],
+                                targets: [8],
                                 orderable: false,
                                 searchable: false
                             }

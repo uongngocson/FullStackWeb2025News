@@ -185,7 +185,7 @@
                                                                 <div class="card-header bg-primary text-white">
                                                                     <div class="d-flex align-items-center">
                                                                         <h5 class="card-title mb-0 text-white">Chi tiết
-                                                                            phiếu nhập</h5>
+                                                                            phiếu nhậpp</h5>
                                                                         <button type="button"
                                                                             class="btn btn-light btn-sm ms-auto"
                                                                             id="addDetail">
@@ -205,15 +205,8 @@
                                                                                     <select
                                                                                         class="form-control product-select"
                                                                                         required>
-                                                                                        <option value="">-- Chọn sản
-                                                                                            phẩm --</option>
-                                                                                        <c:forEach items="${products}"
-                                                                                            var="product">
-                                                                                            <option
-                                                                                                value="${product.productId}">
-                                                                                                ${product.productName}
-                                                                                            </option>
-                                                                                        </c:forEach>
+                                                                                        <option value="">-- Chọn nhà
+                                                                                            cung cấp trước --</option>
                                                                                     </select>
                                                                                     <div class="invalid-feedback">Vui
                                                                                         lòng chọn sản phẩm.</div>
@@ -343,8 +336,46 @@
                             // Counter for detail rows to set correct names
                             var detailRowIndex = 0;
 
+                            // Xử lý khi thay đổi nhà cung cấp
+                            $('#supplier').change(function () {
+                                var supplierId = $(this).val();
+
+                                // Xóa tất cả các dòng chi tiết hiện có
+                                $('#detailsContainer .detail-row:not(#detail-template)').remove();
+
+                                // Reset tổng tiền
+                                $('#totalAmount').text('0.00 VND');
+                                $('#totalAmountInput').val('0.00');
+
+                                if (supplierId) {
+                                    // Tải danh sách sản phẩm theo nhà cung cấp
+                                    $.ajax({
+                                        url: '${ctx}/admin/receipt-mgr/get-products-by-supplier',
+                                        type: 'GET',
+                                        data: { supplierId: supplierId },
+                                        success: function (response) {
+                                            // Cập nhật tất cả các select sản phẩm hiện có
+                                            $('.product-select').html(response);
+
+                                            // Reset các select biến thể
+                                            $('.variant-select').html('<option value="">-- Chọn sản phẩm trước --</option>').prop('disabled', true);
+                                        }
+                                    });
+                                } else {
+                                    // Nếu không chọn nhà cung cấp, hiển thị thông báo trong select sản phẩm
+                                    $('.product-select').html('<option value="">-- Chọn nhà cung cấp trước --</option>');
+                                    $('.variant-select').html('<option value="">-- Chọn sản phẩm trước --</option>').prop('disabled', true);
+                                }
+                            });
+
                             // Add new detail row
                             $('#addDetail').click(function () {
+                                var supplierId = $('#supplier').val();
+                                if (!supplierId) {
+                                    alert("Vui lòng chọn nhà cung cấp trước khi thêm sản phẩm");
+                                    return;
+                                }
+
                                 var $templateRow = $('#detail-template');
                                 var $newRow = $templateRow.clone();
 
@@ -427,7 +458,6 @@
                                     // $variantSelect.append('<option value="">-- Chọn sản phẩm trước --</option>');
                                 }
                             });
-
 
                             // Handle quantity or unit price change to update subtotal and total
                             $(document).on('input', '.quantity, .unit-price', function () {

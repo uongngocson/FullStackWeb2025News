@@ -29,10 +29,8 @@ public class Address {
     @Column(name = "country")
     private String country;
 
-    @Column(name = "recipientName")
     private String recipientName;
 
-    @Column(name = "recipientPhone")
     private String recipientPhone;
 
     // Các trường để map với quan hệ

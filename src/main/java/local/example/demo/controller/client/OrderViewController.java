@@ -494,7 +494,7 @@ public class OrderViewController {
             if (paymentStatus != null && !paymentStatus.isEmpty()) {
                 if ("success".equalsIgnoreCase(paymentStatus)) {
                     model.addAttribute("paymentMessage", "Thanh toán thành công!");
-                } else if ("pending".equalsIgnoreCase(paymentStatus)) {
+                } else if ("PENDING".equalsIgnoreCase(paymentStatus)) {
                     model.addAttribute("paymentMessage",
                             "Thanh toán đang xử lý. Chúng tôi sẽ cập nhật trạng thái khi hoàn tất.");
                 } else if ("failed".equalsIgnoreCase(paymentStatus)) {
