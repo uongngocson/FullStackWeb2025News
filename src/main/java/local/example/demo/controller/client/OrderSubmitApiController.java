@@ -374,7 +374,8 @@ public class OrderSubmitApiController {
      * Simple phone validation - accepts various formats
      */
     private boolean isValidPhone(String phone) {
-        String phoneRegex = "^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$";
+        // Chấp nhận bất kỳ số điện thoại nào chỉ chứa chữ số, dấu +, dấu ngoặc đơn, dấu gạch ngang, dấu chấm hoặc khoảng trắng
+        String phoneRegex = "^[+()\\d\\s.-]+$";
         return phone != null && phone.matches(phoneRegex);
     }
 

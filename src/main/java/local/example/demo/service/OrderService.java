@@ -293,37 +293,42 @@ public class OrderService {
 
     public List<OrderDetailDTO> getOrderDetails(String orderId) {
         String sql = """
-                    SELECT
-                        o.order_id,
-                        o.order_date,
-                        o.total_amount,
-                        o.order_status,
-                        o.payment_status,
-                        c.customer_id,
-                        c.first_name,
-                        c.last_name,
-                        c.email,
-                        od.order_detail_id,
-                        od.product_variant_id,
-                        p.product_id,
-                        p.product_name,
-                        p.description,
-                        p.image_url,
-                        p.rating,
-                        p.price AS product_price,
-                        od.quantity,
-                        od.price AS order_detail_price,
-                        (od.quantity * od.price) AS subtotal,
-                        -- Lấy thông tin địa chỉ giao hàng từ bảng Addresses, sử dụng các cột có sẵn
-                        CONCAT(a.street, ', ', a.ward, ', ', a.district, ', ', a.city, ', ', a.province, ', ', a.country) AS shipping_address
-                    FROM
-                        Orders o
-                        INNER JOIN Customers c ON o.customer_id = c.customer_id
-                        INNER JOIN order_details od ON o.order_id = od.order_id
-                        LEFT JOIN Products p ON od.product_variant_id = p.product_id
-                        LEFT JOIN Addresses a ON o.shipping_address_id = a.address_id
-                    WHERE
-                        o.order_id = ?
+                   SELECT
+    o.order_id,
+    o.order_date,
+    o.total_amount,
+    o.order_status,
+    o.payment_status,
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    c.email,
+    od.order_detail_id,
+    od.product_variant_id,
+    p.product_id,
+    p.product_name,
+    p.description,
+    p.image_url,
+    p.rating,
+    p.price AS product_price,
+    od.quantity,
+    od.price AS order_detail_price,
+    (od.quantity * od.price) AS subtotal,
+    -- Lấy thông tin địa chỉ giao hàng từ bảng Address
+    CONCAT(
+        COALESCE(a.recipient_name, ''), 
+        CASE WHEN a.recipient_phone IS NOT NULL THEN ' (' + RTRIM(a.recipient_phone) + ')' ELSE '' END,
+        ' - ', a.street, 
+        CASE WHEN a.country IS NOT NULL THEN ', ' + a.country ELSE '' END
+    ) AS shipping_address
+FROM
+    Orders o
+    INNER JOIN Customers c ON o.customer_id = c.customer_id
+    INNER JOIN order_details od ON o.order_id = od.order_id
+    LEFT JOIN product_variants pv ON od.product_variant_id = pv.product_variant_id
+    LEFT JOIN Products p ON pv.product_id = p.product_id
+    LEFT JOIN Address a ON o.shipping_address_id = a.address_id
+WHERE o.order_id = ?
                 """;
 
         System.out.println("Executing getOrderDetails for orderId: " + orderId);
@@ -468,11 +473,11 @@ public class OrderService {
             }
 
             if (recipientName != null) {
-                sql.append("@RecipientName = N'").append(recipientName).append("', ");
+                sql.append("@Recipient_name = N'").append(recipientName).append("', ");
             }
 
             if (recipientPhone != null) {
-                sql.append("@RecipientPhone = '").append(recipientPhone).append("', ");
+                sql.append("@Recipient_phone = '").append(recipientPhone).append("', ");
             }
 
             if (street != null) {

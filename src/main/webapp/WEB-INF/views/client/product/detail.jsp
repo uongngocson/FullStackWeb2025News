@@ -176,7 +176,7 @@
                                         </form>
 
                                         <!-- Nút BUY NOW -->
-                                        <form action="${ctx}/user/order" method="get" id="buyNowForm2" class="flex-1">
+                                        <form action="${ctx}/order/orderfix" method="get" id="buyNowForm2" class="flex-1">
                                             <input type="hidden" name="variantId" id="selectedVariantId2" />
                                             <input type="hidden" name="quantity" id="quantityInput2" value="1" />
                                             <button type="submit" id="buyNowButton2" disabled

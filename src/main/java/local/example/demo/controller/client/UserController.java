@@ -57,10 +57,10 @@ public class UserController {
         return "client/user/profile";
     }
 
-    @GetMapping("orderconfirm")
-    public String getOrderConfirmPage() {
-        return "client/user/orderconfirm";
-    }
+    // @GetMapping("orderconfirm")
+    // public String getOrderConfirmPage() {
+    //     return "client/user/orderconfirm";
+    // }
 
     @GetMapping("productfavriote")
     public String getProductFavriotePage() {
@@ -225,6 +225,74 @@ public class UserController {
         return "client/user/order";
     }
 
+
+
+    //bản fix lại 
+
+
+    @GetMapping("orderfix")
+    public String showOrderPageFix(
+            @RequestParam(value = "variantId", required = false) Integer variantId,
+            @RequestParam(value = "quantity", required = false) Integer quantity,
+            @RequestParam(value = "variantIds", required = false) List<Integer> variantIds,
+            @RequestParam(value = "quantities", required = false) List<Integer> quantities,
+            Model model, HttpServletRequest request // Thêm HttpServletRequest
+    ) {
+        List<OrderItemDTO> items = new ArrayList<>();
+
+        // Trường hợp: Đặt 1 sản phẩm từ trang detail
+        if (variantId != null && quantity != null) {
+            ProductVariant variant = productVariantService.findById(variantId);
+            if (variant != null) {
+                items.add(new OrderItemDTO(variant, quantity));
+            }
+        }
+
+        // Trường hợp: Giỏ hàng có nhiều sản phẩm
+        if (variantIds != null && quantities != null && variantIds.size() == quantities.size()) {
+            for (int i = 0; i < variantIds.size(); i++) {
+                Integer vId = variantIds.get(i);
+                Integer qty = quantities.get(i);
+
+                if (vId != null && qty != null && qty > 0) {
+                    ProductVariant variant = productVariantService.findById(vId);
+                    if (variant != null) {
+                        items.add(new OrderItemDTO(variant, qty));
+                    }
+                }
+            }
+        }
+        System.out.println("variantId = " + variantId);
+        System.out.println("quantity = " + quantity);
+
+        // Lấy thông tin khách hàng và địa chỉ (ví dụ)
+        Customer currentCustomer = getCurrentCustomer(request);
+        if (currentCustomer != null) {
+            // Lấy thông tin chi tiết của customer từ DB nếu cần
+            Customer customerDetails = customerService.findCustomerById(currentCustomer.getCustomerId());
+            model.addAttribute("customer", customerDetails);
+            // Lấy danh sách địa chỉ của khách hàng
+            // model.addAttribute("addresses",
+            // addressService.getAddressesByCustomer(currentCustomer));
+        } else {
+            return "redirect:/login"; // Chuyển hướng nếu chưa đăng nhập
+        }
+
+        model.addAttribute("items", items);
+        // Tính tổng tiền cho trang order (nếu cần)
+        BigDecimal orderTotal = BigDecimal.ZERO;
+        for (OrderItemDTO item : items) {
+            if (item.getVariant() != null && item.getVariant().getProduct() != null
+                    && item.getVariant().getProduct().getPrice() != null) {
+                orderTotal = orderTotal.add(
+                        item.getVariant().getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+            }
+        }
+        model.addAttribute("orderTotal", orderTotal);
+
+        return "client/user/orderfix";
+    }
+    
     @PostMapping("checkout")
     public String processCheckout(@RequestParam("selectedItems") List<Integer> selectedCartDetailIds,
             Model model, HttpServletRequest request) {

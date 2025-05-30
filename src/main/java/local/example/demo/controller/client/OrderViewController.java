@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import local.example.demo.model.dto.OrderItemDTO;
 import local.example.demo.model.entity.Address;
-import local.example.demo.model.entity.Addressv2;
+// import local.example.demo.model.entity.Addressv2;
 import local.example.demo.model.entity.CartDetail;
 import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.ProductVariant;
@@ -110,10 +110,13 @@ public class OrderViewController {
             String formattedAddresses = formatAddressesForView(addresses);
             model.addAttribute("formattedAddresses", formattedAddresses);
 
-            // Truy vấn địa chỉ từ bảng mới để in ra terminal kiểm tra
-            List<Addressv2> addressesv2 = addressService.getAddressesv2ForCustomer(customerDetails.getCustomerId());
-            log.info("Addressesv2 information for testing:");
-            for (Addressv2 address : addressesv2) {
+            // Thêm vào model để JSP có thể sử dụng thay thế cho Addressv2
+            model.addAttribute("customerAddressesv2", addresses);
+
+            log.info("Retrieved {} addresses for customer ID: {}", addresses.size(), customerDetails.getCustomerId());
+            
+            // Log chi tiết địa chỉ để kiểm tra
+            for (Address address : addresses) {
                 log.info("Address ID: {}, Street: {}, Full Address: {}",
                         address.getAddressId(),
                         address.getStreet(),
@@ -121,21 +124,16 @@ public class OrderViewController {
 
                 log.info("Ward: ID={}, Name={}",
                         address.getWardId(),
-                        address.getWard() != null ? address.getWard().getWardName() : "N/A");
+                        (address.getGhnWard() != null) ? address.getGhnWard().getWardName() : address.getWard());
 
                 log.info("District: ID={}, Name={}",
                         address.getDistrictId(),
-                        address.getDistrict() != null ? address.getDistrict().getDistrictName() : "N/A");
+                        (address.getGhnDistrict() != null) ? address.getGhnDistrict().getDistrictName() : address.getDistrict());
 
                 log.info("Province: ID={}, Name={}",
                         address.getProvinceId(),
-                        address.getProvince() != null ? address.getProvince().getProvinceName() : "N/A");
+                        (address.getGhnProvince() != null) ? address.getGhnProvince().getProvinceName() : address.getProvince());
             }
-
-            // Add addressesv2 to model
-            model.addAttribute("customerAddressesv2", addressesv2);
-
-            log.info("Retrieved {} addresses for customer ID: {}", addresses.size(), customerDetails.getCustomerId());
         } else {
             return "redirect:/login"; // Redirect if not logged in
         }
@@ -153,7 +151,7 @@ public class OrderViewController {
         }
         model.addAttribute("orderTotal", orderTotal);
 
-        return "client/user/order";
+        return "client/user/orderfix";
     }
 
     @PostMapping("/order-view")
@@ -221,20 +219,24 @@ public class OrderViewController {
 
         for (Address address : addresses) {
             result.append("\nAddress ID: ").append(address.getAddressId())
+                    .append("\nRecipient: ").append(address.getRecipientName())
+                    .append("\nPhone: ").append(address.getRecipientPhone())
                     .append("\nStreet: ").append(address.getStreet())
                     .append("\nWard: ").append(address.getWard())
                     .append("\nDistrict: ").append(address.getDistrict())
                     .append("\nProvince: ").append(address.getProvince())
-                    .append("\nCity: ").append(address.getCity())
+                    .append("\nCountry: ").append(address.getCountry())
                     .append("\n-----------------------");
 
-            log.info("Address formatted: ID={}, Street={}, Ward={}, District={}, Province={}, City={}",
+            log.info("Address formatted: ID={}, Recipient={}, Phone={}, Street={}, Ward={}, District={}, Province={}, Country={}",
                     address.getAddressId(),
+                    address.getRecipientName(),
+                    address.getRecipientPhone(),
                     address.getStreet(),
                     address.getWard(),
                     address.getDistrict(),
                     address.getProvince(),
-                    address.getCity());
+                    address.getCountry());
         }
 
         if (addresses.isEmpty()) {

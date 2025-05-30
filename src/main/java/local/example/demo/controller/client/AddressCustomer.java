@@ -2,23 +2,39 @@
 
 // import java.util.List;
 
-// import org.springframework.stereotype.Controller;
+// import org.springframework.http.ResponseEntity;
 // import org.springframework.ui.Model;
 // import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.web.bind.annotation.PathVariable;
 // import org.springframework.web.bind.annotation.RequestMapping;
+// import org.springframework.web.bind.annotation.RestController;
 
-// import local.example.demo.model.entity.Addressv2;
+// import local.example.demo.model.entity.Address;
 // import local.example.demo.service.AddressService;
 // import lombok.RequiredArgsConstructor;
 // import lombok.extern.slf4j.Slf4j;
 
-// @Controller
-// @RequestMapping("/address-v2")
+// @RestController
+// @RequestMapping("/api/addresses")
 // @RequiredArgsConstructor
 // @Slf4j
-// public class AddressV2ViewController {
+// public class AddressCustomer {
 
 //     private final AddressService addressService;
+
+//     @GetMapping("/customer/{customerId}")
+//     public ResponseEntity<List<Address>> getAddressesByCustomerId(@PathVariable Integer customerId) {
+//         log.info("API request to get addresses for customer ID: {}", customerId);
+//         List<Address> addresses = addressService.getAddressesForCustomer(customerId);
+//         return ResponseEntity.ok(addresses);
+//     }
+
+//     @GetMapping("/customer/{customerId}/formatted")
+//     public ResponseEntity<String> getFormattedAddressesByCustomerId(@PathVariable Integer customerId) {
+//         log.info("API request to get formatted addresses for customer ID: {}", customerId);
+//         String formattedAddresses = addressService.getFormattedAddressesForCustomer(customerId);
+//         return ResponseEntity.ok(formattedAddresses);
+//     }
 
 //     @GetMapping("/view")
 //     public String viewAddresses(Model model) {
@@ -28,7 +44,7 @@
 //         log.info("Đang truy vấn địa chỉ cho khách hàng ID: {}", customerId);
 
 //         // Truy vấn địa chỉ từ bảng mới
-//         List<Addressv2> addresses = addressService.getAddressesv2ForCustomer(customerId);
+//         List<Address> addresses = addressService.getAddressesForCustomer(customerId);
 
 //         // In thông tin chi tiết ra console
 //         log.info("===== KẾT QUẢ TRUY VẤN ĐỊA CHỈ CHO KHÁCH HÀNG ID {} =====", customerId);
@@ -47,17 +63,17 @@
 //         return "customer/addresses-v2";
 //     }
 
-//     private String formatAddressesForView(List<Addressv2> addresses) {
+//     private String formatAddressesForView(List<Address> addresses) {
 //         StringBuilder formattedAddresses = new StringBuilder();
 
-//         for (Addressv2 address : addresses) {
+//         for (Address address : addresses) {
 //             formattedAddresses.append(String.format(
 //                     "Địa chỉ ID: %d, Đường: %s, Phường/Xã: %s, Quận/Huyện: %s, Tỉnh/Thành: %s, Quốc gia: %s<br>",
 //                     address.getAddressId(),
 //                     address.getStreet(),
-//                     address.getWard() != null ? address.getWard().getWardName() : "N/A",
-//                     address.getDistrict() != null ? address.getDistrict().getDistrictName() : "N/A",
-//                     address.getProvince() != null ? address.getProvince().getProvinceName() : "N/A",
+//                     address.getWard() != null ? address.getWard() : "N/A",
+//                     address.getDistrict() != null ? address.getDistrict() : "N/A",
+//                     address.getProvince() != null ? address.getProvince() : "N/A",
 //                     address.getCountry()));
 //         }
 

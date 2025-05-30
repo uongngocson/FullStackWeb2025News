@@ -25,6 +25,9 @@ public class FAISSVectorStore {
     // Path to store index and metadata on disk
     private static final String INDEX_PATH = "faiss_indexes/";
     private static final String METADATA_PATH = "faiss_indexes/metadata/";
+    
+    // Flag to enable/disable saving metadata to disk
+    private boolean saveMetadataToDisk = false;
 
     // JSON mapper for serialization
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -97,7 +100,7 @@ public class FAISSVectorStore {
             docMetadata.put("text", text);
             documentMetadata.put(docId, docMetadata);
 
-            // Save metadata to disk
+            // Save metadata to disk if enabled
             saveMetadata(docId, docMetadata);
 
             return docId;
@@ -177,6 +180,11 @@ public class FAISSVectorStore {
     }
 
     private void saveMetadata(String docId, Map<String, Object> metadata) {
+        // Skip saving metadata to disk if disabled
+        if (!saveMetadataToDisk) {
+            return;
+        }
+        
         try {
             // Use Jackson to serialize to JSON
             objectMapper.writeValue(new File(METADATA_PATH + docId + ".json"), metadata);
@@ -184,6 +192,22 @@ public class FAISSVectorStore {
             System.err.println("Error saving metadata: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Enable or disable saving metadata to disk
+     * @param enable True to enable, false to disable
+     */
+    public void setSaveMetadataToDisk(boolean enable) {
+        this.saveMetadataToDisk = enable;
+    }
+
+    /**
+     * Check if saving metadata to disk is enabled
+     * @return True if enabled, false if disabled
+     */
+    public boolean isSaveMetadataToDisk() {
+        return saveMetadataToDisk;
     }
 
     /**
