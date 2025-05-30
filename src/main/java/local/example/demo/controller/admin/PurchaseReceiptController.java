@@ -48,8 +48,14 @@ public class PurchaseReceiptController {
             List<PurchaseReceipt> receipts = purchaseReceiptService.getAllReceipts();
             model.addAttribute("receipts", receipts);
             return "admin/receipt-mgr/receipt-list";
+        } catch (jakarta.persistence.EntityNotFoundException e) {
+            model.addAttribute("errorMessage",
+                    "Lỗi dữ liệu: Không tìm thấy thông tin nhân viên liên quan đến phiếu nhập");
+            model.addAttribute("receipts", List.of());
+            return "admin/receipt-mgr/receipt-list";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Lỗi khi tải danh sách phiếu nhập: " + e.getMessage());
+            model.addAttribute("receipts", List.of());
             return "admin/receipt-mgr/receipt-list";
         }
     }

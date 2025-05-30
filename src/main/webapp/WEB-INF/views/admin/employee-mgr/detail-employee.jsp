@@ -307,7 +307,15 @@
                                                         <div class="mb-3">
                                                             <h6><i class="fas fa-user-shield mr-2"></i>Account</h6>
                                                             <p class="text-muted">${not empty employee.account ?
-                                                                employee.account.username : 'No account linked'}</p>
+                                                                employee.account.loginName : 'No account linked'}</p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <h6><i class="fas fa-user-tag mr-2"></i>Role</h6>
+                                                            <p class="text-muted">
+                                                                ${not empty employee.account && not empty
+                                                                employee.account.role ?
+                                                                employee.account.role.roleName : 'No role assigned'}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>

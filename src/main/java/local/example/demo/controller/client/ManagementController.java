@@ -1,13 +1,12 @@
 package local.example.demo.controller.client;
 
 import local.example.demo.model.dto.OrderDetailDTO;
-import local.example.demo.model.entity.Address;
 import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
 import local.example.demo.service.CustomerService;
 import local.example.demo.service.OrderService;
+import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,55 +16,37 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/management")
 public class ManagementController {
 
     private static final Logger logger = LoggerFactory.getLogger(ManagementController.class);
 
-    @Autowired
-    private CustomerService customerService;
-
-    @Autowired
-    private OrderService orderService;
+    private final CustomerService customerService;
+    private final OrderService orderService;
 
     @GetMapping("/profile")
     public String getProfilePage(Model model) {
-        logger.debug("Processing GET /management/profile");
         Customer customer = customerService.getCurrentLoggedInCustomer();
         if (customer == null) {
-            logger.warn("No authenticated customer found, redirecting to login");
             return "redirect:/login";
         }
-        logger.debug("Found customer ID: {}", customer.getCustomerId());
-
-        List<Address> addresses = customerService.findAddressesByCustomer(customer);
-        customer.setAddresses(addresses);
         model.addAttribute("customer", customer);
-
-        logger.debug("Customer data: firstName={}, lastName={}, email={}, dateOfBirth={}",
-                customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getDateOfBirth());
-
         return "client/auth/profile";
     }
 
     @GetMapping("/profile/update")
     public String getUpdateProfilePage(Model model) {
-        logger.debug("Processing GET /management/profile/update");
         Customer customer = customerService.getCurrentLoggedInCustomer();
         if (customer == null) {
-            logger.warn("No authenticated customer found, redirecting to login");
             return "redirect:/login";
         }
-        logger.debug("Found customer ID: {}", customer.getCustomerId());
-
         model.addAttribute("customer", customer);
         return "client/auth/update_profile";
     }
@@ -76,24 +57,17 @@ public class ManagementController {
             @RequestParam("image") MultipartFile image,
             RedirectAttributes redirectAttributes,
             Model model) {
-        logger.debug("Processing POST /management/profile/update for customer ID: {}", updatedCustomer.getCustomerId());
-
         if (bindingResult.hasErrors()) {
-            logger.warn("Validation failed for customer: {}", bindingResult.getAllErrors());
             model.addAttribute("error", "Vui lòng sửa các lỗi trong form trước khi gửi.");
             return "client/auth/update_profile";
         }
-
         try {
-            Customer updated = customerService.updateCustomerProfile(updatedCustomer, image);
-            logger.info("Profile updated successfully for customer ID: {}", updated.getCustomerId());
+            customerService.updateCustomerProfile(updatedCustomer, image);
             redirectAttributes.addFlashAttribute("success", "Cập nhật hồ sơ thành công!");
         } catch (IOException e) {
-            logger.error("Failed to update profile due to IO error: {}", e.getMessage());
             model.addAttribute("error", "Cập nhật hồ sơ thất bại: Lỗi khi xử lý ảnh.");
             return "client/auth/update_profile";
         } catch (Exception e) {
-            logger.error("Failed to update profile: {}", e.getMessage());
             model.addAttribute("error", "Cập nhật hồ sơ thất bại: " + e.getMessage());
             return "client/auth/update_profile";
         }

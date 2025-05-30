@@ -51,15 +51,32 @@ public class AccountMgrController {
         return "admin/account-mgr/form-account";
     }
 
-    @PostMapping("save")
-    public String saveAccount(@ModelAttribute("account") @Valid Account account, BindingResult bindingResult,
-            Model model) {
-        if (bindingResult.hasErrors()) {
+    @PostMapping("/save")
+    public String saveAccount(@ModelAttribute("account") @Valid Account account, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            // Handle validation errors
             model.addAttribute("roles", roleService.getAllRoles());
             return "admin/account-mgr/form-account";
         }
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
-        accountService.saveAccount(account);
+
+        if (account.getAccountId() == null) {
+            account.setPassword(passwordEncoder.encode(account.getPassword()));
+            accountService.saveAccount(account);
+        } else {
+            // This is an existing account, handle password update conditionally
+            Account existingAccount = accountService.getAccountById(account.getAccountId());
+            if (existingAccount != null) {
+                // Update other fields
+                existingAccount.setLoginName(account.getLoginName());
+                existingAccount.setRole(account.getRole());
+
+                // Check if password is changed
+                if (!account.getPassword().isEmpty() && !account.getPassword().equals(existingAccount.getPassword())) {
+                    existingAccount.setPassword(passwordEncoder.encode(account.getPassword()));
+                }
+                accountService.saveAccount(existingAccount);
+            }
+        }
         return "redirect:/admin/account-mgr/list";
     }
 

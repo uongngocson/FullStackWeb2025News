@@ -16,6 +16,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "purchase_receipt")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -49,7 +51,7 @@ public class PurchaseReceipt {
     @Lob
     private String note;
 
-    @ManyToOne
+    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     @NotNull(message = "Employee cannot be null")
     private Employee employee;

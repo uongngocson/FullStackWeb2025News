@@ -29,7 +29,7 @@ public class PurchaseReceiptService {
 
     // Lấy tất cả phiếu nhập
     public List<PurchaseReceipt> getAllReceipts() {
-        return purchaseReceiptRepository.findAll();
+        return purchaseReceiptRepository.findAllPurchaseReceipts();
     }
 
     // Tổng giá trị nhập toàn bộ

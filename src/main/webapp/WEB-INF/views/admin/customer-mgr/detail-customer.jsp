@@ -326,12 +326,14 @@
                                                                                     <div class="card-body">
                                                                                         <p class="card-text mb-1">
                                                                                             ${address.street},
-                                                                                            ${address.ward}</p>
+                                                                                            ${address.ward.wardName}</p>
                                                                                         <p class="card-text mb-1">
-                                                                                            ${address.district},
-                                                                                            ${address.city}</p>
+                                                                                            ${address.district.districtName},
+                                                                                            ${address.province.provinceName}
+                                                                                        </p>
                                                                                         <p class="card-text mb-1">
-                                                                                            ${address.province}</p>
+                                                                                            ${address.country}
+                                                                                        </p>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>

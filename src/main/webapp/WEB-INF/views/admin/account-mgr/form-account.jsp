@@ -69,12 +69,14 @@
 
                                                     <div class="form-group">
                                                         <label for="password">Password <span
-                                                                class="text-danger">*</span></label>
+                                                                class="text-danger">${account.accountId == null ? '*' :
+                                                                ''}</span></label>
                                                         <form:password path="password" class="form-control"
-                                                            id="password" placeholder="Enter password" />
+                                                            id="password"
+                                                            value="${account.accountId != null ? account.password : ''}"
+                                                            placeholder="${account.accountId == null ? 'Enter password' : 'Leave blank to keep current password'}" />
                                                         <form:errors path="password" cssClass="text-danger" />
                                                     </div>
-
                                                     <div class="form-group">
                                                         <label for="role">Role <span
                                                                 class="text-danger">*</span></label>

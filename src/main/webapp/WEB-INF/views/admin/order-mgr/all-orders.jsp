@@ -1,4 +1,3 @@
-```jsp
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -18,8 +17,17 @@
                     <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/plugins.min.css" />
                     <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/kaiadmin.min.css" />
                     <link rel="stylesheet" href="../../../../resources/assets/dashboard/css/demo.css" />
-                    <link rel="stylesheet"
-                        href="../../../../resources/assets/dashboard/css/plugin/datatables/datatables.min.css" />
+                    <style>
+                        .tab-content .tab-pane .table-responsive {
+                            overflow-x: auto;
+                        }
+
+                        .tab-content .tab-pane .table {
+                            width: 100% !important;
+                        }
+                    </style>
+                    <!-- <link rel="stylesheet"
+                        href="../../../../resources/assets/dashboard/css/plugin/datatables/datatables.min.css" /> -->
 
                     <script>
                         WebFont.load({
@@ -160,11 +168,11 @@
                                                                                         <td>
                                                                                             <span
                                                                                                 class="badge ${order.orderStatus == 'COMPLETED' ? 'bg-success' : 
-                                                                                    order.orderStatus == 'PENDING' ? 'bg-warning' : 
-                                                                                    order.orderStatus == 'CONFIRMED' ? 'bg-primary' : 
-                                                                                    order.orderStatus == 'SHIPPING' ? 'bg-info' : 
-                                                                                    order.orderStatus == 'CANCELLED' ? 'bg-danger' : 
-                                                                                    order.orderStatus == 'RETURNED' ? 'bg-secondary' : 'bg-dark'}">
+                                                                                                                order.orderStatus == 'PENDING' ? 'bg-warning' : 
+                                                                                                                order.orderStatus == 'CONFIRMED' ? 'bg-primary' : 
+                                                                                                                order.orderStatus == 'SHIPPING' ? 'bg-info' : 
+                                                                                                                order.orderStatus == 'CANCELLED' ? 'bg-danger' : 
+                                                                                                                order.orderStatus == 'RETURNED' ? 'bg-secondary' : 'bg-dark'}">
                                                                                                 ${order.orderStatus}
                                                                                             </span>
                                                                                         </td>
@@ -211,8 +219,7 @@
 
                     <!-- KaiAdmin JS -->
                     <script src="../../../../resources/assets/dashboard/js/kaiadmin.min.js"></script>
-
-                    <!-- DataTables JS -->
+                    <!-- Datatables JS -->
                     <script
                         src="../../../../resources/assets/dashboard/js/plugin/datatables/datatables.min.js"></script>
 
@@ -220,7 +227,6 @@
                         $(document).ready(function () {
                             // Initialize DataTables for each status tab
                             <c:forEach var="status" items="${possibleStatuses}">
-                // Sanitize status to create valid ID
                                 var tableId = 'table-' + '${status}'.replace(/[^a-zA-Z0-9-_]/g, '-');
                                 if ($('#' + tableId).length) {
                                     $('#' + tableId).DataTable({
@@ -236,7 +242,7 @@
                                         responsive: true,
                                         destroy: true
                                     });
-                }
+                                }
                             </c:forEach>
 
                             // Reinitialize DataTable when a tab is shown
@@ -248,4 +254,3 @@
                 </body>
 
                 </html>
-                ```

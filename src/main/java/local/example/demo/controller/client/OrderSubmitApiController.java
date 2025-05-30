@@ -374,7 +374,7 @@ public class OrderSubmitApiController {
      * Simple phone validation - accepts various formats
      */
     private boolean isValidPhone(String phone) {
-        String phoneRegex = "^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$";
+        String phoneRegex = "^[+()\\d\\s.-]+$";
         return phone != null && phone.matches(phoneRegex);
     }
 

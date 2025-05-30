@@ -235,8 +235,7 @@
                                                                     </label>
                                                                     <form:input path="firstName" type="text"
                                                                         class="form-control" id="firstName"
-                                                                        placeholder="Enter first name"
-                                                                        required="true" />
+                                                                        placeholder="Enter first name" />
                                                                     <form:errors path="firstName"
                                                                         cssClass="invalid-feedback d-block" />
                                                                 </div>
@@ -251,7 +250,7 @@
                                                                     </label>
                                                                     <form:input path="lastName" type="text"
                                                                         class="form-control" id="lastName"
-                                                                        placeholder="Enter last name" required="true" />
+                                                                        placeholder="Enter last name" />
                                                                     <form:errors path="lastName"
                                                                         cssClass="invalid-feedback d-block" />
                                                                 </div>
@@ -282,8 +281,7 @@
                                                                     </label>
                                                                     <form:input path="phone" type="tel"
                                                                         class="form-control" id="phone"
-                                                                        placeholder="Enter phone number"
-                                                                        required="true" />
+                                                                        placeholder="Enter phone number" />
                                                                     <form:errors path="phone"
                                                                         cssClass="invalid-feedback d-block" />
                                                                 </div>
@@ -298,8 +296,7 @@
                                                                         Date of Birth <span class="text-danger">*</span>
                                                                     </label>
                                                                     <form:input path="dateOfBirth" type="date"
-                                                                        class="form-control" id="dateOfBirth"
-                                                                        required="true" />
+                                                                        class="form-control" id="dateOfBirth" />
                                                                     <form:errors path="dateOfBirth"
                                                                         cssClass="invalid-feedback d-block" />
                                                                 </div>
@@ -420,9 +417,11 @@
                     $(document).ready(function () {
                         // Format date for HTML5 date input (YYYY-MM-DD)
                         const dateOfBirth = '${customer.dateOfBirth}';
+                        let originalDateOfBirth = '';
+
                         if (dateOfBirth) {
-                            const formattedDate = new Date(dateOfBirth).toISOString().split('T')[0];
-                            $('#dateOfBirth').val(formattedDate);
+                            originalDateOfBirth = new Date(dateOfBirth).toISOString().split('T')[0];
+                            $('#dateOfBirth').val(originalDateOfBirth);
                         }
 
                         // Set max date to today
@@ -438,11 +437,35 @@
                             }
                         });
 
-                        // Update file input label with selected filename
-                        $('.custom-file-input').on('change', function () {
-                            let fileName = $(this).val().split('\\').pop();
-                            $(this).next('.custom-file-label').html(fileName || 'Choose file');
+                        // Handle form reset to restore original date of birth
+                        $('button[type="reset"]').on('click', function (e) {
+                            // Prevent default reset behavior
+                            e.preventDefault();
 
+                            // Reset the form
+                            $('form')[0].reset();
+
+                            // Restore original date of birth if it exists
+                            if (originalDateOfBirth) {
+                                setTimeout(function () {
+                                    $('#dateOfBirth').val(originalDateOfBirth);
+                                }, 10);
+                            }
+
+                            // Restore original image preview
+                            if ('${customer.imageUrl}') {
+                                $('#imagePreview').html('<img src="${customer.imageUrl}" alt="Profile Image" class="img-thumbnail mt-2" style="max-height: 150px;">');
+                                // Clear file input
+                                $('#imageUrl').val('');
+                            } else {
+                                $('#imagePreview').empty();
+                                // Clear file input
+                                $('#imageUrl').val('');
+                            }
+                        });
+
+                        // Update file input label with selected filename and show image preview
+                        $('#imageUrl').on('change', function () {
                             // Handle image preview
                             if (this.files && this.files[0]) {
                                 const reader = new FileReader();
@@ -454,7 +477,7 @@
                                     // Create and append new image preview
                                     const img = $('<img>')
                                         .attr('src', e.target.result)
-                                        .addClass('img-fluid rounded')
+                                        .addClass('img-thumbnail mt-2')
                                         .css('max-height', '150px');
 
                                     $('#imagePreview').append(img);
@@ -465,8 +488,8 @@
                         });
 
                         // Show existing image on page load if available
-                        if ($('#imagePreview img').length === 0 && $('#imageUrl').val()) {
-                            $('#imagePreview').html('<img src="' + $('#imageUrl').val() + '" alt="Profile Image" class="img-fluid rounded" style="max-height: 150px;">');
+                        if ($('#imagePreview img').length === 0 && '${customer.imageUrl}') {
+                            $('#imagePreview').html('<img src="${customer.imageUrl}" alt="Profile Image" class="img-thumbnail mt-2" style="max-height: 150px;">');
                         }
 
                     });

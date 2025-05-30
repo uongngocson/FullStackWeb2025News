@@ -8,7 +8,7 @@
 
             <head>
                 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <title>Quản lý phiếu nhập hàng</title>
+                <title>Receipt Management</title>
                 <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
                 <link rel="icon" href="${ctx}/resources/assets/dashboard/img/kaiadmin/favicon.ico"
                     type="image/x-icon" />
@@ -17,9 +17,6 @@
                 <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/plugins.min.css" />
                 <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/kaiadmin.min.css" />
                 <link rel="stylesheet" href="${ctx}/resources/assets/dashboard/css/demo.css" />
-
-                <link rel="stylesheet"
-                    href="${ctx}/resources/assets/dashboard/js/plugin/datatables/datatables.min.js" />
                 <!-- Add Font Awesome for better icons -->
                 <link rel="stylesheet"
                     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -51,10 +48,10 @@
                         <div class="container">
                             <div class="page-inner">
                                 <div class="page-header">
-                                    <h3 class="fw-bold mb-3">Phiếu nhập hàng</h3>
+                                    <h3 class="fw-bold mb-3">Receipts</h3>
                                     <ul class="breadcrumbs mb-3">
                                         <li class="nav-home">
-                                            <a href="${ctx}/admin/dashboard/index">
+                                            <a href="${ctx}/admin/product-mgr/list">
                                                 <i class="icon-home"></i>
                                             </a>
                                         </li>
@@ -62,7 +59,7 @@
                                             <i class="icon-arrow-right"></i>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="${ctx}/admin/receipt-mgr/list">Phiếu nhập hàng</a>
+                                            <a href="${ctx}/admin/receipt-mgr/list">Receipts</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -89,10 +86,10 @@
                                             <div class="card">
                                                 <div class="card-header">
                                                     <div class="d-flex align-items-center">
-                                                        <h4 class="card-title">Danh sách phiếu nhập hàng</h4>
+                                                        <h4 class="card-title">Receipt List</h4>
                                                         <a href="${ctx}/admin/receipt-mgr/create"
                                                             class="btn btn-primary btn-round ms-auto">
-                                                            <i class="fas fa-plus"></i> Thêm phiếu nhập mới
+                                                            <i class="fas fa-plus"></i> Add New Receipt
                                                         </a>
                                                     </div>
                                                 </div>
@@ -103,12 +100,12 @@
                                                                 <tr>
                                                                     <th>No.</th>
                                                                     <th>ID</th>
-                                                                    <th>Mã phiếu</th>
-                                                                    <th>Nhà cung cấp</th>
-                                                                    <th>Tổng tiền</th>
-                                                                    <th>Nhân viên</th>
-                                                                    <th>Ngày tạo</th>
-                                                                    <th style="width: 10%">Thao tác</th>
+                                                                    <th>Receipt Code</th>
+                                                                    <th>Supplier</th>
+                                                                    <th>Total Amount</th>
+                                                                    <th>Employee</th>
+                                                                    <th>Creation Date</th>
+                                                                    <th style="width: 10%">Actions</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>

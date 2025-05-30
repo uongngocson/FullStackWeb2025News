@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList; // Import ArrayList
 import java.util.List; // Import List
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller("employeeOrderMgrController")
@@ -71,25 +72,42 @@ public class OrderMgrController {
 
     @GetMapping("update/{orderId}")
     public String updateOrder(@PathVariable("orderId") String orderId, Model model) {
+        System.out.println("Fetching order with ID: " + orderId);
         Order order = orderService.getOrderById(orderId);
-        model.addAttribute("order", order); // Đối tượng Order với customer và shippingAddress hiện tại
-        model.addAttribute("isNewOrder", false);
-
-        if (order != null && order.getCustomer() != null) {
-            List<Address> customerAddresses = addressService
-                    .getAddressesForCustomer(order.getCustomer().getCustomerId());
-            model.addAttribute("customerAddresses", customerAddresses); // Danh sách địa chỉ của khách hàng trong đơn
-                                                                        // hàng
+        if (order == null) {
+            System.out.println("Order not found for ID: " + orderId);
+            model.addAttribute("order", new Order());
+            model.addAttribute("errorMessage", "Order with ID " + orderId + " not found.");
         } else {
-            model.addAttribute("customerAddresses", new ArrayList<Address>());
+            System.out.println("Order found: ID=" + order.getOrderId() + ", Status=" + order.getOrderStatus()
+                    + ", PaymentStatus=" + order.getPaymentStatus());
+            model.addAttribute("order", order);
         }
+        model.addAttribute("isNewOrder", false);
+        List<String> possibleStatuses = List.of("PENDING", "CONFIRMED", "SHIPPING", "COMPLETED", "CANCELLED",
+                "RETURNED");
+        model.addAttribute("possibleStatuses", possibleStatuses);
+        List<Map<String, Object>> paymentStatuses = List.of(
+                Map.of("value", true, "label", "Paid"),
+                Map.of("value", false, "label", "Unpaid"));
+        model.addAttribute("paymentStatuses", paymentStatuses);
         return "employee/order-mgr/form-order";
     }
 
     @PostMapping("save")
-    public String saveOrder(@ModelAttribute("order") Order order) {
-        // The service will handle generating an ID if this is a new order
-        orderService.saveOrder(order);
+    public String saveOrder(@ModelAttribute("order") Order order, RedirectAttributes redirectAttributes) {
+        try {
+            Order existingOrder = orderService.getOrderById(order.getOrderId());
+            if (existingOrder == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Order not found.");
+                return "redirect:/employee/order-mgr/list";
+            }
+            orderService.updateOrderStatusAndPayment(order.getOrderId(), order.getOrderStatus(),
+                    order.getPaymentStatus());
+            redirectAttributes.addFlashAttribute("successMessage", "Order updated successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating order: " + e.getMessage());
+        }
         return "redirect:/employee/order-mgr/list";
     }
 

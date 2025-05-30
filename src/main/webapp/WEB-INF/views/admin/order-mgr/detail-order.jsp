@@ -1,4 +1,3 @@
-```jsp
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -111,9 +110,10 @@
                                                             </p>
                                                             <p><strong>Payment Status:</strong>
                                                                 <c:choose>
-                                                                    <c:when test="${order.paymentStatus == 1}">Paid
+                                                                    <c:when test="${order.paymentStatus == 'true'}">Paid
                                                                     </c:when>
-                                                                    <c:when test="${order.paymentStatus == 0}">Unpaid
+                                                                    <c:when test="${order.paymentStatus == 'false'}">
+                                                                        Unpaid
                                                                     </c:when>
                                                                     <c:otherwise>Unknown</c:otherwise>
                                                                 </c:choose>
@@ -121,10 +121,11 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <h5>Customer Information</h5>
-                                                            <p><strong>Name:</strong> ${order.firstName}
-                                                                ${order.lastName}</p>
-                                                            <p><strong>Email:</strong> ${order.email}</p>
-                                                            <p><strong>Customer ID:</strong> ${order.customerId}</p>
+                                                            <p><strong>Name:</strong> ${order.customer.firstName}
+                                                                ${order.customer.lastName}</p>
+                                                            <p><strong>Email:</strong> ${order.customer.email}</p>
+                                                            <p><strong>Customer ID:</strong>
+                                                                ${order.customer.customerId}</p>
                                                             <p><strong>Shipping Address:</strong>
                                                                 ${order.shippingAddress}</p>
                                                         </div>
@@ -146,7 +147,7 @@
                                                         <table class="table table-hover">
                                                             <thead>
                                                                 <tr>
-                                                                    <th>Product</th>
+                                                                    <th>SKU</th>
                                                                     <th>Image</th>
                                                                     <th>Quantity</th>
                                                                     <th>Price</th>
@@ -157,19 +158,19 @@
                                                                 <c:forEach var="detail" items="${orderDetails}">
                                                                     <tr>
                                                                         <td>
-                                                                            <strong>${detail.productName}</strong><br>
-                                                                            <small>${detail.description}</small>
+                                                                            <strong>${detail.productVariant.SKU}</strong><br>
                                                                         </td>
                                                                         <td>
-                                                                            <c:if test="${not empty detail.imageUrl}">
-                                                                                <img src="${detail.imageUrl}"
-                                                                                    alt="${detail.productName}"
+                                                                            <c:if
+                                                                                test="${not empty detail.productVariant.imageUrl}">
+                                                                                <img src="${detail.productVariant.imageUrl}"
+                                                                                    alt="${detail.productVariant.product.productName}"
                                                                                     style="max-width: 50px;" />
                                                                             </c:if>
                                                                         </td>
                                                                         <td>${detail.quantity}</td>
-                                                                        <td>$${detail.orderDetailPrice}</td>
-                                                                        <td>$${detail.subtotal}</td>
+                                                                        <td>$${detail.price}</td>
+                                                                        <td>$${detail.quantity*detail.price}</td>
                                                                     </tr>
                                                                 </c:forEach>
                                                             </tbody>
@@ -212,4 +213,3 @@
             </body>
 
             </html>
-            ```

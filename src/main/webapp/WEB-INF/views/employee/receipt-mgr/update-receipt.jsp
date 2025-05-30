@@ -9,7 +9,7 @@
 
                 <head>
                     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                    <title>Cập nhật phiếu nhập hàng</title>
+                    <title>Update Receipt</title>
                     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
                     <link rel="icon" href="${ctx}/resources/assets/dashboard/img/kaiadmin/favicon.ico"
                         type="image/x-icon" />
@@ -78,7 +78,7 @@
                             <div class="container">
                                 <div class="page-inner">
                                     <div class="page-header">
-                                        <h3 class="fw-bold mb-3">Cập nhật phiếu nhập hàng</h3>
+                                        <h3 class="fw-bold mb-3">Update receipt</h3>
                                         <ul class="breadcrumbs mb-3">
                                             <li class="nav-home">
                                                 <a href="${ctx}/employee/product-mgr/list">
@@ -89,12 +89,12 @@
                                                 <i class="icon-arrow-right"></i>
                                             </li>
                                             <li class="nav-item">
-                                                <a href="${ctx}/employee/receipt-mgr/list">Phiếu nhập hàng</a>
+                                                <a href="${ctx}/employee/receipt-mgr/list">Receipt</a>
                                             </li>
                                             <li class="separator">
                                                 <i class="icon-arrow-right"></i>
                                             </li>
-                                            <li class="nav-item">Cập nhật</li>
+                                            <li class="nav-item">Update</li>
                                         </ul>
                                     </div>
                                     <c:if test="${not empty successMessage}">
@@ -116,7 +116,7 @@
                                             <div class="card">
                                                 <div class="card-header">
                                                     <div class="d-flex align-items-center">
-                                                        <h4 class="card-title">Thông tin phiếu nhập hàng</h4>
+                                                        <h4 class="card-title">Information receipt</h4>
                                                     </div>
                                                 </div>
                                                 <div class="card-body">
@@ -126,8 +126,8 @@
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label for="receiptCode" class="required-field">Mã
-                                                                        phiếu nhập</label>
+                                                                    <label for="receiptCode"
+                                                                        class="required-field">Receipt Code</label>
                                                                     <form:input path="receiptCode" id="receiptCode"
                                                                         class="form-control" required="true"
                                                                         readonly="true" />
@@ -137,13 +137,13 @@
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label for="supplier" class="required-field">Nhà
-                                                                        cung cấp</label>
+                                                                    <label for="supplier"
+                                                                        class="required-field">Supplier</label>
                                                                     <form:select path="supplier.supplierId"
                                                                         id="supplier" class="form-control"
                                                                         required="true">
                                                                         <form:option value=""
-                                                                            label="-- Chọn nhà cung cấp --" />
+                                                                            label="-- Select supplier --" />
                                                                         <form:options items="${suppliers}"
                                                                             itemValue="supplierId"
                                                                             itemLabel="supplierName" />
@@ -156,7 +156,7 @@
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label for="note">Ghi chú</label>
+                                                                    <label for="note">Note</label>
                                                                     <form:textarea path="note" id="note"
                                                                         class="form-control" rows="3" />
                                                                     <form:errors path="note" cssClass="text-danger" />
@@ -168,10 +168,10 @@
                                                         <hr>
                                                         <div class="card-header">
                                                             <div class="d-flex align-items-center">
-                                                                <h4 class="card-title">Chi tiết phiếu nhập</h4>
+                                                                <h4 class="card-title">Receipt details</h4>
                                                                 <button type="button" id="addDetail"
                                                                     class="btn btn-primary btn-round ms-auto">
-                                                                    <i class="fas fa-plus"></i> Thêm sản phẩm
+                                                                    <i class="fas fa-plus"></i> Add product
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -182,11 +182,11 @@
                                                                 <div class="row">
                                                                     <div class="col-md-4">
                                                                         <div class="form-group">
-                                                                            <label class="required-field">Sản
-                                                                                phẩm</label>
+                                                                            <label
+                                                                                class="required-field">Product</label>
                                                                             <select class="form-control product-select"
                                                                                 required>
-                                                                                <option value="">-- Chọn sản phẩm --
+                                                                                <option value="">-- Select product --
                                                                                 </option>
                                                                                 <c:forEach items="${products}"
                                                                                     var="product">
@@ -195,50 +195,52 @@
                                                                                         ${product.productName}</option>
                                                                                 </c:forEach>
                                                                             </select>
-                                                                            <div class="invalid-feedback">Vui lòng chọn
-                                                                                sản phẩm.</div>
+                                                                            <div class="invalid-feedback">Please
+                                                                                select a product.</div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-4">
                                                                         <div class="form-group">
-                                                                            <label class="required-field">Biến
-                                                                                thể</label>
+                                                                            <label
+                                                                                class="required-field">Variant</label>
                                                                             <select class="form-control variant-select"
                                                                                 required disabled>
-                                                                                <option value="">-- Chọn sản phẩm trước
+                                                                                <option value="">-- Select
+                                                                                    Product First
                                                                                     --</option>
                                                                             </select>
-                                                                            <div class="invalid-feedback">Vui lòng chọn
-                                                                                biến thể.</div>
+                                                                            <div class="invalid-feedback">Please select
+                                                                                a product variant.</div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <div class="form-group">
-                                                                            <label class="required-field">Số
-                                                                                lượng</label>
+                                                                            <label
+                                                                                class="required-field">Quantity</label>
                                                                             <input type="number"
                                                                                 class="form-control quantity" min="1"
                                                                                 value="1" required />
-                                                                            <div class="invalid-feedback">Số lượng phải
-                                                                                lớn hơn 0.</div>
+                                                                            <div class="invalid-feedback">Quantity must
+                                                                                be greater than 0.</div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <div class="form-group">
-                                                                            <label class="required-field">Đơn
-                                                                                giá</label>
+                                                                            <label class="required-field">Unit
+                                                                                price</label>
                                                                             <input type="number"
                                                                                 class="form-control unit-price" min="0"
                                                                                 step="0.01" value="0" required />
-                                                                            <div class="invalid-feedback">Đơn giá không
-                                                                                được âm.</div>
+                                                                            <div class="invalid-feedback">Unit
+                                                                                price must be greater than or
+                                                                                equal to 0.</div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
                                                                     <div class="col-md-4">
                                                                         <div class="form-group">
-                                                                            <label>Thành tiền:</label>
+                                                                            <label>Subtotal:</label>
                                                                             <span class="subtotal">0.00</span> VND
                                                                         </div>
                                                                     </div>
@@ -255,7 +257,7 @@
                                                         <div class="row">
                                                             <div class="col-md-12 text-end">
                                                                 <div class="form-group">
-                                                                    <label>Tổng tiền phiếu nhập:</label>
+                                                                    <label>Total Receipt Amount: </label>
                                                                     <span id="totalAmount" class="total-amount">0.00
                                                                         VND</span>
                                                                     <input type="hidden" id="totalAmountInput"
@@ -265,10 +267,10 @@
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-12 text-end">
-                                                                <button type="submit" class="btn btn-primary">Cập nhật
-                                                                    phiếu nhập</button>
+                                                                <button type="submit"
+                                                                    class="btn btn-primary">Update</button>
                                                                 <a href="${ctx}/employee/receipt-mgr/list"
-                                                                    class="btn btn-secondary">Hủy</a>
+                                                                    class="btn btn-secondary">Cancel</a>
                                                             </div>
                                                         </div>
                                                         <input type="hidden" id="detailsJson" name="detailsJson"

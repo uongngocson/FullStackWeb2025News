@@ -78,7 +78,7 @@ public class CustomerMgrController {
 
     @PostMapping("save")
     public String saveCustomer(@ModelAttribute("customer") @Valid Customer customer, BindingResult bindingResult,
-            @RequestParam("imageFile") MultipartFile imageFile) {
+            @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             return "admin/customer-mgr/form-customer";
@@ -100,6 +100,7 @@ public class CustomerMgrController {
             customer.setRegistrationDate(LocalDate.now());
         }
         customerService.saveCustomer(customer);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin khách hàng thành công!");
         return "redirect:/admin/customer-mgr/list";
     }
 

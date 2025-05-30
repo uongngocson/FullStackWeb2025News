@@ -65,85 +65,73 @@
                                     </ul>
                                 </div>
 
-                                <%-- Display Success and Error Messages --%>
-                                    <c:if test="${not empty successMessage}">
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                            ${successMessage}
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                        </div>
-                                    </c:if>
-                                    <c:if test="${not empty errorMessage}">
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            ${errorMessage}
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                        </div>
-                                    </c:if>
+                                <c:if test="${not empty successMessage}">
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        ${successMessage}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                </c:if>
+                                <c:if test="${not empty errorMessage}">
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        ${errorMessage}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                </c:if>
 
-                                    <!-- start inventory datatable -->
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <div class="d-flex align-items-center">
-                                                        <h4 class="card-title">Inventory List</h4>
-                                                        <%-- Removed Update Inventory button --%>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="table-responsive">
-                                                        <table id="add-row" class="table table-hover">
-                                                            <thead>
+                                <!-- start inventory datatable -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table id="add-row" class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>No.</th>
+                                                                <th>Image</th>
+                                                                <th>Product</th>
+                                                                <th>Variant</th>
+                                                                <th>Quantity</th>
+                                                                <th>Last Update</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <c:forEach items="${inventories}" var="inventory"
+                                                                varStatus="status">
                                                                 <tr>
-                                                                    <th>No.</th>
-                                                                    <%-- Removed ID column --%>
-                                                                        <th>Image</th>
-                                                                        <th>Product</th>
-                                                                        <th>Variant</th>
-                                                                        <th>Quantity</th>
-                                                                        <th>Last Update</th>
-                                                                        <%-- Removed Action column --%>
+                                                                    <td>${status.index+1}</td>
+                                                                    <td>
+                                                                        <img src="${inventory.productVariant.imageUrl}"
+                                                                            alt="Product Image"
+                                                                            style="width: 50px; height: auto;">
+                                                                    </td>
+                                                                    <td>${inventory.productVariant.product.productName}
+                                                                    </td>
+                                                                    <td>${inventory.productVariant.color.colorName}
+                                                                        -
+                                                                        ${inventory.productVariant.size.sizeName}
+                                                                    </td>
+                                                                    <td>
+                                                                        <span
+                                                                            class="badge ${inventory.quantityStock > 10 ? 'bg-success' : (inventory.quantityStock > 0 ? 'bg-warning' : 'bg-danger')}">
+                                                                            ${inventory.quantityStock}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <fmt:formatDate value="${inventory.lastUpdate}"
+                                                                            pattern="dd/MM/yyyy HH:mm:ss" />
+                                                                    </td>
                                                                 </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <c:forEach items="${inventories}" var="inventory"
-                                                                    varStatus="status">
-                                                                    <tr>
-                                                                        <td>${status.index+1}</td>
-                                                                        <%-- Removed ID data --%>
-                                                                            <td>
-                                                                                <img src="${ctx}/${inventory.productVariant.imageUrl}"
-                                                                                    alt="Product Image"
-                                                                                    style="width: 50px; height: auto;">
-                                                                            </td>
-                                                                            <td>${inventory.productVariant.product.productName}
-                                                                            </td>
-                                                                            <td>${inventory.productVariant.color.colorName}
-                                                                                -
-                                                                                ${inventory.productVariant.size.sizeName}
-                                                                            </td>
-                                                                            <td>
-                                                                                <span
-                                                                                    class="badge ${inventory.quantityStock > 10 ? 'bg-success' : (inventory.quantityStock > 0 ? 'bg-warning' : 'bg-danger')}">
-                                                                                    ${inventory.quantityStock}
-                                                                                </span>
-                                                                            </td>
-                                                                            <td>
-                                                                                <fmt:formatDate
-                                                                                    value="${inventory.lastUpdate}"
-                                                                                    pattern="dd/MM/yyyy HH:mm:ss" />
-                                                                            </td>
-                                                                            <%-- Removed Action data --%>
-                                                                    </tr>
-                                                                </c:forEach>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                            </c:forEach>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                             </div>
                         </div>
                         <jsp:include page="../layout/footer.jsp" />

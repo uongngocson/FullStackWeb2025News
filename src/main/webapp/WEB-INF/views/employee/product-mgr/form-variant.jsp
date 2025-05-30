@@ -129,8 +129,7 @@
 
                                                         <%-- Hiển thị thẻ img chỉ khi có imageUrl tồn tại --%>
                                                             <c:if test="${not empty productVariant.imageUrl}">
-                                                                <img id="imagePreview"
-                                                                    src="${ctx}/${productVariant.imageUrl}"
+                                                                <img id="imagePreview" src="${productVariant.imageUrl}"
                                                                     alt="Variant Image Preview"
                                                                     style="max-width: 100px; margin-top: 10px;" />
                                                             </c:if>

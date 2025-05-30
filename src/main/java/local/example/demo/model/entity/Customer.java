@@ -21,6 +21,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,9 +40,11 @@ public class Customer {
 
     // attributes
     @NotBlank(message = "First name is required")
+    @Size(max = 100, message = "First name must not exceed 100 characters")
     private String firstName;
 
     @NotBlank(message = "Last name is required")
+    @Size(max = 100, message = "Last name must not exceed 100 characters")
     private String lastName;
 
     @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
@@ -49,9 +52,11 @@ public class Customer {
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
+    @Size(max = 100, message = "Email must not exceed 100 characters")
     private String email;
 
     @Past(message = "Date of birth must be in the past")
+    @NotNull(message = "Date of birth is required")
     private LocalDate dateOfBirth;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

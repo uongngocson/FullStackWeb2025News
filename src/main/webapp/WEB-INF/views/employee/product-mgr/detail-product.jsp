@@ -154,89 +154,88 @@
                                                                 <i class="fas fa-plus me-2"></i>Add New Variant
                                                             </a>
                                                         </div>
-                                                        <div class="collapse show" id="variants"> <%-- Changed to 'show'
-                                                                to be open by default, or keep as 'collapse' --%>
-                                                                <div class="card card-body bg-light">
-                                                                    <c:if test="${not empty successMessage}">
-                                                                        <div class="alert alert-success" role="alert">
-                                                                            ${successMessage}
-                                                                        </div>
-                                                                    </c:if>
-                                                                    <c:if test="${not empty errorMessage}">
-                                                                        <div class="alert alert-danger" role="alert">
-                                                                            ${errorMessage}
-                                                                        </div>
-                                                                    </c:if>
-                                                                    <table class="table table-bordered table-hover">
-                                                                        <thead class="thead-light">
-                                                                            <tr>
-                                                                                <th>ID</th>
-                                                                                <th>SKU</th>
-                                                                                <th>Color</th>
-                                                                                <th>Size</th>
-                                                                                <th>Stock</th>
-                                                                                <th>Image</th>
-                                                                                <th>Actions</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <c:choose>
-                                                                                <c:when
-                                                                                    test="${not empty product.productVariant and product.productVariant.size() > 0}">
-                                                                                    <c:forEach var="variant"
-                                                                                        items="${product.productVariant}">
-                                                                                        <tr>
-                                                                                            <td>${variant.productVariantId}
-                                                                                            </td>
-                                                                                            <td>${variant.SKU}</td>
-                                                                                            <td>${variant.color.colorName}
-                                                                                            </td>
-                                                                                            <td>${variant.size.sizeName}
-                                                                                            </td>
-                                                                                            <td>${variant.quantityStock}
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <c:if
-                                                                                                    test="${not empty variant.imageUrl}">
-                                                                                                    <img src="${ctx}/${variant.imageUrl}"
-                                                                                                        alt="Variant Image"
-                                                                                                        style="max-width: 50px; max-height: 50px;">
-                                                                                                </c:if>
-                                                                                                <c:if
-                                                                                                    test="${empty variant.imageUrl}">
-                                                                                                    N/A
-                                                                                                </c:if>
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <a href="${ctx}/employee/product-variant-mgr/edit/${variant.productVariantId}"
-                                                                                                    class="btn btn-warning btn-sm me-1"
-                                                                                                    title="Edit">
-                                                                                                    <i
-                                                                                                        class="fas fa-edit"></i>
-                                                                                                </a>
-                                                                                                <a href="#"
-                                                                                                    onclick="confirmDeleteVariant('${variant.productVariantId}', '${product.productId}')"
-                                                                                                    class="btn btn-danger btn-sm"
-                                                                                                    title="Delete">
-                                                                                                    <i
-                                                                                                        class="fas fa-trash"></i>
-                                                                                                </a>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </c:forEach>
-                                                                                </c:when>
-                                                                                <c:otherwise>
+                                                        <div class="collapse show" id="variants">
+                                                            <div class="card card-body bg-light">
+                                                                <c:if test="${not empty successMessage}">
+                                                                    <div class="alert alert-success" role="alert">
+                                                                        ${successMessage}
+                                                                    </div>
+                                                                </c:if>
+                                                                <c:if test="${not empty errorMessage}">
+                                                                    <div class="alert alert-danger" role="alert">
+                                                                        ${errorMessage}
+                                                                    </div>
+                                                                </c:if>
+                                                                <table class="table table-bordered table-hover">
+                                                                    <thead class="thead-light">
+                                                                        <tr>
+                                                                            <th>ID</th>
+                                                                            <th>SKU</th>
+                                                                            <th>Color</th>
+                                                                            <th>Size</th>
+                                                                            <th>Stock</th>
+                                                                            <th>Image</th>
+                                                                            <th>Actions</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <c:choose>
+                                                                            <c:when
+                                                                                test="${not empty product.productVariant and product.productVariant.size() > 0}">
+                                                                                <c:forEach var="variant"
+                                                                                    items="${product.productVariant}">
                                                                                     <tr>
-                                                                                        <td colspan="7"
-                                                                                            class="text-center">No
-                                                                                            variants found for this
-                                                                                            product.</td>
+                                                                                        <td>${variant.productVariantId}
+                                                                                        </td>
+                                                                                        <td>${variant.SKU}</td>
+                                                                                        <td>${variant.color.colorName}
+                                                                                        </td>
+                                                                                        <td>${variant.size.sizeName}
+                                                                                        </td>
+                                                                                        <td>${variant.quantityStock}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <c:if
+                                                                                                test="${not empty variant.imageUrl}">
+                                                                                                <img src="${variant.imageUrl}"
+                                                                                                    alt="Variant Image"
+                                                                                                    style="max-width: 50px; max-height: 50px;">
+                                                                                            </c:if>
+                                                                                            <c:if
+                                                                                                test="${empty variant.imageUrl}">
+                                                                                                N/A
+                                                                                            </c:if>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <a href="${ctx}/employee/product-variant-mgr/edit/${variant.productVariantId}"
+                                                                                                class="btn btn-warning btn-sm me-1"
+                                                                                                title="Edit">
+                                                                                                <i
+                                                                                                    class="fas fa-edit"></i>
+                                                                                            </a>
+                                                                                            <a href="#"
+                                                                                                onclick="confirmDeleteVariant('${variant.productVariantId}', '${product.productId}')"
+                                                                                                class="btn btn-danger btn-sm"
+                                                                                                title="Delete">
+                                                                                                <i
+                                                                                                    class="fas fa-trash"></i>
+                                                                                            </a>
+                                                                                        </td>
                                                                                     </tr>
-                                                                                </c:otherwise>
-                                                                            </c:choose>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
+                                                                                </c:forEach>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <tr>
+                                                                                    <td colspan="7" class="text-center">
+                                                                                        No
+                                                                                        variants found for this
+                                                                                        product.</td>
+                                                                                </tr>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -281,7 +280,7 @@
                                                                                     items="${product.images}">
                                                                                     <div
                                                                                         class="col-md-3 col-sm-4 mb-3 text-center">
-                                                                                        <img src="${ctx}/${image.imageUrl}"
+                                                                                        <img src="${image.imageUrl}"
                                                                                             class="img-fluid img-thumbnail mb-2"
                                                                                             alt="Product Image"
                                                                                             style="max-height: 150px;">

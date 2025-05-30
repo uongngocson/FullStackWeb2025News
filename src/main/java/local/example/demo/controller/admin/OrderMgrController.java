@@ -60,15 +60,34 @@ public class OrderMgrController {
         return "admin/order-mgr/all-orders";
     }
 
+    // @GetMapping("detail/{orderId}")
+    // public String getOrderById(@PathVariable("orderId") String orderId, Model
+    // model) {
+    // List<OrderDetailDTO> orderDetails = orderService.getOrderDetails(orderId);
+    // if (orderDetails == null || orderDetails.isEmpty()) {
+    // model.addAttribute("errorMessage", "Order not found or no details
+    // available.");
+    // return "admin/order-mgr/detail-order";
+    // }
+    // model.addAttribute("orderDetails", orderDetails);
+    // model.addAttribute("order", orderDetails.get(0));
+    // return "admin/order-mgr/detail-order";
+    // }
+
     @GetMapping("detail/{orderId}")
     public String getOrderById(@PathVariable("orderId") String orderId, Model model) {
-        List<OrderDetailDTO> orderDetails = orderService.getOrderDetails(orderId);
+        Order order = orderService.getOrderById(orderId);
+        if (order == null) {
+            model.addAttribute("errorMessage", "Order not found.");
+            return "admin/order-mgr/detail-order";
+        }
+        List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(orderId);
         if (orderDetails == null || orderDetails.isEmpty()) {
             model.addAttribute("errorMessage", "Order not found or no details available.");
             return "admin/order-mgr/detail-order";
         }
         model.addAttribute("orderDetails", orderDetails);
-        model.addAttribute("order", orderDetails.get(0));
+        model.addAttribute("order", order);
         return "admin/order-mgr/detail-order";
     }
 

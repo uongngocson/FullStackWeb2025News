@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import local.example.demo.model.entity.Employee;
 import local.example.demo.model.entity.PurchaseReceipt;
 import local.example.demo.model.entity.Supplier;
 
@@ -35,4 +36,8 @@ public interface PurchaseReceiptRepository extends JpaRepository<PurchaseReceipt
     List<PurchaseReceipt> findByReceiptCodeContainingOrSupplier_SupplierNameContaining(String receiptCode,
             String supplierName);
 
+    boolean existsByEmployee(Employee employee);
+
+    @Query(value = "SELECT * FROM purchase_receipt", nativeQuery = true)
+    List<PurchaseReceipt> findAllPurchaseReceipts();
 }

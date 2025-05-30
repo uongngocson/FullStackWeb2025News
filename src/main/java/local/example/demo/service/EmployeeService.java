@@ -6,10 +6,12 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import local.example.demo.exception.EmployeeInUseException;
 import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Employee;
 
 import local.example.demo.repository.EmployeeRepository;
+import local.example.demo.repository.PurchaseReceiptRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
+    private final PurchaseReceiptRepository purchaseReceiptRepository;
 
     // get all employees
     public List<Employee> getAllEmployees() {
@@ -35,6 +38,9 @@ public class EmployeeService {
 
     // delete employee
     public void deleteEmployee(Integer id) {
+        if (purchaseReceiptRepository.existsByEmployee(employeeRepository.findByEmployeeId(id))) {
+            throw new EmployeeInUseException("Nhân viên này đã tạo phiếu nhập, Không thể xóa.");
+        }
         employeeRepository.deleteById(id);
     }
 

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "PurchaseReceiptDetails")
+@Table(name = "purchase_receipt_details")
 @Getter
 @Setter
 @AllArgsConstructor

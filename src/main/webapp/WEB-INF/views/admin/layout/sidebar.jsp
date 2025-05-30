@@ -144,16 +144,6 @@
                                         <span class="sub-item">Order List</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Shipping Status</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Shipper List</span>
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                     </li>

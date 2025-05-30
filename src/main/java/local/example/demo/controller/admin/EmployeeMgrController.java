@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import local.example.demo.exception.EmployeeInUseException;
 import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Employee;
 import local.example.demo.service.AccountService;
@@ -135,6 +136,8 @@ public class EmployeeMgrController {
 
             employeeService.deleteEmployee(employeeId);
             redirectAttributes.addFlashAttribute("successMessage", "Xóa nhân viên thành công!");
+        } catch (EmployeeInUseException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
             // Log lỗi ở đây nếu cần thiết
             redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi xóa nhân viên: " + e.getMessage());

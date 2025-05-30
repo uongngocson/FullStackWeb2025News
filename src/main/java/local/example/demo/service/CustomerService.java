@@ -47,6 +47,7 @@ public class CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final ReviewRepository reviewRepository;
     private final AccountDiscountCodeRepository accountDiscountCodeRepository;
+    private final FileUploadS3Service fileUploadS3Service;
 
     @Transactional(readOnly = true)
     public List<Customer> findAllCustomers() {
@@ -174,7 +175,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer updateCustomerProfile(Customer updatedCustomer, MultipartFile image) throws IOException {
+    public void updateCustomerProfile(Customer updatedCustomer, MultipartFile image) throws IOException {
         Customer currentCustomer = getCurrentLoggedInCustomer();
         if (currentCustomer == null || !currentCustomer.getCustomerId().equals(updatedCustomer.getCustomerId())) {
             throw new IllegalStateException("Không có quyền chỉnh sửa hồ sơ này");
@@ -191,20 +192,15 @@ public class CustomerService {
         currentCustomer.setPhone(updatedCustomer.getPhone());
         currentCustomer.setDateOfBirth(updatedCustomer.getDateOfBirth());
         currentCustomer.setGender(updatedCustomer.isGender());
-
-        if (image != null && !image.isEmpty()) {
-            String uploadDir = "src/main/resources/static/resources/images-upload/customer/";
-            String fileName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir, fileName);
-
-            Files.createDirectories(filePath.getParent());
-
-            Files.write(filePath, image.getBytes());
-
-            currentCustomer.setImageUrl("/resources/images-upload/customer/" + fileName);
+        try {
+            if (fileUploadS3Service.isValidFile(image)) {
+                String nameImageFile = fileUploadS3Service.uploadFile(image, "customers");
+                updatedCustomer.setImageUrl(nameImageFile);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        return customerRepository.save(currentCustomer);
+        customerRepository.save(currentCustomer);
     }
 
     @Transactional

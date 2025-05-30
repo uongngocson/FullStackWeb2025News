@@ -291,6 +291,10 @@ public class OrderService {
         orderRepository.save(order);
     }
 
+    public List<OrderDetail> getOrderDetailsByOrderId(String orderId) {
+        return orderDetailRepository.findByOrder_OrderId(orderId);
+    }
+
     public List<OrderDetailDTO> getOrderDetails(String orderId) {
         String sql = """
                     SELECT
@@ -321,7 +325,7 @@ public class OrderService {
                         INNER JOIN Customers c ON o.customer_id = c.customer_id
                         INNER JOIN order_details od ON o.order_id = od.order_id
                         LEFT JOIN Products p ON od.product_variant_id = p.product_id
-                        LEFT JOIN Addresses a ON o.shipping_address_id = a.address_id
+                        LEFT JOIN Address a ON o.shipping_address_id = a.address_id
                     WHERE
                         o.order_id = ?
                 """;

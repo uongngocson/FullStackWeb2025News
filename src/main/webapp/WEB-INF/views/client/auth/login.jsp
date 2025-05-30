@@ -59,9 +59,17 @@
                                 <div>
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                                 </div>
+                                <div class="mb-6">
+                                    <div class="flex justify-between items-center mb-6">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="remember-me" name="remember-me" class="mr-2">
+                                            <label for="remember-me" class="text-xs">Remember Me</label>
+                                        </div>
 
-                                <div class="flex justify-end mb-8">
-                                    <a href="/forwardPassword" class="forgot-link text-xs">Forgot Password?</a>
+                                        <div class="">
+                                            <a href="/forwardPassword" class="forgot-link text-xs">Forgot Password?</a>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <button type="submit"

@@ -5,11 +5,11 @@
                 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 
                 <!DOCTYPE html>
-                <html lang="vi">
+                <html lang="en">
 
                 <head>
                     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                    <title>Tạo phiếu nhập hàng mới</title>
+                    <title>Create New Receipt</title>
                     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
                     <link rel="icon" href="${ctx}/resources/assets/dashboard/img/kaiadmin/favicon.ico"
                         type="image/x-icon" />
@@ -86,7 +86,7 @@
                             <div class="container">
                                 <div class="page-inner">
                                     <div class="page-header">
-                                        <h3 class="fw-bold mb-3">Tạo phiếu nhập hàng mới</h3>
+                                        <h3 class="fw-bold mb-3">Create New Receipt</h3>
                                         <ul class="breadcrumbs mb-3">
                                             <li class="nav-home">
                                                 <a href="${ctx}/employee/product-mgr/list">
@@ -97,13 +97,13 @@
                                                 <i class="icon-arrow-right"></i>
                                             </li>
                                             <li class="nav-item">
-                                                <a href="${ctx}/employee/receipt-mgr/list">Phiếu nhập hàng</a>
+                                                <a href="${ctx}/employee/receipt-mgr/list">Receipts</a>
                                             </li>
                                             <li class="separator">
                                                 <i class="icon-arrow-right"></i>
                                             </li>
                                             <li class="nav-item">
-                                                <a href="${ctx}/employee/receipt-mgr/create">Tạo mới</a>
+                                                <a href="${ctx}/employee/receipt-mgr/create">Create New</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -124,13 +124,13 @@
                                             </div>
                                         </c:if>
 
-                                        <!-- Form tạo phiếu nhập hàng -->
+                                        <!-- Receipt Form -->
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="card">
                                                     <div class="card-header">
                                                         <div class="d-flex align-items-center">
-                                                            <h4 class="card-title">Thông tin phiếu nhập hàng</h4>
+                                                            <h4 class="card-title">Receipt Information</h4>
                                                         </div>
                                                     </div>
                                                     <div class="card-body">
@@ -141,7 +141,7 @@
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label for="receiptCode"
-                                                                            class="required-field">Mã phiếu nhập</label>
+                                                                            class="required-field">Receipt Code</label>
                                                                         <form:input path="receiptCode" id="receiptCode"
                                                                             class="form-control" required="true"
                                                                             readonly="true" />
@@ -151,13 +151,13 @@
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
-                                                                        <label for="supplier" class="required-field">Nhà
-                                                                            cung cấp</label>
+                                                                        <label for="supplier"
+                                                                            class="required-field">Supplier</label>
                                                                         <form:select path="supplier.supplierId"
                                                                             id="supplier" class="form-control"
                                                                             required="true">
                                                                             <form:option value=""
-                                                                                label="-- Chọn nhà cung cấp --" />
+                                                                                label="-- Select Supplier --" />
                                                                             <form:options items="${suppliers}"
                                                                                 itemValue="supplierId"
                                                                                 itemLabel="supplierName" />
@@ -170,7 +170,7 @@
                                                             <div class="row">
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
-                                                                        <label for="note">Ghi chú</label>
+                                                                        <label for="note">Note</label>
                                                                         <form:textarea path="note" id="note"
                                                                             class="form-control" rows="3" />
                                                                         <form:errors path="note"
@@ -178,19 +178,19 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <!-- Input ẩn cho totalAmount -->
+                                                            <!-- Hidden Input for totalAmount -->
                                                             <form:hidden path="totalAmount" id="totalAmountInput" />
 
-                                                            <!-- Chi tiết phiếu nhập -->
+                                                            <!-- Receipt Details -->
                                                             <div class="card mt-4">
                                                                 <div class="card-header bg-primary text-white">
                                                                     <div class="d-flex align-items-center">
-                                                                        <h5 class="card-title mb-0 text-white">Chi tiết
-                                                                            phiếu nhập</h5>
+                                                                        <h5 class="card-title mb-0 text-white">Receipt
+                                                                            Details</h5>
                                                                         <button type="button"
                                                                             class="btn btn-light btn-sm ms-auto"
                                                                             id="addDetail">
-                                                                            <i class="fas fa-plus"></i> Thêm sản phẩm
+                                                                            <i class="fas fa-plus"></i> Add Product
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -201,13 +201,13 @@
                                                                         <div class="row">
                                                                             <div class="col-md-4">
                                                                                 <div class="form-group">
-                                                                                    <label class="required-field">Sản
-                                                                                        phẩm</label>
+                                                                                    <label
+                                                                                        class="required-field">Product</label>
                                                                                     <select
                                                                                         class="form-control product-select"
                                                                                         required>
-                                                                                        <option value="">-- Chọn sản
-                                                                                            phẩm --</option>
+                                                                                        <option value="">-- Select
+                                                                                            Product --</option>
                                                                                         <c:forEach items="${products}"
                                                                                             var="product">
                                                                                             <option
@@ -216,46 +216,47 @@
                                                                                             </option>
                                                                                         </c:forEach>
                                                                                     </select>
-                                                                                    <div class="invalid-feedback">Vui
-                                                                                        lòng chọn sản phẩm.</div>
+                                                                                    <div class="invalid-feedback">Please
+                                                                                        select a product.</div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-md-3">
                                                                                 <div class="form-group">
-                                                                                    <label class="required-field">Biến
-                                                                                        thể</label>
+                                                                                    <label
+                                                                                        class="required-field">Variant</label>
                                                                                     <select
                                                                                         class="form-control variant-select"
                                                                                         disabled required>
-                                                                                        <option value="">-- Chọn sản
-                                                                                            phẩm trước --</option>
+                                                                                        <option value="">-- Select
+                                                                                            Product First --</option>
                                                                                     </select>
-                                                                                    <div class="invalid-feedback">Vui
-                                                                                        lòng chọn biến thể.</div>
+                                                                                    <div class="invalid-feedback">Please
+                                                                                        select a variant.</div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-md-2">
                                                                                 <div class="form-group">
-                                                                                    <label class="required-field">Số
-                                                                                        lượng</label>
+                                                                                    <label
+                                                                                        class="required-field">Quantity</label>
                                                                                     <input type="number"
                                                                                         class="form-control quantity"
                                                                                         min="1" value="1" required />
-                                                                                    <div class="invalid-feedback">Số
-                                                                                        lượng phải lớn hơn 0.</div>
+                                                                                    <div class="invalid-feedback">
+                                                                                        Quantity must be greater than 0.
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-md-2">
                                                                                 <div class="form-group">
-                                                                                    <label class="required-field">Đơn
-                                                                                        giá</label>
+                                                                                    <label class="required-field">Unit
+                                                                                        Price</label>
                                                                                     <input type="number"
                                                                                         class="form-control unit-price"
                                                                                         min="0" value="0" step="0.01"
                                                                                         required />
-                                                                                    <div class="invalid-feedback">Đơn
-                                                                                        giá phải lớn hơn hoặc bằng 0.
-                                                                                    </div>
+                                                                                    <div class="invalid-feedback">Unit
+                                                                                        price must be greater than or
+                                                                                        equal to 0.</div>
                                                                                 </div>
                                                                             </div>
                                                                             <div
@@ -270,8 +271,7 @@
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-md-12 text-end">
-                                                                                <span class="fw-bold">Thành tiền:
-                                                                                </span>
+                                                                                <span class="fw-bold">Subtotal: </span>
                                                                                 <span class="subtotal">0.00</span> VND
                                                                             </div>
                                                                         </div>
@@ -280,7 +280,7 @@
                                                                     <!-- Existing detail rows will be added here by JS -->
                                                                 </div>
                                                                 <div class="card-footer text-end">
-                                                                    <span class="fw-bold">Tổng tiền phiếu nhập: </span>
+                                                                    <span class="fw-bold">Total Receipt Amount: </span>
                                                                     <span id="totalAmount" class="total-amount">0.00
                                                                         VND</span>
                                                                 </div>
@@ -288,10 +288,10 @@
 
 
                                                             <div class="form-group text-center mt-4">
-                                                                <button type="submit" class="btn btn-primary">Lưu Phiếu
-                                                                    Nhập</button>
+                                                                <button type="submit"
+                                                                    class="btn btn-primary">Save</button>
                                                                 <a href="${ctx}/employee/receipt-mgr/list"
-                                                                    class="btn btn-secondary">Hủy</a>
+                                                                    class="btn btn-secondary">Cancel</a>
                                                             </div>
                                                         </form:form>
                                                     </div>
