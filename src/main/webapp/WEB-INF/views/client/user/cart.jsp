@@ -473,7 +473,7 @@
                         var sampleDiscountsData = [
                             {
                                 "end_date": "Nov 30, 2025",
-                                "totalminmoney": 50000,
+                                "totalminmoney": 80000,
                                 "discount_code": "SHOPZ62MCQJP",
                                 "discount_name": "Chào thành viên mới",
                                 "discount_percentage": 10,
@@ -938,12 +938,19 @@
                             const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
                             const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
+                            // Create headers object properly
+                            const headers = {
+                                'Content-Type': 'application/json'
+                            };
+                            
+                            // Only add CSRF header if both token and header name are available
+                            if (csrfToken && csrfHeader) {
+                                headers[csrfHeader] = csrfToken;
+                            }
+
                             fetch('${ctx}/cart/update-quantity', {
                                 method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    [csrfHeader]: csrfToken
-                                },
+                                headers: headers,
                                 body: JSON.stringify({
                                     cartDetailId: cartDetailId,
                                     quantity: newQuantity

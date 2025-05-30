@@ -4852,10 +4852,16 @@
 
                         if (subtotalElement) subtotalElement.textContent = formatCurrency(subtotal);
                         if (shippingElement) {
-                            // Display formatted shipping fee or 'Calculating...'
-                            shippingElement.textContent = shippingCost !== null ? formatVND(shippingCost) : 'Calculating...';
+                            if (shippingCost !== null && shippingCost !== undefined && !isNaN(shippingCost)) {
+                                // Định dạng số thủ công: làm tròn đến 2 chữ số thập phân và thêm ký hiệu $
+                                const formattedCost = '$' + Number(shippingCost).toFixed(2).replace(/,/g, '');
+                                shippingElement.textContent = formattedCost;
+                            } else {
+                                shippingElement.textContent = 'Calculating...';
+                            }
                         }
-                        console.log('shippingCost------------', shippingCost)
+                        console.log('shippingCost------------', shippingCost);
+                        
 
 
                         if (taxElement) taxElement.textContent = tax;

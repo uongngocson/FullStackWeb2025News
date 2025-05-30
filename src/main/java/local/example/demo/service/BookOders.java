@@ -109,8 +109,8 @@ public class BookOders {
 
             // Add address parameters
             sql.append("@AddressId = ").append(addressId).append(", ");
-            sql.append("@RecipientName = N'").append(recipientName).append("', ");
-            sql.append("@RecipientPhone = '").append(recipientPhone).append("', ");
+            sql.append("@Recipient_name = N'").append(recipientName).append("', ");
+            sql.append("@Recipient_phone = '").append(recipientPhone).append("', ");
             sql.append("@Street = N'").append(street).append("', ");
             sql.append("@ProvinceId = ").append(provinceId).append(", ");
             sql.append("@DistrictId = ").append(districtId).append(", ");

@@ -19,7 +19,7 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
 
     // List<Address> findByCustomerId(Integer customerId);
 
-    @Query("SELECT a FROM Address a JOIN FETCH a.ward JOIN FETCH a.district JOIN FETCH a.province WHERE a.customer.customerId = ?1")
+    @Query("SELECT a FROM Address a LEFT JOIN FETCH a.ghnWard LEFT JOIN FETCH a.ghnDistrict LEFT JOIN FETCH a.ghnProvince WHERE a.customer.customerId = ?1")
     List<Address> findByCustomerIdWithDetails(Integer customerId);
 
     // delete by customerId

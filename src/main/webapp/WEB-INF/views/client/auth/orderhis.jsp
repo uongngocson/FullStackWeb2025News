@@ -94,9 +94,9 @@
                                                     <dl class="w-1/2 sm:w-1/6 lg:w-auto lg:flex-1">
                                                         <dt class="text-base">Trạng thái</dt>
                                                     </dl>
-                                                    <dl class="w-1/2 sm:w-1/6 lg:w-auto lg:flex-1">
+                                                    <!-- <dl class="w-1/2 sm:w-1/6 lg:w-auto lg:flex-1">
                                                         <dt class="text-base">Trạng thái thanh toán</dt>
-                                                    </dl>
+                                                    </dl> -->
                                                     <div
                                                         class="w-full sm:w-1/6 lg:w-64 lg:flex lg:items-center lg:justify-end">
                                                         <dt class="text-base">Hành động</dt>
@@ -293,7 +293,7 @@
                                                                     </dd>
                                                                 </dl>
 
-                                                                <dl class="w-1/2 sm:w-1/6 lg:w-auto lg:flex-1">
+                                                                <!-- <dl class="w-1/2 sm:w-1/6 lg:w-auto lg:flex-1">
                                                                     <dt
                                                                         class="text-base font-medium text-gray-500 dark:text-gray-400 sr-only">
                                                                         Trạng thái thanh toán:</dt>
@@ -314,7 +314,7 @@
                                                                                 thanh toán): ${exception.message}</p>
                                                                         </c:if>
                                                                     </dd>
-                                                                </dl>
+                                                                </dl> -->
 
                                                                 <div
                                                                     class="w-full sm:w-1/6 lg:w-64 lg:flex lg:items-center lg:justify-end gap-4">
