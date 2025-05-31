@@ -188,6 +188,14 @@
                                                                                                     <i
                                                                                                         class="fas fa-edit"></i>
                                                                                                 </a>
+
+                                                                                                <c:if
+                                                                                                    test="${order.orderStatus == 'COMPLETED'}">
+                                                                                                    <a href="/admin/order-mgr/invoice/${order.orderId}"
+                                                                                                        class="btn btn-sm btn-success"
+                                                                                                        target="_blank"><i
+                                                                                                            class="fas fa-print"></i></a>
+                                                                                                </c:if>
                                                                                             </div>
                                                                                         </td>
                                                                                     </tr>

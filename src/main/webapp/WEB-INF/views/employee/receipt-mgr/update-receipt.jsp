@@ -141,7 +141,7 @@
                                                                         class="required-field">Supplier</label>
                                                                     <form:select path="supplier.supplierId"
                                                                         id="supplier" class="form-control"
-                                                                        required="true">
+                                                                        required="true" disabled="true">
                                                                         <form:option value=""
                                                                             label="-- Select supplier --" />
                                                                         <form:options items="${suppliers}"
@@ -290,7 +290,17 @@
                     <script src="${ctx}/resources/assets/dashboard/js/core/bootstrap.min.js"></script>
                     <script
                         src="${ctx}/resources/assets/dashboard/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+                    <script src="${ctx}/resources/assets/dashboard/js/plugin/chart.js/chart.min.js"></script>
+                    <script
+                        src="${ctx}/resources/assets/dashboard/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+                    <script src="${ctx}/resources/assets/dashboard/js/plugin/chart-circle/circles.min.js"></script>
+                    <script src="${ctx}/resources/assets/dashboard/js/plugin/datatables/datatables.min.js"></script>
+                    <script src="${ctx}/resources/assets/dashboard/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+                    <script src="${ctx}/resources/assets/dashboard/js/plugin/jsvectormap/world.js"></script>
+                    <script src="${ctx}/resources/assets/dashboard/js/plugin/sweetalert/sweetalert.min.js"></script>
                     <script src="${ctx}/resources/assets/dashboard/js/kaiadmin.min.js"></script>
+                    <script src="${ctx}/resources/assets/dashboard/js/setting-demo.js"></script>
+                    <script src="${ctx}/resources/assets/dashboard/js/demo.js"></script>
                     <script>
                         $(document).ready(function () {
                             $('#detail-template').find('.product-select').removeAttr('required');
@@ -352,6 +362,40 @@
                 });
                         </c:forEach>
 
+                        // Counter for detail rows to set correct names
+                        var detailRowIndex = 0;
+
+                        // Xử lý khi thay đổi nhà cung cấp
+                        $('#supplier').change(function () {
+                            var supplierId = $(this).val();
+
+                            // // Xóa tất cả các dòng chi tiết hiện có
+                            // $('#detailsContainer .detail-row:not(#detail-template)').remove();
+
+                            // Reset tổng tiền
+                            $('#totalAmount').text('0.00 VND');
+                            $('#totalAmountInput').val('0.00');
+
+                            if (supplierId) {
+                                // Tải danh sách sản phẩm theo nhà cung cấp
+                                $.ajax({
+                                    url: '${ctx}/employee/receipt-mgr/get-products-by-supplier',
+                                    type: 'GET',
+                                    data: { supplierId: supplierId },
+                                    success: function (response) {
+                                        // Cập nhật tất cả các select sản phẩm hiện có
+                                        $('.product-select').html(response);
+
+                                        // Reset các select biến thể
+                                        $('.variant-select').html('<option value="">-- Chọn sản phẩm trước --</option>').prop('disabled', true);
+                                    }
+                                });
+                            } else {
+                                // Nếu không chọn nhà cung cấp, hiển thị thông báo trong select sản phẩm
+                                $('.product-select').html('<option value="">-- Chọn nhà cung cấp trước --</option>');
+                                $('.variant-select').html('<option value="">-- Chọn sản phẩm trước --</option>').prop('disabled', true);
+                            }
+                        });
                         $('#addDetail').click(function () {
                             addDetailRow();
                         });
