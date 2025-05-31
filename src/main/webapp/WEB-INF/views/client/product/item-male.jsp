@@ -20,6 +20,7 @@
                         <link rel="stylesheet" href="${ctx}/resources/assets/client/css/category.css">
 
 
+                        <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
 
                         <style>
                             /* Thêm style cho dropdown item được chọn */

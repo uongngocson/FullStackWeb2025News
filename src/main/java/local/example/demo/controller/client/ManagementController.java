@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
@@ -37,13 +38,23 @@ public class ManagementController {
     private OrderService orderService;
 
     @GetMapping("/profile")
-    public String getProfilePage(Model model) {
+    public String getProfilePage(Model model, HttpSession session) {
         logger.debug("Processing GET /management/profile");
-        Customer customer = customerService.getCurrentLoggedInCustomer();
-        if (customer == null) {
-            logger.warn("No authenticated customer found, redirecting to login");
+        
+        // Lấy customerId từ session
+        Integer customerId = (Integer) session.getAttribute("customerId");
+        if (customerId == null) {
+            logger.warn("No customer ID found in session, redirecting to login");
             return "redirect:/login";
         }
+        
+        // Tìm customer bằng ID từ session
+        Customer customer = customerService.findById(customerId);
+        if (customer == null) {
+            logger.warn("Customer not found with ID: {}", customerId);
+            return "redirect:/login";
+        }
+        
         logger.debug("Found customer ID: {}", customer.getCustomerId());
 
         List<Address> addresses = customerService.findAddressesByCustomer(customer);
@@ -127,13 +138,21 @@ public class ManagementController {
     }
 
     @GetMapping("/historyorder")
-    public String getHistoryOrderPage(Model model) {
-        Customer customer = customerService.fetchCurrentLoggedInCustomer();
-        if (customer == null) {
-            System.out
-                    .println("Không tìm thấy khách hàng đăng nhập cho /historyorder, chuyển hướng đến trang đăng nhập");
+    public String getHistoryOrderPage(Model model, HttpSession session) {
+        // Lấy customerId từ session
+        Integer customerId = (Integer) session.getAttribute("customerId");
+        if (customerId == null) {
+            System.out.println("Không tìm thấy customerId trong session, chuyển hướng đến trang đăng nhập");
             return "redirect:/login";
         }
+        
+        // Tìm customer bằng ID từ session
+        Customer customer = customerService.findById(customerId);
+        if (customer == null) {
+            System.out.println("Không tìm thấy khách hàng với ID: " + customerId);
+            return "redirect:/login";
+        }
+        
         System.out.println("Lấy danh sách đơn hàng cho khách hàng ID: " + customer.getCustomerId());
         List<Order> orders = orderService.findOrdersByCustomer(customer);
         model.addAttribute("orders", orders);

@@ -19,6 +19,7 @@
                             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                         <link rel="stylesheet" href="${ctx}/resources/assets/client/css/category.css">
 
+                        <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
 
 
                         <style>

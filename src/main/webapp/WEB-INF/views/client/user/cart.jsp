@@ -18,6 +18,8 @@
                         rel="stylesheet">
 
                     <link rel="stylesheet" href="${ctx}/css/cart.css">
+                    <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
+
 
                     <!-- Google Fonts -->
                     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1065,7 +1067,7 @@
                             // Create a form to submit selected items
                             const form = document.createElement('form');
                             form.method = 'POST';
-                            form.action = '${ctx}/user/order-view';
+                            form.action = '${ctx}/order/orderfix';
 
                             // Add CSRF token
                             const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
@@ -1089,7 +1091,7 @@
                             });
 
                             console.log('Form created with', selectedItems.length, 'selected items');
-                            console.log('Submitting to new controller: ${ctx}/user/order-view');
+                            console.log('Submitting to new controller: ${ctx}/order/orderfix');
 
                             // Append form to body and submit
                             document.body.appendChild(form);

@@ -27,27 +27,9 @@
                     <link rel="icon"
                         href="${pageContext.request.contextPath}/resources/assets/client/images/icon-adidas-logo.svg"
                         type="image/icon type">
-                    <style>
-                        #user-dropdown::before {
-                            content: "";
-                            position: absolute;
-                            top: -8px;
-                            /* Nâng mũi tên lên trên viền */
-                            right: 16px;
-                            /* Đặt vị trí ngang từ phải sang */
-                            width: 0;
-                            height: 0;
-                            border-left: 8px solid transparent;
-                            border-right: 8px solid transparent;
-                            border-bottom: 8px solid black;
-                            /* Màu mũi tên */
-                            /* Tùy chọn: Thêm bóng đổ nhẹ cho mũi tên */
-                            filter: drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.05));
-                        }
-                    </style>
+                  
                 </head>
-
-
+          
 
                 <body>
 
@@ -517,10 +499,10 @@
                                                     </a>
                                                 </div>
                                                 <div class="border-t border-gray-200">
-                                                    <form method="post" action="/logout">
+                                                    <form method="post" action="/logout" id="logoutForm">
                                                         <input type="hidden" name="${_csrf.parameterName}"
                                                             value="${_csrf.token}" />
-                                                        <button type="submit"
+                                                        <button type="submit" onclick="clearAddressData()"
                                                             class="w-full text-left block px-5 py-3 text-gray-700 hover:bg-gray-100 hover:text-red-600 text-sm font-medium uppercase transition">
                                                             <spring:message code="navbar.logout" />
                                                         </button>
@@ -893,6 +875,15 @@
                                 searchSection.innerHTML = searchResultsHTML;
                             }
                         });
+                    </script>
+                    <script>
+                        function clearAddressData() {
+                            // Clear GHN address data from localStorage
+                            localStorage.removeItem('ghn_saved_addresses');
+                            localStorage.removeItem('ghn_selected_address_id');
+                            localStorage.removeItem('ghn_customer_id');
+                            console.log('GHN address data cleared from localStorage');
+                        }
                     </script>
                 </body>
 

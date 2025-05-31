@@ -25,6 +25,8 @@ import local.example.demo.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
+import local.example.demo.model.entity.Cart;
+import local.example.demo.repository.CartRepository;
 
 @RequiredArgsConstructor
 @Controller
@@ -36,6 +38,7 @@ public class AuthenticationController {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
     private final RegisterService registerService;
+    private final CartRepository cartRepository;
 
     @GetMapping("login")
     public String getLoginPage() {
@@ -156,10 +159,36 @@ public class AuthenticationController {
 
     @GetMapping("/oauth2-login")
     public String oauth2Login(Model model, @AuthenticationPrincipal OAuth2User principal,
-            OAuth2AuthenticationToken authentication) {
+            OAuth2AuthenticationToken authentication, HttpSession session) {
         if (principal != null) {
             Account account = accountService.findOrCreateAccount(principal,
                     authentication.getAuthorizedClientRegistrationId());
+            
+            // Thêm thông tin vào session giống như trong CustomSuccessHandler
+            if (account != null) {
+                Customer customer = customerService.getCustomerByAccount(account);
+                if (customer != null) {
+                    // Kiểm tra và tạo giỏ hàng nếu chưa có
+                    Cart cart = customerService.getCartByCustomer(customer);
+                    if (cart == null) {
+                        cart = new Cart();
+                        cart.setCustomer(customer);
+                        cartRepository.save(cart);
+                        customer.setCart(cart);
+                        customerService.saveCustomer(customer);
+                    }
+                    
+                    session.setAttribute("customerId", customer.getCustomerId());
+                    session.setAttribute("fullName", customer.getFirstName() + " " + customer.getLastName());
+                    session.setAttribute("email", customer.getEmail());
+                    session.setAttribute("avatar", customer.getImageUrl());
+                    
+                    // Đảm bảo có cartItemCount trong session
+                    int cartItemCount = customerService.getCartDetailCountByCart(customer);
+                    session.setAttribute("sum", cartItemCount);
+                    session.setAttribute("cartItemCount", cartItemCount);
+                }
+            }
         }
 
         return "redirect:/";

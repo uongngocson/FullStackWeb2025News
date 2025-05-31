@@ -94,7 +94,7 @@
                                                 </div>
                                                 <div>
                                                     <dt class="text-base font-medium text-gray-300 dark:text-gray-200">
-                                                        Địa chỉ giao hàng nè :</dt>
+                                                        Địa chỉ giao hàng:</dt>
                                                     <dd class="text-base text-white dark:text-gray-100">
                                                         <c:out value="${orderDetails[0].shippingAddress}"
                                                             default="Không có thông tin địa chỉ" />

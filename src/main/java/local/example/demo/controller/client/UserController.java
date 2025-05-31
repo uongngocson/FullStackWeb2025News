@@ -57,10 +57,7 @@ public class UserController {
         return "client/user/profile";
     }
 
-    // @GetMapping("orderconfirm")
-    // public String getOrderConfirmPage() {
-    //     return "client/user/orderconfirm";
-    // }
+   
 
     @GetMapping("productfavriote")
     public String getProductFavriotePage() {
@@ -225,74 +222,6 @@ public class UserController {
         return "client/user/order";
     }
 
-
-
-    //bản fix lại 
-
-
-    @GetMapping("orderfix")
-    public String showOrderPageFix(
-            @RequestParam(value = "variantId", required = false) Integer variantId,
-            @RequestParam(value = "quantity", required = false) Integer quantity,
-            @RequestParam(value = "variantIds", required = false) List<Integer> variantIds,
-            @RequestParam(value = "quantities", required = false) List<Integer> quantities,
-            Model model, HttpServletRequest request // Thêm HttpServletRequest
-    ) {
-        List<OrderItemDTO> items = new ArrayList<>();
-
-        // Trường hợp: Đặt 1 sản phẩm từ trang detail
-        if (variantId != null && quantity != null) {
-            ProductVariant variant = productVariantService.findById(variantId);
-            if (variant != null) {
-                items.add(new OrderItemDTO(variant, quantity));
-            }
-        }
-
-        // Trường hợp: Giỏ hàng có nhiều sản phẩm
-        if (variantIds != null && quantities != null && variantIds.size() == quantities.size()) {
-            for (int i = 0; i < variantIds.size(); i++) {
-                Integer vId = variantIds.get(i);
-                Integer qty = quantities.get(i);
-
-                if (vId != null && qty != null && qty > 0) {
-                    ProductVariant variant = productVariantService.findById(vId);
-                    if (variant != null) {
-                        items.add(new OrderItemDTO(variant, qty));
-                    }
-                }
-            }
-        }
-        System.out.println("variantId = " + variantId);
-        System.out.println("quantity = " + quantity);
-
-        // Lấy thông tin khách hàng và địa chỉ (ví dụ)
-        Customer currentCustomer = getCurrentCustomer(request);
-        if (currentCustomer != null) {
-            // Lấy thông tin chi tiết của customer từ DB nếu cần
-            Customer customerDetails = customerService.findCustomerById(currentCustomer.getCustomerId());
-            model.addAttribute("customer", customerDetails);
-            // Lấy danh sách địa chỉ của khách hàng
-            // model.addAttribute("addresses",
-            // addressService.getAddressesByCustomer(currentCustomer));
-        } else {
-            return "redirect:/login"; // Chuyển hướng nếu chưa đăng nhập
-        }
-
-        model.addAttribute("items", items);
-        // Tính tổng tiền cho trang order (nếu cần)
-        BigDecimal orderTotal = BigDecimal.ZERO;
-        for (OrderItemDTO item : items) {
-            if (item.getVariant() != null && item.getVariant().getProduct() != null
-                    && item.getVariant().getProduct().getPrice() != null) {
-                orderTotal = orderTotal.add(
-                        item.getVariant().getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
-            }
-        }
-        model.addAttribute("orderTotal", orderTotal);
-
-        return "client/user/orderfix";
-    }
-    
     @PostMapping("checkout")
     public String processCheckout(@RequestParam("selectedItems") List<Integer> selectedCartDetailIds,
             Model model, HttpServletRequest request) {
@@ -348,73 +277,8 @@ public class UserController {
         return redirectUrl.toString();
     }
 
-    // Test endpoint to directly test ProductDiscount service
-    @GetMapping("test-discounts")
-    @ResponseBody
-    public String testProductDiscounts() {
-        try {
-            int sampleProductId = 1;
-            int sampleCustomerId = 1017;
-
-            // Fetch product discount information
-            List<Map<String, Object>> productDiscounts = productDiscountService.getVariantsWithAccountsByProductId(
-                    sampleProductId, sampleCustomerId);
-
-            StringBuilder result = new StringBuilder();
-            result.append("Testing product discounts for productId=").append(sampleProductId)
-                    .append(", customerId=").append(sampleCustomerId).append("\n\n");
-
-            result.append("Found ").append(productDiscounts.size()).append(" discounts\n\n");
-
-            // Format results
-            if (!productDiscounts.isEmpty()) {
-                for (int i = 0; i < productDiscounts.size(); i++) {
-                    Map<String, Object> discount = productDiscounts.get(i);
-                    result.append("Discount #").append(i + 1).append(":\n");
-                    for (Map.Entry<String, Object> entry : discount.entrySet()) {
-                        result.append("  ").append(entry.getKey()).append(": ")
-                                .append(entry.getValue()).append("\n");
-                    }
-                    result.append("\n");
-                }
-            }
-
-            // Add JSON version
-            result.append("JSON:\n").append(gson.toJson(productDiscounts));
-
-            return result.toString();
-        } catch (Exception e) {
-            return "Error testing product discounts: " + e.getMessage() + "\n\n" +
-                    e.getClass().getName() + "\n\n" +
-                    Arrays.toString(e.getStackTrace());
-        }
-    }
-
-    // API endpoint to get discounts for a specific product
-    @GetMapping("api/product-discounts")
-    @ResponseBody
-    public List<Map<String, Object>> getProductDiscounts(
-            @RequestParam("productId") Integer productId,
-            HttpServletRequest request) {
-
-        try {
-            // Get current customer ID from session
-            Customer currentCustomer = getCurrentCustomer(request);
-            int customerId = (currentCustomer != null) ? currentCustomer.getCustomerId() : 0;
-
-            if (customerId == 0 || productId == null) {
-                return new ArrayList<>(); // Return empty list if no customerId or productId
-            }
-
-            // Fetch and return discount information
-            return productDiscountService.getVariantsWithAccountsByProductId(productId, customerId);
-        } catch (Exception e) {
-            System.err.println("Error fetching product discounts via API: " + e.getMessage());
-            e.printStackTrace();
-            return new ArrayList<>(); // Return empty list on error
-        }
-    }
-
+   
+   
     // New method that replaces the API approach with a server-side rendering
     // approach
     @GetMapping("product-discounts")
@@ -433,10 +297,13 @@ public class UserController {
                 // Fetch discount information
                 List<Map<String, Object>> discounts = productDiscountService
                         .getVariantsWithAccountsByProductId(productId, customerId);
+                System.out.println("discounts = " + discounts);
                 model.addAttribute("discounts", discounts);
+                
 
                 // Convert discounts to JSON for client-side convenience
                 model.addAttribute("discountsJson", gson.toJson(discounts));
+                System.out.println("discountsJson = " + gson.toJson(discounts));
             }
 
             // Return JSP view for the fragment

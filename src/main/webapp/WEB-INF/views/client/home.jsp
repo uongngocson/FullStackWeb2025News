@@ -12,6 +12,7 @@
                     <title>DDTS | Luxury fashion</title>
                     <script src="https://cdn.tailwindcss.com"></script>
                     <c:set var="ctx" value="${pageContext.request.contextPath}" />
+                    <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
 
                     <!-- Google Fonts -->
                     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -114,6 +115,7 @@
                         }
                     </style>
                 </head>
+                
 
                 <body class="bg-white text-black font-sans">
 

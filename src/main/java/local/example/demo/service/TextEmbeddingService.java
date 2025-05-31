@@ -1,6 +1,10 @@
 package local.example.demo.service;
 
+import local.example.demo.config.PerformanceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,6 +18,7 @@ import java.util.Map;
 import java.util.ArrayList;
 
 @Service
+@ConditionalOnProperty(name = "app.performance.text-embedding-enabled", havingValue = "true", matchIfMissing = true)
 public class TextEmbeddingService {
 
     @Value("${gemini.api.key}")
@@ -22,6 +27,9 @@ public class TextEmbeddingService {
     private final String API_URL = "https://generativelanguage.googleapis.com/v1/models/embedding-001:embedContent?key=";
 
     private final RestTemplate restTemplate = new RestTemplate();
+    
+    @Autowired
+    private PerformanceConfig performanceConfig;
 
     /**
      * Generate embedding vector for a text input
@@ -30,6 +38,12 @@ public class TextEmbeddingService {
      * @return A float array representing the embedding vector, or null if failed
      */
     public float[] generateEmbedding(String text) {
+        // Check if embedding service is enabled
+        if (!performanceConfig.isTextEmbeddingEnabled()) {
+            System.out.println("Text embedding service is disabled. Returning null embedding.");
+            return null;
+        }
+        
         try {
             // Log message
             System.out.println(
