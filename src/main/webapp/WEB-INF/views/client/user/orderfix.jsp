@@ -8,6 +8,61 @@
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Checkout | Luxury Boutique</title>
+            
+            <!-- Nhúng dữ liệu từ model vào JavaScript -->
+            <script type="text/javascript">
+                // Dữ liệu sản phẩm và mã giảm giá sẽ được đọc từ các thẻ input ẩn
+                var allProductDiscountsData = {};
+                var allProductIdsData = [];
+                
+                // Dữ liệu sẽ được khởi tạo khi trang tải xong
+                document.addEventListener('DOMContentLoaded', function() {
+                    try {
+                        const discountsInput = document.getElementById('allProductDiscountsJson');
+                        const idsInput = document.getElementById('allProductIdsJson');
+                        
+                        if (discountsInput && discountsInput.value) {
+                            allProductDiscountsData = JSON.parse(discountsInput.value);
+                        }
+                        
+                        if (idsInput && idsInput.value) {
+                            allProductIdsData = JSON.parse(idsInput.value);
+                        }
+                        
+                        // Log dữ liệu để debug
+                        console.log('Product discounts data loaded:', allProductDiscountsData);
+                        console.log('Product IDs data loaded:', allProductIdsData);
+                        
+                        // Mẫu dữ liệu cho trường hợp không có dữ liệu thực
+                        if (Object.keys(allProductDiscountsData).length === 0) {
+                            // Dữ liệu mẫu cho mã giảm giá
+                            allProductDiscountsData = {
+                                "1": [
+                                    {
+                                        "end_date": "Nov 30, 2025",
+                                        "used_at": "May 22, 2025, 9:08:51 PM",
+                                        "totalminmoney": 50000,
+                                        "discount_code": "SHOPZ62MCQJP",
+                                        "discount_name": "Chào thành viên mới",
+                                        "discount_percentage": 10,
+                                        "product_variant_id": 1,
+                                        "customer_id": 1017,
+                                        "discount_id": 3,
+                                        "start_date": "Jan 1, 2025",
+                                        "status": "available",
+                                        "max_discount_amount": 20000
+                                    }
+                                ]
+                            };
+                            
+                            console.log('Using sample discount data');
+                        }
+                    } catch (error) {
+                        console.error('Error parsing JSON data:', error);
+                    }
+                });
+            </script>
+            
             <script src="https://cdn.tailwindcss.com"></script>
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -179,6 +234,64 @@
                     transition: all 0.3s ease;
                 }
                 
+                /* Saved Address Styles */
+                .saved-address-card {
+                    padding: 16px;
+                    border-radius: 12px;
+                    border: 1px solid #e5e7eb;
+                    transition: all 0.3s ease;
+                    background: linear-gradient(145deg, #ffffff, #f8fafc);
+                    margin-bottom: 10px;
+                    cursor: pointer;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .saved-address-card:hover {
+                    border-color: #bfdbfe;
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                    transform: translateY(-2px);
+                }
+                
+                .saved-address-card.selected-address {
+                    border-color: #3b82f6;
+                    background: linear-gradient(145deg, #f0f7ff, #eff6ff);
+                    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1);
+                    animation: pulse-blue 2s infinite;
+                }
+                
+                @keyframes pulse-blue {
+                    0% {
+                        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3);
+                    }
+                    70% {
+                        box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
+                    }
+                    100% {
+                        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+                    }
+                }
+                
+                .saved-address-card.selected-address::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 4px;
+                    height: 100%;
+                    background: linear-gradient(to bottom, #3b82f6, #60a5fa);
+                }
+                
+                .change-address-btn {
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    transition: all 0.2s ease;
+                }
+                
+                .change-address-btn:hover {
+                    background-color: rgba(59, 130, 246, 0.1);
+                }
+                
                 .loading-overlay.active {
                     opacity: 1;
                     visibility: visible;
@@ -279,6 +392,130 @@
                     0% { background-position: 200% 0; }
                     100% { background-position: -200% 0; }
                 }
+                
+                /* Form transition effect */
+                #new-address-form, #saved-addresses-container {
+                    transition: all 0.3s ease;
+                }
+                
+                #new-address-form.hidden, #saved-addresses-container.hidden {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                
+                /* Contact info sync indicator */
+                .contact-info-synced {
+                    position: relative;
+                }
+                
+                .contact-info-synced::after {
+                    content: '🔄';
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 14px;
+                    color: #3b82f6;
+                    opacity: 0.7;
+                }
+                
+                /* Discount code styles */
+                .discount-code-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 0.25rem 0.5rem;
+                    border-radius: 0.5rem;
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    border: 1px solid;
+                    gap: 0.25rem;
+                }
+                
+                .discount-code-badge:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+                
+                .discount-code-badge.available {
+                    background-color: #f0f9ff;
+                    border-color: #bae6fd;
+                    color: #0369a1;
+                }
+                
+                .discount-code-badge.selected {
+                    background-color: #dcfce7;
+                    border-color: #86efac;
+                    color: #16a34a;
+                }
+                
+                .discount-code-badge.expired {
+                    background-color: #fef2f2;
+                    border-color: #fecaca;
+                    color: #dc2626;
+                    opacity: 0.7;
+                    cursor: not-allowed;
+                }
+                
+                .discount-code-badge .code {
+                    font-family: monospace;
+                    font-weight: 600;
+                }
+                
+                .discount-code-badge .percentage {
+                    background-color: rgba(255, 255, 255, 0.5);
+                    padding: 0.1rem 0.25rem;
+                    border-radius: 0.25rem;
+                    margin-left: 0.25rem;
+                }
+                
+                .discount-summary {
+                    background-color: #f0f9ff;
+                    border: 1px solid #bae6fd;
+                    border-radius: 0.5rem;
+                    padding: 0.5rem 1rem;
+                    margin-top: 1rem;
+                    font-size: 0.875rem;
+                }
+                
+                .discount-summary.active {
+                    background-color: #dcfce7;
+                    border-color: #86efac;
+                }
+                
+                .discount-tooltip {
+                    position: absolute;
+                    background-color: #1f2937;
+                    color: white;
+                    padding: 0.5rem 0.75rem;
+                    border-radius: 0.375rem;
+                    font-size: 0.75rem;
+                    z-index: 50;
+                    width: max-content;
+                    max-width: 250px;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                    opacity: 0;
+                    transform: translateY(5px);
+                    transition: opacity 0.2s, transform 0.2s;
+                    pointer-events: none;
+                }
+                
+                .discount-tooltip.visible {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                
+                .discount-tooltip::before {
+                    content: '';
+                    position: absolute;
+                    top: -4px;
+                    left: 50%;
+                    transform: translateX(-50%) rotate(45deg);
+                    width: 8px;
+                    height: 8px;
+                    background-color: #1f2937;
+                }
             </style>
         </head>
         
@@ -313,6 +550,9 @@
                 </c:if>
             </header>
 
+            <!-- Hidden inputs for JSON data -->
+            <input type="hidden" id="allProductDiscountsJson" value='${allProductDiscountsJson}'>
+            <input type="hidden" id="allProductIdsJson" value='${allProductIdsJson}'>
             
         
             <!-- Main Content Grid -->
@@ -323,24 +563,28 @@
                     <section class="glass-card p-8 rounded-2xl">
                         <h2 class="serif text-2xl font-semibold mb-6 section-header">Contact Information</h2>
                         <div class="space-y-6">
-                            <div class="relative">
+                            <div class="relative contact-info-synced">
                                 <input type="text" id="fullName" class="input-field w-full py-4 px-4 bg-transparent" 
-                                       placeholder=" " value="John Smith">
+                                       placeholder=" " value="<c:out value="${defaultAddress.recipientName}" default=""/>">
                                 <label class="floating-label">Full Name</label>
                             </div>
                             
-                            <input type="hidden" id="customerId" value="123">
+                            <input type="hidden" id="customerId" value="<c:out value="${customer.customerId}" default="0"/>">
                             
                             <div class="relative">
                                 <input type="email" id="email" class="input-field w-full py-4 px-4 bg-transparent" 
-                                       placeholder=" " value="john@example.com">
+                                       placeholder=" " value="<c:out value="${customer.email}" default=""/>">
                                 <label class="floating-label">Email Address</label>
                             </div>
                             
-                            <div class="relative">
+                            <div class="relative contact-info-synced">
                                 <input type="tel" id="phone" class="input-field w-full py-4 px-4 bg-transparent" 
-                                       placeholder=" " value="+1 (123) 456-7890">
+                                       placeholder=" " value="<c:out value="${defaultAddress.recipientPhone}" default=""/>">
                                 <label class="floating-label">Phone Number</label>
+                            </div>
+                            
+                            <div class="text-sm text-blue-600">
+                                <p><span class="inline-block mr-1">🔄</span> Contact information is automatically synced with shipping address</p>
                             </div>
                         </div>
                     </section>
@@ -349,39 +593,78 @@
                     <section class="address-section p-8">
                         <h2 class="serif text-2xl font-semibold mb-6 section-header">Shipping Address</h2>
                         
-                        <!-- Address Detail -->
-                        <div class="mb-6">
-                            <div class="relative">
-                                <textarea id="addressDetail" class="input-field w-full py-4 px-4 bg-transparent resize-none" 
-                                          rows="3" placeholder=" "></textarea>
-                                <label class="floating-label">Address Detail (Street, Building, Apartment)</label>
+                        <!-- Saved Addresses -->
+                        <div id="saved-addresses-container" class="mb-6">
+                            <div class="saved-address-card selected-address">
+                                <div class="flex items-start">
+                                    <div class="w-6 h-6 rounded-full border-2 border-blue-500 flex items-center justify-center mr-4 mt-1">
+                                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <div class="font-medium text-gray-900"><c:out value="${defaultAddress.recipientName}"/> <c:out value="${defaultAddress.recipientPhone}"/></div>
+                                                <p class="text-gray-600 mt-1"><c:out value="${defaultAddress.street}"/>, <c:out value="${defaultAddress.ward}"/>, <c:out value="${defaultAddress.district}"/>, <c:out value="${defaultAddress.province}"/></p>
+                                                <div class="mt-2">
+                                                    <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">Mặc định</span>
+                                                </div>
+                                            </div>
+                                            <button id="change-address-btn" class="text-blue-600 font-medium hover:text-blue-800 transition-colors">
+                                                Thay đổi
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-        
-                        <!-- Location Selects - Updated for GHN API -->
-                        <div class="form-row">
-                            <div class="relative select-wrapper">
-                                <select id="province" class="input-field w-full py-4 px-4 bg-transparent">
-                                    <option value="">Select Province</option>
-                                    <c:forEach items="${provinces}" var="province">
-                                        <option value="${province.provinceId}">${province.provinceName}</option>
-                                    </c:forEach>
-                                </select>
-                                <label class="floating-label">Province/City</label>
+                        
+                        <!-- New Address Form (Hidden by default) -->
+                        <div id="new-address-form" class="space-y-6 hidden">
+                            <!-- Address Detail -->
+                            <div class="mb-6">
+                                <div class="relative">
+                                    <textarea id="addressDetail" class="input-field w-full py-4 px-4 bg-transparent resize-none" 
+                                              rows="3" placeholder=" "></textarea>
+                                    <label class="floating-label">Address Detail (Street, Building, Apartment)</label>
+                                </div>
+                            </div>
+            
+                            <!-- Location Selects - Updated for GHN API -->
+                            <div class="form-row">
+                                <div class="relative select-wrapper">
+                                    <select id="province" class="input-field w-full py-4 px-4 bg-transparent">
+                                        <option value="">Select Province</option>
+                                        <c:forEach items="${provinces}" var="province">
+                                            <option value="${province.provinceId}">${province.provinceName}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <label class="floating-label">Province/City</label>
+                                </div>
+                                
+                                <div class="relative select-wrapper">
+                                    <select id="district" class="input-field w-full py-4 px-4 bg-transparent" disabled>
+                                        <option value="">Select District</option>
+                                    </select>
+                                    <label class="floating-label">District</label>
+                                </div>
+                                
+                                <div class="relative select-wrapper">
+                                    <select id="ward" class="input-field w-full py-4 px-4 bg-transparent" disabled>
+                                        <option value="">Select Ward</option>
+                                    </select>
+                                    <label class="floating-label">Ward</label>
+                                </div>
                             </div>
                             
-                            <div class="relative select-wrapper">
-                                <select id="district" class="input-field w-full py-4 px-4 bg-transparent" disabled>
-                                    <option value="">Select District</option>
-                                </select>
-                                <label class="floating-label">District</label>
-                            </div>
-                            
-                            <div class="relative select-wrapper">
-                                <select id="ward" class="input-field w-full py-4 px-4 bg-transparent" disabled>
-                                    <option value="">Select Ward</option>
-                                </select>
-                                <label class="floating-label">Ward</label>
+                            <!-- Form Actions -->
+                            <div class="flex justify-end space-x-3 mt-4">
+                                <button id="cancel-new-address" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                                    Cancel
+                                </button>
+                                <button id="save-new-address" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    <span>Save Address</span>
+                                    <span id="save-address-loading" class="hidden ml-2 inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                </button>
                             </div>
                         </div>
         
@@ -443,21 +726,31 @@
                          
                         <div class="space-y-4 mb-8">
                             <c:forEach items="${items}" var="item">
-                            <div class="cart-item">
+                            <div class="cart-item" data-product-id="${item.variant.product.productId}" data-variant-id="${item.variant.productVariantId}" data-price="${item.variant.product.price}" data-quantity="${item.quantity}">
                                 <div class="flex items-center">
                                     <div class="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl mr-4 overflow-hidden">
                                         <img src="${item.variant.imageUrl}" 
                                              alt="Product" class="w-full h-full object-cover">
                                     </div>
                                     <div class="flex-1">
-                                        <h3 class="font-semibold text-gray-900">                                            ${item.variant.product.productName}
-                                        </h3>
+                                        <h3 class="font-semibold text-gray-900">${item.variant.product.productName}</h3>
                                         <p class="text-sm text-gray-600">${item.variant.color.colorName} /
                                             ${item.variant.size.sizeName}</p>
                                         <p class="text-sm text-gray-500 mt-1">Qty: ${item.quantity}</p>
                                     </div>
                                     <div class="text-right">
                                         <p class="font-semibold">$${item.variant.product.price}</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Discount codes for this product -->
+                                <div class="mt-3 pt-3 border-t border-gray-100">
+                                    <div class="item-discounts" data-variant-id="${item.variant.productVariantId}">
+                                        <p class="text-xs font-medium text-gray-500 mb-2">Mã giảm giá có sẵn:</p>
+                                        <div class="discount-codes-container flex flex-wrap gap-2">
+                                            <!-- Discount codes will be populated by JavaScript -->
+                                            <div class="loading-placeholder text-xs text-gray-400">Đang tải mã giảm giá...</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -482,7 +775,7 @@
                         <div class="space-y-4 mb-8">
                             <div class="flex justify-between text-gray-600">
                                 <span>Subtotal</span>
-                                <span id="cart-subtotal">$498.00</span>
+                                <span id="cart-subtotal" data-initial-value="${orderTotal}">$${orderTotal}</span>
                             </div>
         
                             <div class="flex justify-between text-gray-600">
@@ -519,6 +812,14 @@
                                 <div id="coupon-message" class="mt-2 text-xs hidden"></div>
                             </div>
         
+                            <!-- Applied Discounts Summary -->
+                            <div id="applied-discounts-container" class="space-y-2 mb-4 hidden">
+                                <h4 class="text-sm font-medium text-gray-700">Applied Discounts</h4>
+                                <div id="applied-discounts-list" class="space-y-2">
+                                    <!-- Applied discounts will be populated here by JavaScript -->
+                                </div>
+                            </div>
+                            
                             <div class="flex justify-between text-gray-600">
                                 <span>Discount</span>
                                 <span id="discount-amount" class="text-green-600">-$0.00</span>
@@ -527,7 +828,7 @@
                             <div class="border-t border-gray-200 pt-4">
                                 <div class="flex justify-between text-xl font-bold text-gray-900">
                                     <span>Total</span>
-                                    <span id="total-with-discount">$552.84</span>
+                                    <span id="total-with-discount">$0</span>
                                 </div>
                             </div>
                         </div>
@@ -567,6 +868,9 @@
             <jsp:include page="../layout/footer.jsp" />
 
 
+            
+
+
 
 
             
@@ -583,30 +887,19 @@
                 const vatBtn = document.getElementById('vatBtn');
                 let selectedPaymentMethod = null;
                 
-                // Define updatePricing function first
-                function updatePricing() {
-                    const subtotal = 498.00;
-                    const shipping = window.ghnState && window.ghnState.shippingFeeValue ? 
-                        window.ghnState.shippingFeeValue : 0;
-                    
-                    const hasVat = vatBtn.classList.contains('active');
-                    const tax = hasVat ? subtotal * 0.08 : 0;
-                    
-                    // Calculate discount if present
-                    const discountElement = document.getElementById('discount-amount');
-                    const discountText = discountElement ? discountElement.textContent : '-$0.00';
-                    const discount = parseFloat(discountText.replace(/[^\d.-]/g, '')) || 0;
-                    
-                    const total = subtotal + shipping + tax - discount;
-                    
-                    document.getElementById('cart-subtotal').textContent = '$' + subtotal.toFixed(2);
-                    document.getElementById('shipping-cost-summary').textContent = '$' + shipping.toFixed(2);
-                    document.getElementById('tax-amount').textContent = '$' + tax.toFixed(2);
-                    document.getElementById('total-with-discount').textContent = '$' + total.toFixed(2);
-                }
-                
                 // Payment method selection
                 document.addEventListener('DOMContentLoaded', function() {
+                    // Debug cart items and their prices
+                    console.log('Debugging cart items prices:');
+                    document.querySelectorAll('.cart-item').forEach(item => {
+                        const productId = item.getAttribute('data-product-id');
+                        const variantId = item.getAttribute('data-variant-id');
+                        const price = parseFloat(item.getAttribute('data-price') || '0');
+                        const quantity = parseInt(item.getAttribute('data-quantity') || '1');
+                        const totalPrice = price * quantity;
+                        console.log(`Cart item: productId=${productId}, variantId=${variantId}, price=${price}, quantity=${quantity}, totalPrice=${totalPrice}`);
+                    });
+                    
                     // Setup payment method selection
                     const paymentMethods = document.querySelectorAll('.payment-method');
                     
@@ -642,19 +935,76 @@
             
             <!-- Import GHN Integration JavaScript -->
             <script src="/resources/js/ghn-integration.js"></script>
+            
+            
         
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     // Initialize GHN integration with token and shop ID
                     if (typeof initGHNIntegration === 'function') {
-                        initGHNIntegration("${ghnToken}", "${shopId}");
-                        console.log('GHN integration initialized');
+                        // Create an object with the address data
+                        const defaultAddressData = {
+                            addressId: <c:out value="${defaultAddress.addressId}" default="0"/>,
+                            recipientName: '<c:out value="${defaultAddress.recipientName}" default=""/>',
+                            recipientPhone: '<c:out value="${defaultAddress.recipientPhone}" default=""/>',
+                            street: '<c:out value="${defaultAddress.street}" default=""/>',
+                            ward: '<c:out value="${defaultAddress.ward}" default=""/>',
+                            district: '<c:out value="${defaultAddress.district}" default=""/>',
+                            province: '<c:out value="${defaultAddress.province}" default=""/>',
+                            wardId: '<c:out value="${defaultAddress.wardId}" default=""/>',
+                            districtId: <c:out value="${defaultAddress.districtId}" default="0"/>,
+                            provinceId: <c:out value="${defaultAddress.provinceId}" default="0"/>
+                        };
+                        
+                        initGHNIntegration('<c:out value="${ghnToken}"/>', '<c:out value="${shopId}"/>', defaultAddressData);
+                        console.log('GHN integration initialized with default address');
+                        
+                        // Initialize saved addresses UI if function exists
+                        if (typeof updateSavedAddressesUI === 'function') {
+                            updateSavedAddressesUI();
+                        }
+                        
+                        // Ensure item prices are correctly initialized
+                        if (typeof reinitializeItemPrices === 'function') {
+                            setTimeout(() => {
+                                reinitializeItemPrices();
+                                console.log('Item prices reinitialized from JSP');
+                            }, 1000);
+                        }
                     } else {
                         console.error('GHN integration script not loaded properly');
+                    }
+                    
+                    // Set up order data button
+                    const orderDataBtn = document.getElementById('test-order-data');
+                    if (orderDataBtn) {
+                        orderDataBtn.addEventListener('click', async function() {
+                            // Validate form first
+                            const validation = validateOrderForm();
+                            if (!validation.isValid) {
+                                showNotification(validation.message, 'error');
+                                return;
+                            }
+                            
+                            try {
+                                // Submit order to API
+                                const result = await submitOrderToAPI();
+                                
+                                if (result.success) {
+                                    console.log('Order placed successfully:', result);
+                                    // Clear cart data or redirect will happen in submitOrderToAPI
+                                } else {
+                                    console.error('Failed to place order:', result.message);
+                                }
+                            } catch (error) {
+                                console.error('Error during order submission:', error);
+                            }
+                        });
                     }
                 });
             </script>
 
+           
             
         </body>
         

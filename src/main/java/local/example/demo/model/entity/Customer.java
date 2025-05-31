@@ -55,8 +55,8 @@ public class Customer {
     @Size(max = 100, message = "Email must not exceed 100 characters")
     private String email;
 
-    @Past(message = "Date of birth must be in the past")
-    @NotNull(message = "Date of birth is required")
+    // @Past(message = "Date of birth must be in the past")
+    // @NotNull(message = "Date of birth is required")
     private LocalDate dateOfBirth;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

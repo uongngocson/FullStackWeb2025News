@@ -1,5 +1,6 @@
 package local.example.demo.controller.client;
 
+import local.example.demo.config.PerformanceConfig;
 import local.example.demo.service.ChatbotService;
 import local.example.demo.service.ProductLoadRandom;
 
@@ -25,6 +26,9 @@ public class ChatBotController {
 
     @Autowired
     private ProductLoadRandom productLoadRandom;
+    
+    @Autowired
+    private PerformanceConfig performanceConfig;
 
     // Category-specific keywords for better filtering
     private final Map<String, List<String>> categoryKeywords = new HashMap<String, List<String>>() {
@@ -64,12 +68,24 @@ public class ChatBotController {
             // Format thời gian hiện tại để hiển thị
             String currentTime = new SimpleDateFormat("HH:mm").format(new Date());
 
-            // Lấy phản hồi từ RAG trước để phân tích nội dung
-            Map<String, Object> ragResult = chatbotService.getResponseWithSources(message);
-            String botResponse = (String) ragResult.get("response");
-            boolean usedRag = (boolean) ragResult.getOrDefault("usedRag", false);
-            List<Map<String, Object>> sources = (List<Map<String, Object>>) ragResult.getOrDefault("sources",
-                    new ArrayList<>());
+            // Check if RAG features are enabled
+            Map<String, Object> ragResult;
+            String botResponse;
+            boolean usedRag = false;
+            List<Map<String, Object>> sources = new ArrayList<>();
+            
+            if (performanceConfig.isChatbotRagEnabled()) {
+                // Use RAG for response if enabled
+                ragResult = chatbotService.getResponseWithSources(message);
+                botResponse = (String) ragResult.get("response");
+                usedRag = (boolean) ragResult.getOrDefault("usedRag", false);
+                sources = (List<Map<String, Object>>) ragResult.getOrDefault("sources", new ArrayList<>());
+            } else {
+                // Use a simple response if RAG is disabled
+                botResponse = getSimpleResponse(message);
+                ragResult = new HashMap<>();
+                ragResult.put("response", botResponse);
+            }
 
             // Trích xuất metadata từ sources để cải thiện phân tích ngữ cảnh
             Map<String, Object> extractedMetadata = extractMetadataFromSources(sources);
@@ -219,6 +235,38 @@ public class ChatBotController {
 
             return ResponseEntity.ok(errorResponse);
         }
+    }
+    
+    /**
+     * Provide a simple response when RAG is disabled
+     */
+    private String getSimpleResponse(String message) {
+        String lowerMessage = message.toLowerCase();
+        
+        // Simple keyword-based responses
+        if (lowerMessage.contains("xin chào") || lowerMessage.contains("hello") || lowerMessage.contains("hi")) {
+            return "Xin chào! Tôi là trợ lý ảo của cửa hàng. Tôi có thể giúp gì cho bạn? (RAG hiện đang tắt)";
+        }
+        
+        if (lowerMessage.contains("sản phẩm") || lowerMessage.contains("quần") || 
+            lowerMessage.contains("áo") || lowerMessage.contains("giày")) {
+            return "Tôi có thể giúp bạn tìm kiếm các sản phẩm. Vui lòng cho tôi biết bạn đang tìm kiếm loại sản phẩm nào? (RAG hiện đang tắt)";
+        }
+        
+        if (lowerMessage.contains("giá") || lowerMessage.contains("bao nhiêu")) {
+            return "Giá sản phẩm phụ thuộc vào loại sản phẩm cụ thể. Vui lòng cho tôi biết bạn quan tâm đến sản phẩm nào? (RAG hiện đang tắt)";
+        }
+        
+        if (lowerMessage.contains("khuyến mãi") || lowerMessage.contains("giảm giá") || lowerMessage.contains("sale")) {
+            return "Hiện tại cửa hàng có một số chương trình khuyến mãi đang diễn ra. Bạn có thể xem chi tiết trong mục 'Khuyến mãi' trên trang web. (RAG hiện đang tắt)";
+        }
+        
+        if (lowerMessage.contains("cảm ơn") || lowerMessage.contains("thank")) {
+            return "Không có gì! Rất vui được giúp đỡ bạn. (RAG hiện đang tắt)";
+        }
+        
+        // Default response
+        return "Tôi hiểu bạn đang hỏi về '" + message + "'. Hiện tại tính năng RAG đang bị tắt để tối ưu hiệu suất. Bạn có thể tìm kiếm sản phẩm hoặc hỏi về các dịch vụ cơ bản của cửa hàng.";
     }
 
     /**

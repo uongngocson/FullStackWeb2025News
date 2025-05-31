@@ -755,7 +755,7 @@
                                         <div class="flex-1">
                                             <h3 class="text-sm font-medium"
                                                 data-product-id="${item.variant.product.productId}">
-                                               
+                                                ${item.variant.product.productName}
                                             </h3>
                                             <p class="text-xs text-gray-500">${item.variant.color.colorName} /
                                                 ${item.variant.size.sizeName}</p>

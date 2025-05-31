@@ -1,5 +1,8 @@
 package local.example.demo.service;
 
+import local.example.demo.config.PerformanceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@ConditionalOnProperty(name = "app.performance.vector-store-enabled", havingValue = "true", matchIfMissing = true)
 public class FAISSVectorStore {
 
     // Path to store index and metadata on disk
@@ -37,6 +41,9 @@ public class FAISSVectorStore {
 
     // Metadata storage for documents
     private Map<String, Map<String, Object>> documentMetadata = new ConcurrentHashMap<>();
+    
+    @Autowired
+    private PerformanceConfig performanceConfig;
 
     public FAISSVectorStore() {
         try {
@@ -88,6 +95,12 @@ public class FAISSVectorStore {
      * @return The ID of the added document
      */
     public String addDocument(String text, float[] embedding, Map<String, Object> metadata) {
+        // Check if vector store is enabled
+        if (!performanceConfig.isVectorStoreEnabled()) {
+            System.out.println("Vector store is disabled. Skipping document addition.");
+            return null;
+        }
+        
         try {
             // Generate a unique ID for the document
             String docId = UUID.randomUUID().toString();
@@ -119,6 +132,12 @@ public class FAISSVectorStore {
      * @return List of documents with similarity scores
      */
     public List<Map<String, Object>> similaritySearch(float[] embedding, int k) {
+        // Check if vector store is enabled
+        if (!performanceConfig.isVectorStoreEnabled()) {
+            System.out.println("Vector store is disabled. Returning empty results.");
+            return new ArrayList<>();
+        }
+        
         try {
             // Simple vector search implementation
             List<DocSimilarity> similarities = new ArrayList<>();

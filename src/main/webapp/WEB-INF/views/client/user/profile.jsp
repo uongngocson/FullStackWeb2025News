@@ -15,6 +15,7 @@
                     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap"
                     rel="stylesheet">
                 <link href="${ctx}/resources/assets/client/css/profile.css" rel="stylesheet">
+                <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
 
             </head>
 

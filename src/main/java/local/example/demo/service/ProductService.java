@@ -263,4 +263,9 @@ public class ProductService {
         return productVariantRepository.findByProductVariantId(productVariantId);
     }
 
+    // Thêm phương thức để lấy sản phẩm theo nhà cung cấp
+    public List<Product> findProductsBySupplier(Integer supplierId) {
+        return productRepository.findProductsBySupplierId(supplierId);
+    }
+
 }

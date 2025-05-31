@@ -1,20 +1,15 @@
 package local.example.demo.service;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
-import org.hibernate.TransientObjectException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import local.example.demo.model.dto.RegisterDTO;
