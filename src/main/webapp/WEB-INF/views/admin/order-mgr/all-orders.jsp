@@ -1,4 +1,3 @@
-```jsp
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -218,26 +217,22 @@
 
                     <script>
                         $(document).ready(function () {
-                            // Initialize DataTables for each status tab
-                            <c:forEach var="status" items="${possibleStatuses}">
-                // Sanitize status to create valid ID
-                                var tableId = 'table-' + '${status}'.replace(/[^a-zA-Z0-9-_]/g, '-');
-                                if ($('#' + tableId).length) {
-                                    $('#' + tableId).DataTable({
-                                        "pageLength": 10,
-                                        lengthMenu: [5, 10, 25, 50, 100],
-                                        columnDefs: [
-                                            {
-                                                targets: [6], // Actions column (View and Edit)
-                                                orderable: false,
-                                                searchable: false
-                                            }
-                                        ],
-                                        responsive: true,
-                                        destroy: true
-                                    });
-                }
-                            </c:forEach>
+                            // Initialize DataTables for all status tables
+                            $('.table-hover').each(function() {
+                                $(this).DataTable({
+                                    "pageLength": 10,
+                                    lengthMenu: [5, 10, 25, 50, 100],
+                                    columnDefs: [
+                                        {
+                                            targets: [6], // Actions column (View and Edit)
+                                            orderable: false,
+                                            searchable: false
+                                        }
+                                    ],
+                                    responsive: true,
+                                    destroy: true
+                                });
+                            });
 
                             // Reinitialize DataTable when a tab is shown
                             $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {

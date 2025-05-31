@@ -24,9 +24,8 @@
                     <!-- <link rel="stylesheet"
                         href="${pageContext.request.contextPath}/resources/assets/client/css/style.css"> -->
 
-                    <link rel="icon"
-                        href="${pageContext.request.contextPath}/resources/assets/client/images/icon-adidas-logo.svg"
-                        type="image/icon type">
+                        <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
+
 
                 </head>
 

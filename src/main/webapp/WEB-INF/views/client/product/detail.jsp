@@ -15,6 +15,8 @@
                     <link rel="stylesheet"
                         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                     <link rel="stylesheet" href="${ctx}/resources/assets/client/css/productDetail.css">
+                    <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
+
                     <script>
                         // Create a JavaScript product object from JSP data
                         const product = {
@@ -176,7 +178,7 @@
                                         </form>
 
                                         <!-- Nút BUY NOW -->
-                                        <form action="${ctx}/user/order" method="get" id="buyNowForm2" class="flex-1">
+                                        <form action="${ctx}/order/orderfix" method="get" id="buyNowForm2" class="flex-1">
                                             <input type="hidden" name="variantId" id="selectedVariantId2" />
                                             <input type="hidden" name="quantity" id="quantityInput2" value="1" />
                                             <button type="submit" id="buyNowButton2" disabled

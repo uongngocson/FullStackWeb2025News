@@ -19,8 +19,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
         
-        // Thiết lập ngôn ngữ mặc định là tiếng Anh (Mỹ)
-        slr.setDefaultLocale(Locale.US);
+        // Thiết lập ngôn ngữ mặc định là tiếng Anh
+        slr.setDefaultLocale(Locale.ENGLISH);
         return slr;
     }
 

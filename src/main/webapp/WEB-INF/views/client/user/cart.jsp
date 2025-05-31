@@ -18,6 +18,8 @@
                         rel="stylesheet">
 
                     <link rel="stylesheet" href="${ctx}/css/cart.css">
+                    <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
+
 
                     <!-- Google Fonts -->
                     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -473,7 +475,7 @@
                         var sampleDiscountsData = [
                             {
                                 "end_date": "Nov 30, 2025",
-                                "totalminmoney": 50000,
+                                "totalminmoney": 80000,
                                 "discount_code": "SHOPZ62MCQJP",
                                 "discount_name": "Chào thành viên mới",
                                 "discount_percentage": 10,
@@ -938,12 +940,19 @@
                             const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
                             const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
+                            // Create headers object properly
+                            const headers = {
+                                'Content-Type': 'application/json'
+                            };
+                            
+                            // Only add CSRF header if both token and header name are available
+                            if (csrfToken && csrfHeader) {
+                                headers[csrfHeader] = csrfToken;
+                            }
+
                             fetch('${ctx}/cart/update-quantity', {
                                 method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    [csrfHeader]: csrfToken
-                                },
+                                headers: headers,
                                 body: JSON.stringify({
                                     cartDetailId: cartDetailId,
                                     quantity: newQuantity
@@ -1058,7 +1067,7 @@
                             // Create a form to submit selected items
                             const form = document.createElement('form');
                             form.method = 'POST';
-                            form.action = '${ctx}/user/order-view';
+                            form.action = '${ctx}/order/orderfix';
 
                             // Add CSRF token
                             const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
@@ -1082,7 +1091,7 @@
                             });
 
                             console.log('Form created with', selectedItems.length, 'selected items');
-                            console.log('Submitting to new controller: ${ctx}/user/order-view');
+                            console.log('Submitting to new controller: ${ctx}/order/orderfix');
 
                             // Append form to body and submit
                             document.body.appendChild(form);

@@ -198,7 +198,7 @@
                                                         <div class="w-1/2 sm:w-1/6 lg:w-auto lg:flex-1">
                                                             <c:choose>
                                                                 <c:when test="${not empty detail.imageUrl}">
-                                                                    <img src="${pageContext.request.contextPath}/${detail.imageUrl}"
+                                                                    <img src="${detail.imageUrl}"
                                                                         alt="Hình ảnh sản phẩm" class="max-w-[100px]" />
                                                                 </c:when>
                                                                 <c:otherwise>
