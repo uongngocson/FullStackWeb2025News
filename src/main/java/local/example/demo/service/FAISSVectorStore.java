@@ -256,4 +256,12 @@ public class FAISSVectorStore {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Get the total number of documents in the vector store
+     * @return The count of documents
+     */
+    public int getDocumentCount() {
+        return documentMetadata.size();
+    }
 }

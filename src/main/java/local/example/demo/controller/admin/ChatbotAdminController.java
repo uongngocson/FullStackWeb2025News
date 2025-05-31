@@ -2,10 +2,12 @@ package local.example.demo.controller.admin;
 
 import local.example.demo.service.DataIngestionService;
 import local.example.demo.service.ProductIngestService;
+import local.example.demo.service.FAISSVectorStore;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -21,11 +23,16 @@ public class ChatbotAdminController {
     @Autowired
     private ProductIngestService productIngestService;
 
+    @Autowired
+    private FAISSVectorStore vectorStore;
+
     /**
      * Admin page for chatbot management
      */
     @GetMapping
-    public String adminPage() {
+    public String adminPage(Model model) {
+        // Add total documents count to the model
+        model.addAttribute("totalDocuments", vectorStore.getDocumentCount());
         return "admin/chatbot/index";
     }
 
@@ -154,6 +161,52 @@ public class ChatbotAdminController {
                 response.put("success", false);
                 response.put("message", "Failed to ingest chunked text");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "Error: " + e.getMessage());
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Enable or disable saving metadata to disk
+     */
+    @PostMapping("/metadata/save-to-disk")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> setSaveMetadataToDisk(@RequestParam("enable") boolean enable) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            vectorStore.setSaveMetadataToDisk(enable);
+            
+            response.put("success", true);
+            response.put("enabled", vectorStore.isSaveMetadataToDisk());
+            response.put("message", "Metadata saving to disk " + (enable ? "enabled" : "disabled") + " successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "Error: " + e.getMessage());
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Get the current status of metadata saving to disk
+     */
+    @GetMapping("/metadata/save-to-disk/status")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getSaveMetadataToDiskStatus() {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            boolean isEnabled = vectorStore.isSaveMetadataToDisk();
+            
+            response.put("success", true);
+            response.put("enabled", isEnabled);
+            response.put("message", "Metadata saving to disk is currently " + (isEnabled ? "enabled" : "disabled"));
         } catch (Exception e) {
             e.printStackTrace();
             response.put("success", false);

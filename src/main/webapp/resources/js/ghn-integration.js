@@ -1350,8 +1350,9 @@ function prepareOrderDataForAPI() {
         const addressParts = selectedAddress.address.split(',');
         const street = addressParts[0]?.trim() || '';
         
-        // Get payment method (1 = Online Payment, 2 = COD)
-        const paymentId = document.getElementById('payment-method-1').classList.contains('selected') ? 1 : 2;
+        // Get payment method (1 = Online Payment VNPAY, 2 = COD, 3 = Online Payment MOMO)
+        const paymentId = document.getElementById('payment-method-1').classList.contains('selected') ? 1 : 
+                           document.getElementById('payment-method-3').classList.contains('selected') ? 3 : 2;
         
         // Get order items
         const orderItems = [];
@@ -1866,6 +1867,20 @@ function submitOrderToAPI() {
                     
                     // Redirect to payment gateway
                     window.location.href = `/api/payment/create_payment?amount=${totalAmountInteger}`;
+                } else if (paymentMethod === 3) {
+                    // Online payment - redirect to MoMo
+                    // Convert totalAmount to integer (remove decimal places)
+                    const totalAmountInteger = Math.round(orderData.TotalAmount);
+                    console.log('Redirecting to MoMo with amount:', totalAmountInteger);
+                    
+                    // Add loading overlay to indicate processing
+                    const loadingOverlay = document.getElementById('loadingOverlay');
+                    if (loadingOverlay) {
+                        loadingOverlay.classList.add('active');
+                    }
+                    
+                    // Redirect to MoMo payment gateway
+                    window.location.href = `/api/payment/create_momo_payment?amount=${totalAmountInteger}`;
                 } else {
                     // COD payment - redirect to order confirmation page
                     console.log('COD payment selected, redirecting to order confirmation page');
@@ -2386,30 +2401,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Product discounts data loaded:', allProductDiscountsData);
         console.log('Product IDs data loaded:', allProductIdsData);
         
-        // Mẫu dữ liệu cho trường hợp không có dữ liệu thực
-        if (Object.keys(allProductDiscountsData).length === 0) {
-            // Dữ liệu mẫu cho mã giảm giá
-            allProductDiscountsData = {
-                "1": [
-                    {
-                        "end_date": "Nov 30, 2025",
-                        "used_at": "May 22, 2025, 9:08:51 PM",
-                        "totalminmoney": 50000,
-                        "discount_code": "SHOPZ62MCQJP",
-                        "discount_name": "Chào thành viên mới",
-                        "discount_percentage": 10,
-                        "product_variant_id": 1,
-                        "customer_id": 1017,
-                        "discount_id": 3,
-                        "start_date": "Jan 1, 2025",
-                        "status": "available",
-                        "max_discount_amount": 20000
-                    }
-                ]
-            };
-            
-            console.log('Using sample discount data');
-        }
+       
         
         // Khởi tạo hệ thống giảm giá
         if (typeof initDiscountSystem === 'function') {

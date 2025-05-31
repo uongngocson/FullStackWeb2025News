@@ -46,31 +46,62 @@
                             <div class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex flex-wrap -mx-4">
                                 <!-- Product Images -->
                                 <div class="w-full md:w-1/2 px-4 mb-8">
-                                    <div class="image-container relative">
+                                    <div class="product-gallery">
+                                        <div class="main-image-container relative overflow-hidden rounded-lg shadow-lg mb-4">
                                         <button id="view3dButton"
                                             class="absolute top-3 left-3 bg-black bg-opacity-70 hover:bg-opacity-90 text-white p-2 rounded-lg z-10 transition-all duration-300 flex items-center space-x-2 transform hover:scale-105 shadow-lg">
                                             <i class="fas fa-cube"></i>
                                             <span class="text-sm font-medium">XEM 3D</span>
                                         </button>
+                                            <div class="image-zoom-container" data-product-id="${product.productId}">
                                         <img src="${product.imageUrl}" alt="${product.productName}"
-                                            alt="${product.productName}" class="w-full h-auto rounded-lg shadow-md mb-4"
+                                                    class="w-full h-auto object-cover transition-transform duration-500 ease-out"
                                             id="mainImage">
+                                                <div class="zoom-lens"></div>
                                     </div>
-                                    <div class="flex gap-4 py-4 justify-center overflow-x-auto">
+                                            <div class="image-controls absolute bottom-4 right-4 flex space-x-2">
+                                                <button class="bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md transition-all duration-300" id="zoomToggle">
+                                                    <i class="fas fa-search-plus"></i>
+                                                </button>
+                                                <button class="bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md transition-all duration-300" id="fullscreenToggle">
+                                                    <i class="fas fa-expand"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="thumbnails-container">
+                                            <button class="gallery-nav-btn prev-btn absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md z-10">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </button>
+                                            
+                                            <div class="thumbnails-scroll relative">
+                                                <div class="flex gap-3 py-4 overflow-x-auto thumbnails-track">
                                         <c:forEach var="image" items="${productImages}" varStatus="status">
+                                                        <div class="thumbnail-wrapper min-w-[72px] sm:min-w-[80px]">
                                             <img src="${image.imageUrl}"
                                                 alt="${product.productName} - Image ${status.index + 1}"
-                                                class="size-12 sm:size-16 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                                onclick="changeImage(this.src)">
+                                                                class="w-full aspect-square object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300 thumbnail-img"
+                                                                data-index="${status.index}"
+                                                                onclick="changeImage(this.src, this)">
+                                                        </div>
                                         </c:forEach>
 
                                         <c:if test="${empty productImages}">
                                             <!-- Fallback images if no product images are available -->
+                                                        <div class="thumbnail-wrapper min-w-[72px] sm:min-w-[80px]">
                                             <img src="${product.imageUrl}" alt="${product.productName}"
-                                                class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                                                onclick="changeImage(this.src)">
+                                                                class="w-full aspect-square object-cover rounded-md cursor-pointer opacity-100 transition duration-300 thumbnail-img active"
+                                                                data-index="0"
+                                                                onclick="changeImage(this.src, this)">
+                                                        </div>
                                         </c:if>
+                                                </div>
+                                            </div>
 
+                                            <button class="gallery-nav-btn next-btn absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md z-10">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -119,7 +150,8 @@
                                         </svg>
                                         <span class="ml-2 text-gray-600">4.7 | ${product.quantitySold} sold</span>
                                     </div>
-                                    <p class="text-gray-700 mb-6">${product.description}</p>
+
+                                   
 
                                     <div class="mb-6">
                                         <h3 class="text-lg font-semibold mb-2">MÀU SẮC: <span id="selectedColor2"
@@ -202,16 +234,22 @@
                                                     class="fab fa-pinterest-p"></i></a>
                                         </div>
                                     </div>
-
-                                    <!-- <div>
-                                        <h3 class="text-lg font-semibold mb-2">Key Features:</h3>
-                                        <ul class="list-disc list-inside text-gray-700">
-                                            <li>Industry-leading noise cancellation</li>
-                                            <li>30-hour battery life</li>
-                                            <li>Touch sensor controls</li>
-                                            <li>Speak-to-chat technology</li>
-                                        </ul>
-                                    </div> -->
+                                     <!-- Collapsible Description Section -->
+                                     <div class="product-description-container mb-6 border border-gray-200 rounded-lg overflow-hidden">
+                                        <button id="descriptionToggle" class="description-toggle w-full flex items-center justify-between bg-gray-50 px-4 py-3 hover:bg-gray-100 transition-all duration-300">
+                                            <span class="font-semibold text-gray-800">MÔ TẢ SẢN PHẨM</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform transition-transform duration-300 description-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                        <div id="descriptionContent" class="description-content px-4 overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+                                            <div class="py-4 description-inner">
+                                                <p class="text-gray-700 whitespace-pre-line">${product.description}</p>
+                                                
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -219,19 +257,363 @@
 
 
                         <script>
-                            function changeImage(src) {
-                                document.getElementById('mainImage').src = src;
+                            function changeImage(src, thumbnailElement) {
+                                // Update main image
+                                const mainImage = document.getElementById('mainImage');
+                                mainImage.src = src;
+                                
+                                // Update active thumbnail
+                                document.querySelectorAll('.thumbnail-img').forEach(img => {
+                                    img.classList.remove('active', 'opacity-100');
+                                    img.classList.add('opacity-60');
+                                });
+                                
+                                if (thumbnailElement) {
+                                    thumbnailElement.classList.add('active', 'opacity-100');
+                                    thumbnailElement.classList.remove('opacity-60');
+                                }
+                                
+                                // Reset zoom
+                                if (window.isZoomActive) {
+                                    toggleZoom();
+                                }
                             }
 
                             // 3D View button click handler
                             document.addEventListener('DOMContentLoaded', function () {
+                                // Initialize variables
+                                window.isZoomActive = false;
+                                window.isFullscreen = false;
+                                
+                                // 3D Button
                                 document.getElementById('view3dButton').addEventListener('click', function () {
-                                    window.location.href = "/product/image3d?id=${product.productId}";
+                                    const productId = document.querySelector('.image-zoom-container').getAttribute('data-product-id');
+                                    window.location.href = "/product/image3d?id=" + productId;
                                 });
+                                
+                                // Initialize gallery navigation
+                                initGalleryNavigation();
+                                
+                                // Initialize zoom functionality
+                                initZoomFeature();
+                                
+                                // Initialize fullscreen feature
+                                initFullscreenFeature();
+                                
+                                // Set first thumbnail as active by default
+                                const firstThumbnail = document.querySelector('.thumbnail-img');
+                                if (firstThumbnail) {
+                                    firstThumbnail.classList.add('active', 'opacity-100');
+                                    firstThumbnail.classList.remove('opacity-60');
+                                }
+                                
+                                // Initialize collapsible description
+                                initCollapsibleDescription();
                             });
+                            
+                            function initCollapsibleDescription() {
+                                const toggle = document.getElementById('descriptionToggle');
+                                const content = document.getElementById('descriptionContent');
+                                const arrow = document.querySelector('.description-arrow');
+                                const inner = document.querySelector('.description-inner');
+                                
+                                if (!toggle || !content || !arrow || !inner) return;
+                                
+                                toggle.addEventListener('click', () => {
+                                    // Toggle arrow rotation
+                                    arrow.classList.toggle('active');
+                                    
+                                    // Toggle content visibility
+                                    if (content.classList.contains('active')) {
+                                        // Close the content
+                                        content.style.maxHeight = '0px';
+                                        content.classList.remove('active');
+                                        inner.classList.remove('active');
+                                        
+                                        // Add slight delay before removing active class from inner content
+                                        setTimeout(() => {
+                                            inner.classList.remove('active');
+                                        }, 100);
+                                    } else {
+                                        // Open the content
+                                        content.classList.add('active');
+                                        content.style.maxHeight = inner.offsetHeight + 'px';
+                                        
+                                        // Add slight delay before adding active class to inner content
+                                        setTimeout(() => {
+                                            inner.classList.add('active');
+                                        }, 100);
+                                    }
+                                });
+                            }
+                            
+                            function initGalleryNavigation() {
+                                const track = document.querySelector('.thumbnails-track');
+                                const prevBtn = document.querySelector('.prev-btn');
+                                const nextBtn = document.querySelector('.next-btn');
+                                
+                                if (!track || !prevBtn || !nextBtn) return;
+                                
+                                // Show/hide navigation buttons based on scroll position
+                                function updateNavButtons() {
+                                    prevBtn.style.display = track.scrollLeft > 0 ? 'flex' : 'none';
+                                    nextBtn.style.display = 
+                                        track.scrollLeft < (track.scrollWidth - track.clientWidth - 10) ? 'flex' : 'none';
+                                }
+                                
+                                // Initial button state
+                                updateNavButtons();
+                                
+                                // Scroll event
+                                track.addEventListener('scroll', updateNavButtons);
+                                
+                                // Button click handlers
+                                prevBtn.addEventListener('click', () => {
+                                    track.scrollBy({ left: -200, behavior: 'smooth' });
+                                });
+                                
+                                nextBtn.addEventListener('click', () => {
+                                    track.scrollBy({ left: 200, behavior: 'smooth' });
+                                });
+                                
+                                // Keyboard navigation
+                                document.addEventListener('keydown', (e) => {
+                                    if (e.key === 'ArrowLeft') {
+                                        navigateImages('prev');
+                                    } else if (e.key === 'ArrowRight') {
+                                        navigateImages('next');
+                                    }
+                                });
+                            }
+                            
+                            function navigateImages(direction) {
+                                const thumbnails = Array.from(document.querySelectorAll('.thumbnail-img'));
+                                const activeIndex = thumbnails.findIndex(img => img.classList.contains('active'));
+                                
+                                if (activeIndex === -1) return;
+                                
+                                let newIndex;
+                                if (direction === 'next') {
+                                    newIndex = (activeIndex + 1) % thumbnails.length;
+                                } else {
+                                    newIndex = (activeIndex - 1 + thumbnails.length) % thumbnails.length;
+                                }
+                                
+                                const nextThumb = thumbnails[newIndex];
+                                changeImage(nextThumb.src, nextThumb);
+                                
+                                // Ensure the thumbnail is visible
+                                nextThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                            }
+                            
+                            function initZoomFeature() {
+                                const mainImage = document.getElementById('mainImage');
+                                const zoomContainer = document.querySelector('.image-zoom-container');
+                                const zoomLens = document.querySelector('.zoom-lens');
+                                const zoomToggle = document.getElementById('zoomToggle');
+                                
+                                if (!mainImage || !zoomContainer || !zoomLens || !zoomToggle) return;
+                                
+                                // Toggle zoom on button click
+                                zoomToggle.addEventListener('click', toggleZoom);
+                                
+                                // Mouse events for zoom
+                                zoomContainer.addEventListener('mousemove', handleZoomMouseMove);
+                                zoomContainer.addEventListener('mouseleave', () => {
+                                    if (window.isZoomActive) {
+                                        zoomLens.style.display = 'none';
+                                        const zoomResult = document.querySelector('.zoom-result');
+                                        if (zoomResult) zoomResult.style.display = 'none';
+                                    }
+                                });
+                                zoomContainer.addEventListener('mouseenter', () => {
+                                    if (window.isZoomActive) {
+                                        zoomLens.style.display = 'block';
+                                        const zoomResult = document.querySelector('.zoom-result');
+                                        if (zoomResult) zoomResult.style.display = 'block';
+                                    }
+                                });
+                            }
+                            
+                            function toggleZoom() {
+                                const zoomContainer = document.querySelector('.image-zoom-container');
+                                const zoomLens = document.querySelector('.zoom-lens');
+                                const zoomToggle = document.getElementById('zoomToggle');
+                                const mainImage = document.getElementById('mainImage');
+                                
+                                window.isZoomActive = !window.isZoomActive;
+                                
+                                if (window.isZoomActive) {
+                                    zoomContainer.classList.add('zoom-active');
+                                    zoomLens.style.display = 'block';
+                                    zoomToggle.innerHTML = '<i class="fas fa-search-minus"></i>';
+                                    
+                                    // Create zoom result window
+                                    let zoomResult = document.querySelector('.zoom-result');
+                                    if (!zoomResult) {
+                                        zoomResult = document.createElement('div');
+                                        zoomResult.className = 'zoom-result';
+                                        zoomContainer.appendChild(zoomResult);
+                                    }
+                                    
+                                    zoomResult.style.backgroundImage = `url(${mainImage.src})`;
+                                    
+                                    // Preload high-res image for better zoom quality
+                                    const hiResImg = new Image();
+                                    hiResImg.src = mainImage.src;
+                                    hiResImg.onload = function() {
+                                        const zoomResult = document.querySelector('.zoom-result');
+                                        if (zoomResult) {
+                                            zoomResult.style.backgroundImage = `url(${hiResImg.src})`;
+                                        }
+                                    };
+                                } else {
+                                    zoomContainer.classList.remove('zoom-active');
+                                    zoomLens.style.display = 'none';
+                                    zoomToggle.innerHTML = '<i class="fas fa-search-plus"></i>';
+                                    
+                                    // Remove zoom result window
+                                    const zoomResult = document.querySelector('.zoom-result');
+                                    if (zoomResult) {
+                                        zoomResult.remove();
+                                    }
+                                }
+                            }
+                            
+                            function handleZoomMouseMove(e) {
+                                if (!window.isZoomActive) return;
+                                
+                                const zoomContainer = document.querySelector('.image-zoom-container');
+                                const zoomLens = document.querySelector('.zoom-lens');
+                                const zoomResult = document.querySelector('.zoom-result');
+                                const mainImage = document.getElementById('mainImage');
+                                
+                                if (!zoomLens || !zoomResult || !mainImage) return;
+                                
+                                // Get relative cursor position
+                                const rect = zoomContainer.getBoundingClientRect();
+                                const x = e.clientX - rect.left;
+                                const y = e.clientY - rect.top;
+                                
+                                // Calculate lens position
+                                const lensWidth = zoomLens.offsetWidth;
+                                const lensHeight = zoomLens.offsetHeight;
+                                let lensX = x - lensWidth / 2;
+                                let lensY = y - lensHeight / 2;
+                                
+                                // Constrain lens to image bounds
+                                lensX = Math.max(0, Math.min(zoomContainer.offsetWidth - lensWidth, lensX));
+                                lensY = Math.max(0, Math.min(zoomContainer.offsetHeight - lensHeight, lensY));
+                                
+                                // Position lens
+                                zoomLens.style.left = `${lensX}px`;
+                                zoomLens.style.top = `${lensY}px`;
+                                
+                                // Calculate background position for zoom result
+                                const ratioX = zoomResult.offsetWidth / lensWidth;
+                                const ratioY = zoomResult.offsetHeight / lensHeight;
+                                const bgX = lensX * ratioX;
+                                const bgY = lensY * ratioY;
+                                
+                                zoomResult.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+                                zoomResult.style.backgroundSize = `${mainImage.offsetWidth * ratioX}px ${mainImage.offsetHeight * ratioY}px`;
+                            }
+                            
+                            function initFullscreenFeature() {
+                                const fullscreenToggle = document.getElementById('fullscreenToggle');
+                                if (!fullscreenToggle) return;
+                                
+                                fullscreenToggle.addEventListener('click', toggleFullscreen);
+                            }
+                            
+                            function toggleFullscreen() {
+                                const mainImage = document.getElementById('mainImage');
+                                
+                                if (!window.isFullscreen) {
+                                    // Create fullscreen overlay
+                                    const overlay = document.createElement('div');
+                                    overlay.className = 'fullscreen-overlay';
+                                    
+                                    const closeBtn = document.createElement('button');
+                                    closeBtn.className = 'fullscreen-close';
+                                    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                                    closeBtn.addEventListener('click', toggleFullscreen);
+                                    
+                                    const fsImage = document.createElement('img');
+                                    fsImage.src = mainImage.src;
+                                    fsImage.className = 'fullscreen-image';
+                                    
+                                    overlay.appendChild(closeBtn);
+                                    overlay.appendChild(fsImage);
+                                    document.body.appendChild(overlay);
+                                    document.body.style.overflow = 'hidden';
+                                    
+                                    // Function to handle fullscreen navigation
+                                    function fullscreenNavigate(direction) {
+                                        navigateImages(direction);
+                                        fsImage.src = document.getElementById('mainImage').src;
+                                    }
+                                    
+                                    // Add navigation buttons
+                                    const prevBtn = document.createElement('button');
+                                    prevBtn.className = 'fullscreen-nav prev';
+                                    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                                    prevBtn.addEventListener('click', (e) => {
+                                        e.stopPropagation();
+                                        fullscreenNavigate('prev');
+                                    });
+                                    
+                                    const nextBtn = document.createElement('button');
+                                    nextBtn.className = 'fullscreen-nav next';
+                                    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                                    nextBtn.addEventListener('click', (e) => {
+                                        e.stopPropagation();
+                                        fullscreenNavigate('next');
+                                    });
+                                    
+                                    overlay.appendChild(prevBtn);
+                                    overlay.appendChild(nextBtn);
+                                    
+                                    // Keyboard navigation in fullscreen
+                                    const keyHandler = (e) => {
+                                        if (e.key === 'Escape') {
+                                            toggleFullscreen();
+                                        } else if (e.key === 'ArrowLeft') {
+                                            fullscreenNavigate('prev');
+                                        } else if (e.key === 'ArrowRight') {
+                                            fullscreenNavigate('next');
+                                        }
+                                    };
+                                    
+                                    document.addEventListener('keydown', keyHandler);
+                                    window.fullscreenKeyHandler = keyHandler; // Store for removal
+                                    
+                                    window.isFullscreen = true;
+                                } else {
+                                    // Remove fullscreen overlay
+                                    const overlay = document.querySelector('.fullscreen-overlay');
+                                    if (overlay) {
+                                        overlay.remove();
+                                    }
+                                    document.body.style.overflow = '';
+                                    
+                                    // Remove keyboard event listener
+                                    if (window.fullscreenKeyHandler) {
+                                        document.removeEventListener('keydown', window.fullscreenKeyHandler);
+                                    }
+                                    
+                                    window.isFullscreen = false;
+                                }
+                            }
 
                             // Apply background colors to color options
                             document.addEventListener('DOMContentLoaded', function () {
+                                // Add hidden field with product ID for 3D view
+                                const productIdField = document.createElement('div');
+                                productIdField.setAttribute('data-product-id', '${product.productId}');
+                                productIdField.style.display = 'none';
+                                document.body.appendChild(productIdField);
+                                
                                 document.querySelectorAll('.color-option2').forEach(function (el) {
                                     const bgColor = el.getAttribute('data-bg-color');
                                     if (bgColor) {
@@ -461,6 +843,255 @@
                     </div>
 
                     <style>
+                        /* Product Gallery Styles */
+                        .product-gallery {
+                            position: relative;
+                        }
+                        
+                        .main-image-container {
+                            position: relative;
+                            overflow: hidden;
+                            border-radius: 0.5rem;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                            height: 500px; /* Fixed height for consistency */
+                        }
+                        
+                        .image-zoom-container {
+                            position: relative;
+                            width: 100%;
+                            height: 100%;
+                            overflow: hidden;
+                        }
+                        
+                        #mainImage {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                            transition: transform 0.5s ease;
+                        }
+                        
+                        .zoom-lens {
+                            position: absolute;
+                            border: 2px solid #fff;
+                            width: 100px;
+                            height: 100px;
+                            background: rgba(255, 255, 255, 0.2);
+                            cursor: move;
+                            display: none;
+                            pointer-events: none;
+                            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+                        }
+                        
+                        .zoom-result {
+                            position: absolute;
+                            top: 0;
+                            left: 100%;
+                            width: 300px;
+                            height: 300px;
+                            border: 2px solid #ddd;
+                            background-repeat: no-repeat;
+                            background-color: white;
+                            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+                            z-index: 100;
+                            margin-left: 15px;
+                            display: block;
+                            pointer-events: none;
+                        }
+                        
+                        .thumbnails-container {
+                            position: relative;
+                            margin-top: 15px;
+                        }
+                        
+                        .thumbnails-scroll {
+                            position: relative;
+                            padding: 0 30px;
+                        }
+                        
+                        .thumbnails-track {
+                            scroll-behavior: smooth;
+                            -ms-overflow-style: none;
+                            scrollbar-width: none;
+                            justify-content: center;
+                        }
+                        
+                        .thumbnails-track::-webkit-scrollbar {
+                            display: none;
+                        }
+                        
+                        .thumbnail-wrapper {
+                            position: relative;
+                            border: 2px solid transparent;
+                            border-radius: 6px;
+                            overflow: hidden;
+                            transition: all 0.3s ease;
+                        }
+                        
+                        .thumbnail-img.active {
+                            opacity: 1 !important;
+                        }
+                        
+                        .thumbnail-wrapper:hover {
+                            transform: translateY(-2px);
+                        }
+                        
+                        .thumbnail-img.active + .thumbnail-wrapper {
+                            border-color: #000;
+                            box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+                        }
+                        
+                        .gallery-nav-btn {
+                            display: none;
+                            align-items: center;
+                            justify-content: center;
+                            width: 30px;
+                            height: 30px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        }
+                        
+                        .gallery-nav-btn:hover {
+                            background-color: white;
+                            transform: scale(1.1);
+                        }
+                        
+                        /* Fullscreen styles */
+                        .fullscreen-overlay {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background-color: rgba(0,0,0,0.9);
+                            z-index: 9999;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                        
+                        .fullscreen-image {
+                            max-width: 90%;
+                            max-height: 90%;
+                            object-fit: contain;
+                        }
+                        
+                        .fullscreen-close {
+                            position: absolute;
+                            top: 20px;
+                            right: 20px;
+                            color: white;
+                            background: rgba(0,0,0,0.5);
+                            border: none;
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            font-size: 20px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: all 0.3s ease;
+                            z-index: 10000;
+                        }
+                        
+                        .fullscreen-close:hover {
+                            background: rgba(255,255,255,0.2);
+                            transform: scale(1.1);
+                        }
+                        
+                        .fullscreen-nav {
+                            position: absolute;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            background: rgba(255,255,255,0.2);
+                            color: white;
+                            width: 50px;
+                            height: 50px;
+                            border-radius: 50%;
+                            border: none;
+                            font-size: 24px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            z-index: 10000;
+                        }
+                        
+                        .fullscreen-nav:hover {
+                            background: rgba(255,255,255,0.4);
+                        }
+                        
+                        .fullscreen-nav.prev {
+                            left: 20px;
+                        }
+                        
+                        .fullscreen-nav.next {
+                            right: 20px;
+                        }
+                        
+                        /* Image hover effect */
+                        .main-image-container:hover #mainImage:not(.zoom-active) {
+                            transform: scale(1.03);
+                        }
+                        
+                        /* Collapsible Description Styles */
+                        .product-description-container {
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                            transition: all 0.3s ease;
+                        }
+                        
+                        .product-description-container:hover {
+                            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+                        }
+                        
+                        .description-toggle {
+                            cursor: pointer;
+                            user-select: none;
+                        }
+                        
+                        .description-toggle:hover .description-arrow {
+                            color: #000;
+                        }
+                        
+                        .description-arrow {
+                            color: #666;
+                        }
+                        
+                        .description-arrow.active {
+                            transform: rotate(180deg);
+                        }
+                        
+                        .description-content {
+                            transition: max-height 0.5s ease, padding 0.3s ease;
+                        }
+                        
+                        .description-content.active {
+                            max-height: 1000px; /* Large enough to contain content */
+                        }
+                        
+                        .description-inner {
+                            opacity: 0;
+                            transform: translateY(10px);
+                            transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+                        }
+                        
+                        .description-inner.active {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                        
+                        /* Responsive adjustments */
+                        @media (max-width: 768px) {
+                            .main-image-container {
+                                height: 350px;
+                            }
+                            
+                            .zoom-result {
+                                display: none !important; /* Disable zoom result on mobile */
+                            }
+                        }
+
                         /* Styles for color selection in the second product section */
                         .color-option2.selected {
                             border: 2px solid #000 !important;
@@ -486,40 +1117,6 @@
                             background-color: #000;
                             color: #fff;
                             border-color: #000;
-                        }
-
-                        /* Image zoom effect styles */
-                        .image-container {
-                            position: relative;
-                            overflow: hidden;
-                            border-radius: 0.5rem;
-                            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                        }
-
-                        #mainImage {
-                            transition: transform 0.5s ease;
-                            transform-origin: center center;
-                            will-change: transform;
-                        }
-
-                        .image-container:hover #mainImage {
-                            transform: scale(1.2);
-                        }
-
-                        .image-container::after {
-                            content: '';
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            right: 0;
-                            bottom: 0;
-                            background: rgba(0, 0, 0, 0.03);
-                            opacity: 0;
-                            transition: opacity 0.3s ease;
-                        }
-
-                        .image-container:hover::after {
-                            opacity: 1;
                         }
                     </style>
 
@@ -583,123 +1180,6 @@
                             </table>
                         </div>
                     </div>
-
-                    <script>
-                        function selectColor(el, name) {
-                            document.querySelectorAll('.color-option').forEach(e => e.classList.remove('selected'));
-                            el.classList.add('selected');
-                            const label = document.getElementById('selectedColor');
-                            if (label) label.innerText = name;
-                            updateSelectedVariant();
-                        }
-
-                        function selectSize(el, name) {
-                            document.querySelectorAll('.size-option').forEach(e => e.classList.remove('selected'));
-                            el.classList.add('selected');
-                            const label = document.getElementById('selectedSize');
-                            if (label) label.innerText = name;
-                            updateSelectedVariant();
-                        }
-
-                        function adjustQuantity(change) {
-                            const display = document.getElementById('quantityDisplay');
-                            let val = parseInt(display.innerText);
-                            val = Math.max(1, val + change);
-                            display.innerText = val;
-
-                            // Update quantity for both forms
-                            document.getElementById('quantityInput').value = val;
-                            document.getElementById('cartQuantityInput').value = val;
-
-                        }
-
-                        function updateSelectedVariant() {
-                            if (!variants || variants.length === 0) {
-                                console.warn("Không có variants để xử lý.");
-                                return;
-                            }
-
-                            const selectedColorId = document.querySelector('.color-option.selected')?.dataset.colorId;
-                            const selectedSizeId = document.querySelector('.size-option.selected')?.dataset.sizeId;
-                            const buyNowButton = document.getElementById('buyNowButton');
-
-                            // Disable BUY NOW button by default
-                            buyNowButton.disabled = true;
-
-                            if (selectedColorId && selectedSizeId) {
-                                const found = variants.find(v =>
-                                    v.color.colorId == selectedColorId && v.size.sizeId == selectedSizeId
-                                );
-                                if (found) {
-                                    document.getElementById('selectedVariantId').value = found.productVariantId;
-                                    document.getElementById('cartVariantId').value = found.productVariantId;
-
-                                    // Enable BUY NOW button if variant is found
-                                    buyNowButton.disabled = false;
-                                } else {
-                                    alert("Tổ hợp size & màu này không có sẵn!");
-                                }
-                            }
-
-                        }
-
-                        // Add event listeners when the document is fully loaded
-                        document.addEventListener('DOMContentLoaded', function () {
-                            // Xử lý khi trang vừa được tải
-                            try {
-                                const rawJson = document.getElementById("variantsData").textContent.trim();
-                                variants = JSON.parse(rawJson);
-
-
-                                // Kiểm tra tình trạng hàng hóa khi trang được tải
-                                checkInitialStockStatus();
-                            } catch (e) {
-                                console.error("Lỗi khi parse variantsJson:", e);
-                            }
-
-                            // Buy Now form submission
-                            document.getElementById('buyNowForm').addEventListener('submit', function (e) {
-                                // Ensure values are up to date
-                                updateSelectedVariant();
-
-                                const variantInput = document.getElementById('selectedVariantId');
-                                const quantityInput = document.getElementById('quantityInput');
-                                const quantityValue = parseInt(document.getElementById('quantityDisplay').textContent);
-
-                                // Update quantity one more time to be sure
-                                quantityInput.value = quantityValue;
-
-
-
-                                if (!variantInput.value) {
-                                    e.preventDefault();
-                                    alert('Vui lòng chọn đầy đủ màu sắc và kích thước!');
-                                    return false;
-                                }
-
-                                // Extra validation to ensure quantity is valid
-                                if (isNaN(parseInt(quantityInput.value)) || parseInt(quantityInput.value) < 1) {
-                                    e.preventDefault();
-                                    alert('Số lượng không hợp lệ');
-                                    return false;
-                                }
-
-                                return true;
-                            });
-
-                            // Add to Cart form submission
-                            document.getElementById('addToCartForm').addEventListener('submit', function (e) {
-                                updateSelectedVariant(); // Update variant ID when form is submitted
-
-                                const variantInput = document.getElementById('cartVariantId');
-
-                                if (!variantInput.value) {
-                                    e.preventDefault();
-                                    alert('Vui lòng chọn đầy đủ màu sắc và kích thước!');
-                                }
-                            });
-                        });
-                    </script>
                 </body>
 
                 </html>

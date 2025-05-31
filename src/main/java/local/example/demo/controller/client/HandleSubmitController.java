@@ -117,8 +117,8 @@ public class HandleSubmitController {
         }
         
         // Validate payment method
-        if (orderData.getPayment_id() == null || (orderData.getPayment_id() != 1 && orderData.getPayment_id() != 2)) {
-            errors.put("payment_id", "Valid payment method is required (1 for online, 2 for COD)");
+        if (orderData.getPayment_id() == null || (orderData.getPayment_id() != 1 && orderData.getPayment_id() != 2 && orderData.getPayment_id() != 3)) {
+            errors.put("payment_id", "Valid payment method is required (1 for VNPAY, 2 for COD, 3 for MoMo)");
         }
         
         // Validate total amount
@@ -167,8 +167,14 @@ public class HandleSubmitController {
             errors.put("DistrictId", "Valid district ID is required");
         }
         
-        if (orderData.getWardId() == null || orderData.getWardId().trim().isEmpty()) {
+        // Fix for WardId validation to handle different data types
+        if (orderData.getWardId() == null) {
             errors.put("WardId", "Ward ID is required");
+        } else {
+            String wardIdStr = String.valueOf(orderData.getWardId());
+            if (wardIdStr.trim().isEmpty()) {
+                errors.put("WardId", "Ward ID is required");
+            }
         }
         
         return errors;

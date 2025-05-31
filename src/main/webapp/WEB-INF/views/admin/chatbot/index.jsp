@@ -203,6 +203,23 @@
                                             <div class="flex items-center mt-1">
                                                 <i class="fas fa-vector-square mr-1"></i> Vector dimensions: 768
                                             </div>
+                                            
+                                            <div class="mt-3 border-t border-gray-200 pt-3">
+                                                <h4 class="font-medium text-gray-700">Metadata Storage Settings</h4>
+                                                <div id="metadata-status" class="text-sm text-gray-600 my-2">
+                                                    Checking metadata storage status...
+                                                </div>
+                                                <div class="flex space-x-2 mt-2">
+                                                    <button id="enable-metadata" 
+                                                        class="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
+                                                        <i class="fas fa-check mr-1"></i> Enable Disk Storage
+                                                    </button>
+                                                    <button id="disable-metadata" 
+                                                        class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1">
+                                                        <i class="fas fa-times mr-1"></i> Disable Disk Storage
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -377,19 +394,96 @@
                                 element.removeClass("hidden bg-green-100 bg-red-100 bg-blue-100");
 
                                 if (type === "success") {
-                                    element.addClass("bg-green-100 text-green-800");
-                                    element.html('<i class="fas fa-check-circle mr-2"></i>' + message);
+                                    element.addClass("bg-green-100 text-green-800 p-3 rounded");
+                                    element.html('<i class="fas fa-check-circle mr-2"></i> ' + message);
                                 } else if (type === "error") {
-                                    element.addClass("bg-red-100 text-red-800");
-                                    element.html('<i class="fas fa-exclamation-circle mr-2"></i>' + message);
-                                } else if (type === "info") {
-                                    element.addClass("bg-blue-100 text-blue-800");
-                                    element.html('<i class="fas fa-info-circle mr-2"></i>' + message);
+                                    element.addClass("bg-red-100 text-red-800 p-3 rounded");
+                                    element.html('<i class="fas fa-exclamation-circle mr-2"></i> ' + message);
+                                } else {
+                                    element.addClass("bg-blue-100 text-blue-800 p-3 rounded");
+                                    element.html('<i class="fas fa-info-circle mr-2"></i> ' + message);
                                 }
-
-                                element.removeClass("hidden");
-                                element.addClass("p-4 rounded-md");
                             }
+                            
+                            // Check metadata storage status on page load
+                            function checkMetadataStatus() {
+                                $.ajax({
+                                    url: contextPath + "/admin/chatbot/metadata/save-to-disk/status",
+                                    type: "GET",
+                                    success: function(response) {
+                                        if (response.success) {
+                                            updateMetadataStatus(response.enabled);
+                                        } else {
+                                            $("#metadata-status").html('<span class="text-red-600">Error: ' + response.message + '</span>');
+                                        }
+                                    },
+                                    error: function(xhr, status, error) {
+                                        $("#metadata-status").html('<span class="text-red-600">Error checking status: ' + error + '</span>');
+                                    }
+                                });
+                            }
+                            
+                            // Update the UI based on metadata status
+                            function updateMetadataStatus(isEnabled) {
+                                if (isEnabled) {
+                                    $("#metadata-status").html(
+                                        '<span class="text-green-600"><i class="fas fa-check-circle mr-1"></i> Metadata disk storage is <strong>enabled</strong></span>'
+                                    );
+                                    $("#enable-metadata").prop("disabled", true).addClass("opacity-50");
+                                    $("#disable-metadata").prop("disabled", false).removeClass("opacity-50");
+                                } else {
+                                    $("#metadata-status").html(
+                                        '<span class="text-gray-600"><i class="fas fa-times-circle mr-1"></i> Metadata disk storage is <strong>disabled</strong></span>'
+                                    );
+                                    $("#enable-metadata").prop("disabled", false).removeClass("opacity-50");
+                                    $("#disable-metadata").prop("disabled", true).addClass("opacity-50");
+                                }
+                            }
+                            
+                            // Enable metadata storage
+                            $("#enable-metadata").click(function() {
+                                $("#metadata-status").html('<span class="text-blue-600"><i class="fas fa-spinner fa-spin mr-1"></i> Enabling metadata storage...</span>');
+                                
+                                $.ajax({
+                                    url: contextPath + "/admin/chatbot/metadata/save-to-disk",
+                                    type: "POST",
+                                    data: { enable: true },
+                                    success: function(response) {
+                                        if (response.success) {
+                                            updateMetadataStatus(true);
+                                        } else {
+                                            $("#metadata-status").html('<span class="text-red-600">Error: ' + response.message + '</span>');
+                                        }
+                                    },
+                                    error: function(xhr, status, error) {
+                                        $("#metadata-status").html('<span class="text-red-600">Error enabling storage: ' + error + '</span>');
+                                    }
+                                });
+                            });
+                            
+                            // Disable metadata storage
+                            $("#disable-metadata").click(function() {
+                                $("#metadata-status").html('<span class="text-blue-600"><i class="fas fa-spinner fa-spin mr-1"></i> Disabling metadata storage...</span>');
+                                
+                                $.ajax({
+                                    url: contextPath + "/admin/chatbot/metadata/save-to-disk",
+                                    type: "POST",
+                                    data: { enable: false },
+                                    success: function(response) {
+                                        if (response.success) {
+                                            updateMetadataStatus(false);
+                                        } else {
+                                            $("#metadata-status").html('<span class="text-red-600">Error: ' + response.message + '</span>');
+                                        }
+                                    },
+                                    error: function(xhr, status, error) {
+                                        $("#metadata-status").html('<span class="text-red-600">Error disabling storage: ' + error + '</span>');
+                                    }
+                                });
+                            });
+                            
+                            // Check metadata status on page load
+                            checkMetadataStatus();
                         });
                     </script>
                 </body>
