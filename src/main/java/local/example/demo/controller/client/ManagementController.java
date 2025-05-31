@@ -6,6 +6,7 @@ import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
 import local.example.demo.service.CustomerService;
 import local.example.demo.service.OrderService;
+import local.example.demo.service.ReviewService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +24,10 @@ import jakarta.validation.Valid;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/management")
@@ -36,6 +40,9 @@ public class ManagementController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/profile")
     public String getProfilePage(Model model, HttpSession session) {
@@ -205,8 +212,27 @@ public class ManagementController {
             return "client/auth/error";
         }
 
+        // Lấy danh sách sản phẩm đã được đánh giá bởi khách hàng
+        Set<Long> reviewedProducts = new HashSet<>();
+        
+        // Lấy tất cả productId từ orderDetails
+        List<Long> productIds = orderDetails.stream()
+                .map(OrderDetailDTO::getProductId)
+                .collect(Collectors.toList());
+        
+        // Kiểm tra từng sản phẩm xem đã được đánh giá chưa
+        for (Long productId : productIds) {
+            if (reviewService.hasCustomerReviewedProduct(customer.getCustomerId(), productId.intValue())) {
+                reviewedProducts.add(productId);
+            }
+        }
+        
+        System.out.println("Sản phẩm đã được đánh giá: " + reviewedProducts);
+        
         System.out.println("Lấy chi tiết đơn hàng thành công cho orderId: " + orderId);
+        System.out.println("orderDetails: " + orderDetails);
         model.addAttribute("orderDetails", orderDetails);
+        model.addAttribute("reviewedProducts", reviewedProducts);
         return "client/auth/order-details";
     }
 }

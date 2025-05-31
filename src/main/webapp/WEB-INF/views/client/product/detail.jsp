@@ -1123,7 +1123,7 @@
                     <!-- footer -->
                     <jsp:include page="../layout/footer.jsp" />
 
-                    <div class="container mx-auto px-4 py-8 bg-white">
+                    <div class="container mx-auto px-4 py-8 bg-white hidden">
                         <h2 class="text-2xl font-bold mb-4">Danh sách hình ảnh sản phẩm</h2>
                         <div class="overflow-x-auto">
                             <table class="min-w-full bg-white border border-gray-300">

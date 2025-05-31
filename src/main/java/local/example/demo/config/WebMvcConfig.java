@@ -8,7 +8,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -17,11 +16,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     // Bean định nghĩa LocaleResolver để xác định ngôn ngữ hiện tại của người dùng
     @Bean
     public LocaleResolver localeResolver() {
-        SessionLocaleResolver slr = new SessionLocaleResolver();
+        // Using our custom AutoLocaleResolver that automatically detects browser language
+        AutoLocaleResolver resolver = new AutoLocaleResolver();
         
         // Thiết lập ngôn ngữ mặc định là tiếng Anh
-        slr.setDefaultLocale(Locale.ENGLISH);
-        return slr;
+        resolver.setDefaultLocale(Locale.ENGLISH);
+        return resolver;
     }
 
     // Interceptor để bắt tham số "lang" trên URL và thay đổi ngôn ngữ tương ứng

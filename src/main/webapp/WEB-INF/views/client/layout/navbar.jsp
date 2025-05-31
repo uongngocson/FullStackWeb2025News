@@ -525,17 +525,32 @@
                                 </c:if>
                             </div>
                             <!-- language -->
-                            <div class="user flex gap-2 sm:gap-10 items-center justify-center">
-                                <a class="flex gap-2 ${pageContext.response.locale == 'vi' ? 'font-bold' : ''}"
-                                    href="?lang=vi">
-                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/vi.jpg"
-                                        alt=""> VN
-                                </a>
-                                <a class="flex gap-2 ${pageContext.response.locale == 'en' ? 'font-bold' : ''}"
-                                    href="?lang=en">
-                                    <img src="${pageContext.request.contextPath}/resources/assets/client/images/en.jpg"
-                                        alt=""> EN
-                                </a>
+                            <div class="user flex gap-2 sm:gap-6 items-center justify-center">
+                                <div class="language-selector relative">
+                                    <button id="languageDropdownButton" class="flex items-center gap-2 focus:outline-none">
+                                        <c:choose>
+                                            <c:when test="${pageContext.response.locale.language == 'vi'}">
+                                                <img src="${pageContext.request.contextPath}/resources/assets/client/images/vi.jpg" alt="Vietnamese" class="w-5 h-5 rounded-sm">
+                                                <span class="hidden sm:inline">VN</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <img src="${pageContext.request.contextPath}/resources/assets/client/images/en.jpg" alt="English" class="w-5 h-5 rounded-sm">
+                                                <span class="hidden sm:inline">EN</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <i class="uil uil-angle-down text-xs"></i>
+                                    </button>
+                                    <div id="languageDropdown" class="absolute right-0 mt-2 bg-white rounded-md shadow-lg py-1 z-50 hidden">
+                                        <a href="javascript:void(0)" onclick="changeLanguage('vi')" class="language-option flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 ${pageContext.response.locale.language == 'vi' ? 'font-bold bg-gray-50' : ''}">
+                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/vi.jpg" alt="Vietnamese" class="w-5 h-5 rounded-sm">
+                                            <span>Tiếng Việt</span>
+                                        </a>
+                                        <a href="javascript:void(0)" onclick="changeLanguage('en')" class="language-option flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 ${pageContext.response.locale.language == 'en' ? 'font-bold bg-gray-50' : ''}">
+                                            <img src="${pageContext.request.contextPath}/resources/assets/client/images/en.jpg" alt="English" class="w-5 h-5 rounded-sm">
+                                            <span>English</span>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </nav>
                     </header>
@@ -912,6 +927,62 @@
                             localStorage.removeItem('ghn_selected_address_id');
                             localStorage.removeItem('ghn_customer_id');
                             console.log('GHN address data cleared from localStorage');
+                        }
+                    </script>
+                    <script>
+                        // Language dropdown toggle
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const languageButton = document.getElementById('languageDropdownButton');
+                            const languageDropdown = document.getElementById('languageDropdown');
+                            
+                            if (languageButton && languageDropdown) {
+                                // Toggle dropdown
+                                languageButton.addEventListener('click', function(e) {
+                                    e.stopPropagation();
+                                    languageDropdown.classList.toggle('hidden');
+                                });
+                                
+                                // Close dropdown when clicking outside
+                                document.addEventListener('click', function() {
+                                    languageDropdown.classList.add('hidden');
+                                });
+                                
+                                // Prevent dropdown from closing when clicking inside it
+                                languageDropdown.addEventListener('click', function(e) {
+                                    e.stopPropagation();
+                                });
+                            }
+                        });
+                        
+                        // Function to change language
+                        function changeLanguage(lang) {
+                            // Create a hidden form to submit the language change
+                            const form = document.createElement('form');
+                            form.method = 'GET';
+                            form.action = window.location.pathname;
+                            
+                            // Add current query parameters except lang
+                            const urlParams = new URLSearchParams(window.location.search);
+                            urlParams.delete('lang');
+                            
+                            urlParams.forEach((value, key) => {
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = key;
+                                input.value = value;
+                                form.appendChild(input);
+                            });
+                            
+                            // Add the lang parameter
+                            const langInput = document.createElement('input');
+                            langInput.type = 'hidden';
+                            langInput.name = 'lang';
+                            langInput.value = lang;
+                            form.appendChild(langInput);
+                            
+                            // Submit the form
+                            document.body.appendChild(form);
+                            form.submit();
                         }
                     </script>
                 </body>

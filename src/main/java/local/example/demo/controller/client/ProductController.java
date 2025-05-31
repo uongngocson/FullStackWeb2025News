@@ -43,6 +43,7 @@ import local.example.demo.service.ProductVariantService;
 import local.example.demo.service.SizeService;
 import lombok.RequiredArgsConstructor;
 import local.example.demo.service.ProductImageService;
+import local.example.demo.service.ReviewService;
 
 @RequiredArgsConstructor
 @Controller
@@ -55,6 +56,7 @@ public class ProductController {
     private final BrandService brandService;
     private final ProductVariantService productVariantService;
     private final ProductImageService productImageService;
+    private final ReviewService reviewService;
 
     @GetMapping("category")
     public String getProductCategoryPage(Model model,
@@ -262,6 +264,26 @@ public class ProductController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        
+        // Lấy danh sách đánh giá cho sản phẩm này
+        List<Review> reviews = reviewService.getReviewsByProductId(productId);
+        
+        // Tính toán số lượng đánh giá cho mỗi mức rating (1-5)
+        Map<Integer, Long> ratingCounts = new HashMap<>();
+        for (int i = 1; i <= 5; i++) {
+            final int rating = i;
+            long count = reviews.stream().filter(r -> r.getRating() == rating).count();
+            ratingCounts.put(i, count);
+        }
+        
+        // Tính điểm đánh giá trung bình
+        double averageRating = 0;
+        if (!reviews.isEmpty()) {
+            averageRating = reviews.stream()
+                    .mapToInt(Review::getRating)
+                    .average()
+                    .orElse(0);
+        }
 
         model.addAttribute("product", product);
         model.addAttribute("variants", variants);
@@ -269,6 +291,12 @@ public class ProductController {
         model.addAttribute("sizes", sizes);
         model.addAttribute("variantsJson", variantsJson);
         model.addAttribute("productImages", productImages); // Thêm danh sách ảnh vào model
+        
+        // Thêm dữ liệu đánh giá vào model
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewCount", reviews.size());
+        model.addAttribute("averageRating", Math.round(averageRating * 10.0) / 10.0); // Làm tròn 1 chữ số thập phân
+        model.addAttribute("ratingCounts", ratingCounts);
 
         return "client/product/detail";
     }
