@@ -18,7 +18,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
-        
+
         // Thiết lập ngôn ngữ mặc định là tiếng Anh
         slr.setDefaultLocale(Locale.ENGLISH);
         return slr;
@@ -27,13 +27,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
     // Interceptor để bắt tham số "lang" trên URL và thay đổi ngôn ngữ tương ứng
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();  
+        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         // Cấu hình tên tham số truyền trên URL để thay đổi ngôn ngữ, ví dụ ?lang=vi
         lci.setParamName("lang");
         return lci;
     }
 
-    // Đăng ký interceptor để Spring có thể xử lý thay đổi locale khi có tham số lang
+    // Đăng ký interceptor để Spring có thể xử lý thay đổi locale khi có tham số
+    // lang
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());

@@ -84,7 +84,8 @@ public class SecurityConfig {
                                                                 "/chatbot/**",
                                                                 "/chatbot/send",
                                                                 "/chatbot/demo",
-                                                                "/forwardPassword")
+                                                                "/forwardPassword",
+                                                                "api/translate/**")
                                                 .permitAll()
 
                                                 .requestMatchers("/admin/**").hasRole("ADMIN")
