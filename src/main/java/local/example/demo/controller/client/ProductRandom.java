@@ -44,7 +44,7 @@ public class ProductRandom {
         model.addAttribute("searchPageSize", pageSize);
         model.addAttribute("isSearchResult", true);
 
-        // Return the home view instead of a separate search view
-        return "client/home";
+        // Return the dedicated search view
+        return "client/products/search";
     }
 }

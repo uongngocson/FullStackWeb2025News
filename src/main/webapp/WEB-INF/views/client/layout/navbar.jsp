@@ -568,6 +568,7 @@
                             const searchDropdown = document.querySelector('.search-more .flex.flex-col.min-w-\\[350px\\]');
                             let debounceTimer;
                             let dropdownVisible = false;
+                            const contextPath = '${pageContext.request.contextPath}';
 
                             if (searchInput) {
                                 // Show/hide dropdown based on focus
@@ -597,16 +598,14 @@
                                             showDropdown();
                                             // Fetch dropdown search results
                                             fetchDropdownResults(keyword);
-                                            // Also perform main search for page content
-                                            performSearch(keyword);
+                                            
+                                            // Only perform main search if we're on the search page
+                                            if (window.location.href.includes('products/search')) {
+                                                performSearch(keyword, false);
+                                            }
                                         } else if (keyword.length === 0) {
                                             // Hide dropdown when search is empty
                                             hideDropdown();
-
-                                            if (window.location.href.includes('products/search')) {
-                                                // Redirect to home if search is empty and we're on search page
-                                                window.location.href = '/';
-                                            }
                                         } else {
                                             // Hide dropdown when less than 2 characters
                                             hideDropdown();
@@ -614,14 +613,14 @@
                                     }, 300);
                                 });
 
-                                // Prevent the default form submission
+                                // Handle form submission
                                 searchForm.addEventListener('submit', function (e) {
+                                    e.preventDefault(); // Always prevent default form submission
                                     const keyword = searchInput.value.trim();
+                                    
                                     if (keyword.length > 0) {
-                                        e.preventDefault();
-                                        performSearch(keyword);
-                                        // Hide dropdown when form is submitted
-                                        hideDropdown();
+                                        // Redirect to search page with the keyword
+                                        window.location.href = contextPath + '/products/search?keyword=' + encodeURIComponent(keyword);
                                     }
                                 });
                             }
@@ -645,7 +644,7 @@
 
                             function fetchDropdownResults(keyword) {
                                 // Make AJAX request to search API for dropdown results
-                                fetch(`${pageContext.request.contextPath}/api/products/search?keyword=\${encodeURIComponent(keyword)}&limit=4`)
+                                fetch(contextPath + '/api/products/search?keyword=' + encodeURIComponent(keyword) + '&limit=4')
                                     .then(response => {
                                         if (!response.ok) {
                                             throw new Error('Network response was not ok');
@@ -685,19 +684,24 @@
 
                                     // Loop through up to 4 products
                                     data.products.slice(0, 4).forEach(product => {
+                                        const imageUrl = product.image_url != null ? product.image_url : 'https://via.placeholder.com/60';
+                                        const productName = product.product_name;
+                                        const productPrice = product.price;
+                                        const productId = product.product_id;
+                                        
                                         resultsHTML += `
                                             <div class="flex items-center bg-white p-4 rounded-lg shadow-md hover:shadow-lg hover:scale-105 hover:bg-gray-100 transition-all duration-300 relative group">
-                                                <img src="\${product.image_url != null ? product.image_url : 'https://via.placeholder.com/60'}" 
-                                                    alt="\${product.product_name}"
+                                                <img src="${'${imageUrl}'}" 
+                                                    alt="${'${productName}'}"
                                                     class="w-16 h-16 object-cover rounded-md mr-4">
                                                 <div class="flex flex-col">
-                                                    <span class="text-lg font-semibold text-gray-800">\${product.product_name}</span>
-                                                    <span class="text-sm text-gray-500 mt-1">$\${product.price}</span>
+                                                    <span class="text-lg font-semibold text-gray-800">${'${productName}'}</span>
+                                                    <span class="text-sm text-gray-500 mt-1">$${'${productPrice}'}</span>
                                                 </div>
                                                 
                                                 <!-- Quick View Button -->
                                                 <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 bg-black bg-opacity-50 rounded-lg">
-                                                    <a href="${pageContext.request.contextPath}/product/detail?id=\${product.product_id}"
+                                                    <a href="${'${contextPath}'}/product/detail?id=${'${productId}'}"
                                                         class="bg-white px-4 py-2 text-sm tracking-wider border border-black hover:bg-black hover:text-white transition duration-300 rounded">
                                                         Quick View
                                                     </a>
@@ -711,16 +715,24 @@
                                 }
                             }
 
-                            function performSearch(keyword) {
+                            function performSearch(keyword, shouldUpdateUrl = true) {
                                 // Show loading indicator
-                                const searchSection = document.querySelector('section.py-20.max-w-7xl.mx-auto.px-6');
+                                const searchSection = document.querySelector('.search-results-container');
                                 if (searchSection) {
                                     // Add loading state if needed
                                     searchSection.classList.add('loading');
+                                    searchSection.innerHTML = '<div class="text-center py-8"><p>Loading results...</p></div>';
+                                }
+
+                                // Update the URL to reflect the search if requested
+                                if (shouldUpdateUrl) {
+                                    const url = new URL(window.location.href);
+                                    url.searchParams.set('keyword', keyword);
+                                    window.history.pushState({}, '', url);
                                 }
 
                                 // Make AJAX request to search API
-                                fetch(`${pageContext.request.contextPath}/api/products/search?keyword=\${encodeURIComponent(keyword)}`)
+                                fetch(contextPath + '/api/products/search?keyword=' + encodeURIComponent(keyword))
                                     .then(response => {
                                         if (!response.ok) {
                                             throw new Error('Network response was not ok');
@@ -728,29 +740,16 @@
                                         return response.json();
                                     })
                                     .then(data => {
-                                        // Update the URL to reflect the search
-                                        const url = new URL(window.location.href);
-                                        url.pathname = '${pageContext.request.contextPath}/products/search';
-                                        url.searchParams.set('keyword', keyword);
-                                        window.history.pushState({}, '', url);
-
                                         // Update page content with search results
                                         updateSearchResults(data, keyword);
                                     })
                                     .catch(error => {
                                         console.error('Error fetching search results:', error);
-                                        // Handle errors gracefully - show error message instead of blank page
+                                        // Handle errors gracefully - show error message
                                         if (searchSection) {
                                             searchSection.innerHTML = `
-                                                <div class="text-center mb-16">
-                                                    <h2 class="text-3xl font-light mb-4">Search Results</h2>
-                                                    <div class="w-20 h-px bg-black mx-auto"></div>
-                                                    <p class="mt-4 text-red-500">An error occurred while searching. Please try again.</p>
-                                                </div>
-                                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                                                    <div class="col-span-4 text-center py-10">
-                                                        <p>No results to display. Please try a different search term.</p>
-                                                    </div>
+                                                <div class="text-center py-8">
+                                                    <p class="text-red-500">An error occurred while searching. Please try again.</p>
                                                 </div>
                                             `;
                                         }
@@ -765,26 +764,10 @@
 
                             function updateSearchResults(data, keyword) {
                                 // Get the section where we'll display search results
-                                const searchSection = document.querySelector('section.py-20.max-w-7xl.mx-auto.px-6');
+                                const searchSection = document.querySelector('.search-results-container');
 
                                 if (!searchSection) {
-                                    // If we're not on the home page with the search section, redirect
-                                    window.location.href = `${pageContext.request.contextPath}/products/search?keyword=\${encodeURIComponent(keyword)}`;
-                                    return;
-                                }
-
-                                // Show search results and hide regular content if not already a search page
-                                if (!window.location.href.includes('products/search')) {
-                                    // Find magazine or any non-search content
-                                    const originalContent = searchSection.innerHTML;
-                                    // Store original content in data attribute if not already stored
-                                    if (!searchSection.dataset.originalContent) {
-                                        searchSection.dataset.originalContent = originalContent;
-                                    }
-                                } else if (searchSection.dataset.originalContent && keyword.length === 0) {
-                                    // Restore original content if search is cleared
-                                    searchSection.innerHTML = searchSection.dataset.originalContent;
-                                    delete searchSection.dataset.originalContent;
+                                    console.error('Search results container not found');
                                     return;
                                 }
 
@@ -792,12 +775,11 @@
                                 let searchResultsHTML = `
                                     <div class="text-center mb-16">
                                         <h2 class="text-3xl font-light mb-4">
-                                            Search Results
-                                            \${keyword ? ' for: "' + keyword + '"' : ''}
+                                            Search Results for: "${'${keyword}'}"
                                         </h2>
                                         <div class="w-20 h-px bg-black mx-auto"></div>
                                         <p class="mt-4">
-                                            Found \${data.totalRecords} results
+                                            Found ${'${data.totalRecords}'} results
                                         </p>
                                     </div>
                                 `;
@@ -815,29 +797,36 @@
                                 } else {
                                     // Display products
                                     data.products.forEach(product => {
+                                        const imageUrl = product.image_url || 'https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/e3956afad4ca48a3a33f6ee339a93a31_9366/manchester-united-ubp-tee.jpg';
+                                        const hoverImageUrl = product.image_url || 'https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/170eb3f87f1e44c5ac8599ddb9b19969_9366/manchester-united-ubp-tee.jpg';
+                                        const productName = product.product_name;
+                                        const productPrice = product.price;
+                                        const productId = product.product_id;
+                                        const searchRank = product.search_rank;
+
                                         searchResultsHTML += `
                                             <div class="group border-2 border-transparent hover:border-black transition-colors duration-300 p-2">
                                                 <div class="relative overflow-hidden h-96">
-                                                    <img src="\${product.image_url || 'https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/e3956afad4ca48a3a33f6ee339a93a31_9366/manchester-united-ubp-tee.jpg'}"
-                                                        alt="\${product.product_name}"
+                                                    <img src="${'${imageUrl}'}"
+                                                        alt="${'${productName}'}"
                                                         class="product-primary-image w-full h-full object-cover transition-opacity duration-300 ease-in-out group-hover:opacity-0">
-                                                    <img src="\${product.image_url || 'https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/170eb3f87f1e44c5ac8599ddb9b19969_9366/manchester-united-ubp-tee.jpg'}"
-                                                        alt="\${product.product_name} Hover"
+                                                    <img src="${'${hoverImageUrl}'}"
+                                                        alt="${'${productName}'} Hover"
                                                         class="product-hover-image absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                                                     
                                                     <!-- Quick View Button -->
                                                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                                                        <a href="${pageContext.request.contextPath}/product/detail?id=\${product.product_id}"
+                                                        <a href="${'${contextPath}'}/product/detail?id=${'${productId}'}"
                                                             class="bg-white px-6 py-2 text-sm tracking-wider border border-black hover:bg-black hover:text-white transition duration-300">
                                                             Quick View
                                                         </a>
                                                     </div>
                                                 </div>
                                                 <div class="mt-4 text-center">
-                                                    <h3 class="text-lg font-light">\${product.product_name}</h3>
-                                                    <p class="text-sm text-gray-600">$\${product.price}</p>
+                                                    <h3 class="text-lg font-light">${'${productName}'}</h3>
+                                                    <p class="text-sm text-gray-600">$${'${productPrice}'}</p>
                                                     <p class="text-xs text-gray-500">
-                                                        Rank: \${product.search_rank}
+                                                        Rank: ${'${searchRank}'}
                                                     </p>
                                                 </div>
                                             </div>
@@ -850,6 +839,8 @@
                                 // Add pagination if needed
                                 if (data.totalRecords > data.pageSize) {
                                     const totalPages = Math.ceil(data.totalRecords / data.pageSize);
+                                    const currentPage = data.currentPage;
+                                    const pageSize = data.pageSize;
 
                                     searchResultsHTML += `
                                         <div class="flex justify-center mt-10">
@@ -857,10 +848,12 @@
                                     `;
 
                                     for (let i = 1; i <= totalPages; i++) {
+                                        const isCurrentPage = i == currentPage;
                                         searchResultsHTML += `
-                                            <a href="${pageContext.request.contextPath}/products/search?keyword=\${encodeURIComponent(keyword)}&page=\${i}&size=\${data.pageSize}"
-                                                class="\${i == data.currentPage ? 'bg-black text-white' : 'bg-white text-black'} px-4 py-2 border hover:bg-gray-200 transition">
-                                                \${i}
+                                            <a href="javascript:void(0)" 
+                                               onclick="searchPage(${'${i}'}, ${'${pageSize}'}, '${'${keyword}'}')"
+                                               class="${'${isCurrentPage ? "bg-black text-white" : "bg-white text-black"}'} px-4 py-2 border hover:bg-gray-200 transition">
+                                                ${'${i}'}
                                             </a>
                                         `;
                                     }
@@ -874,6 +867,42 @@
                                 // Update content
                                 searchSection.innerHTML = searchResultsHTML;
                             }
+
+                            // Check if we're on search page and run search
+                            if (window.location.href.includes('products/search')) {
+                                const urlParams = new URLSearchParams(window.location.search);
+                                const keyword = urlParams.get('keyword');
+                                
+                                if (keyword) {
+                                    // Set the search input value
+                                    if (searchInput) {
+                                        searchInput.value = keyword;
+                                    }
+                                    
+                                    // Perform the search
+                                    setTimeout(() => {
+                                        performSearch(keyword, false);
+                                    }, 100);
+                                }
+                            }
+
+                            // Expose search page function globally
+                            window.searchPage = function(page, size, keyword) {
+                                const url = new URL(window.location.href);
+                                url.searchParams.set('keyword', keyword);
+                                url.searchParams.set('page', page);
+                                url.searchParams.set('size', size);
+                                window.history.pushState({}, '', url);
+                                
+                                fetch(contextPath + '/api/products/search?keyword=' + encodeURIComponent(keyword) + '&page=' + page + '&size=' + size)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        updateSearchResults(data, keyword);
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching paginated results:', error);
+                                    });
+                            };
                         });
                     </script>
                     <script>

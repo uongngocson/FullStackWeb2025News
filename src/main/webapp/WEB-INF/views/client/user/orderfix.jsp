@@ -8,6 +8,7 @@
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Checkout | Luxury Boutique</title>
+            <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
             
             <!-- Nhúng dữ liệu từ model vào JavaScript -->
             <script type="text/javascript">
@@ -662,7 +663,7 @@
                                     Cancel
                                 </button>
                                 <button id="save-new-address" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                    <span>Save Address</span>
+                                    <span>Confirm</span>
                                     <span id="save-address-loading" class="hidden ml-2 inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                                 </button>
                             </div>
@@ -694,7 +695,7 @@
                                         <div class="w-3 h-3 rounded-full radio-dot"></div>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="font-semibold text-gray-900">💳 Online Payment</div>
+                                        <div class="font-semibold text-gray-900 flex items-center"><img src="https://play-lh.googleusercontent.com/B1Zi8JrNjFjZKOQ2b5O8M-Or2uY3pSWZa-6-XnDMJ8YTFesdJRsIFhd1KxpqV0f2kg" alt="Vietcombank" class="w-4 h-4 mr-2"> Online Payment VNPAY</div>
                                         <p class="text-sm text-gray-600 mt-1">Pay securely with your credit card or digital wallet</p>
                                     </div>
                                     <div class="text-2xl">🔒</div>
@@ -713,6 +714,19 @@
                                     <div class="text-2xl">💵</div>
                                 </div>
                             </div>
+                            <div id="payment-method-3" class="payment-method p-6 rounded-xl cursor-pointer">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-4">
+                                        <div class="w-3 h-3 rounded-full radio-dot"></div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-gray-900 flex items-center"><img src="https://brandlogos.net/wp-content/uploads/2023/09/momo-logo_brandlogos.net_mtkvq-300x300.png" alt="Momo" class="w-4 h-4 mr-2"> Online Payment MOMO </div>
+                                        <p class="text-sm text-gray-600 mt-1">Pay when you receive your order</p>
+                                    </div>
+                                    <div class="text-2xl">💵</div>
+                                </div>
+                            </div>
+                           
                         </div>
                     </section>
                 </div>
