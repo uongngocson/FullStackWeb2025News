@@ -27,7 +27,7 @@ public class Payment {
 
     // attributes
     @NotBlank(message = "Payment method cannot be blank")
-    private String paymentMethod;
+    private Integer paymentMethod;
 
     @NotBlank(message = "Payment gateway cannot be blank")
     private String paymentGateway;

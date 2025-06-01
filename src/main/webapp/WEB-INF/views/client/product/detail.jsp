@@ -15,7 +15,9 @@
                     <link rel="stylesheet"
                         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                     <link rel="stylesheet" href="${ctx}/resources/assets/client/css/productDetail.css">
-                    <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
+                    <link rel="icon"
+                        href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png"
+                        type="image/x-icon">
 
                     <script>
                         // Create a JavaScript product object from JSP data
@@ -34,6 +36,21 @@
                 </script>
 
                 </head>
+                <div id="google_translate_element"></div>
+
+                <script type="text/javascript">
+                    function googleTranslateElementInit() {
+                        new google.translate.TranslateElement({
+                            pageLanguage: 'vi', // Ngôn ngữ gốc của trang
+                            includedLanguages: 'en,vi,ja,fr,zh-CN', // Các ngôn ngữ muốn hỗ trợ
+                            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                        }, 'google_translate_element');
+                    }
+                </script>
+
+                <script type="text/javascript"
+                    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+                    </script>
 
                 <body class="bg-white">
                     <!-- navbar -->
@@ -47,58 +64,64 @@
                                 <!-- Product Images -->
                                 <div class="w-full md:w-1/2 px-4 mb-8">
                                     <div class="product-gallery">
-                                        <div class="main-image-container relative overflow-hidden rounded-lg shadow-lg mb-4">
-                                        <button id="view3dButton"
-                                            class="absolute top-3 left-3 bg-black bg-opacity-70 hover:bg-opacity-90 text-white p-2 rounded-lg z-10 transition-all duration-300 flex items-center space-x-2 transform hover:scale-105 shadow-lg">
-                                            <i class="fas fa-cube"></i>
-                                            <span class="text-sm font-medium">XEM 3D</span>
-                                        </button>
+                                        <div
+                                            class="main-image-container relative overflow-hidden rounded-lg shadow-lg mb-4">
+                                            <button id="view3dButton"
+                                                class="absolute top-3 left-3 bg-black bg-opacity-70 hover:bg-opacity-90 text-white p-2 rounded-lg z-10 transition-all duration-300 flex items-center space-x-2 transform hover:scale-105 shadow-lg">
+                                                <i class="fas fa-cube"></i>
+                                                <span class="text-sm font-medium">XEM 3D</span>
+                                            </button>
                                             <div class="image-zoom-container" data-product-id="${product.productId}">
-                                        <img src="${product.imageUrl}" alt="${product.productName}"
+                                                <img src="${product.imageUrl}" alt="${product.productName}"
                                                     class="w-full h-auto object-cover transition-transform duration-500 ease-out"
-                                            id="mainImage">
+                                                    id="mainImage">
                                                 <div class="zoom-lens"></div>
-                                    </div>
+                                            </div>
                                             <div class="image-controls absolute bottom-4 right-4 flex space-x-2">
-                                                <button class="bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md transition-all duration-300" id="zoomToggle">
+                                                <button
+                                                    class="bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md transition-all duration-300"
+                                                    id="zoomToggle">
                                                     <i class="fas fa-search-plus"></i>
                                                 </button>
-                                                <button class="bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md transition-all duration-300" id="fullscreenToggle">
+                                                <button
+                                                    class="bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md transition-all duration-300"
+                                                    id="fullscreenToggle">
                                                     <i class="fas fa-expand"></i>
                                                 </button>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="thumbnails-container">
-                                            <button class="gallery-nav-btn prev-btn absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md z-10">
+                                            <button
+                                                class="gallery-nav-btn prev-btn absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md z-10">
                                                 <i class="fas fa-chevron-left"></i>
                                             </button>
-                                            
+
                                             <div class="thumbnails-scroll relative">
                                                 <div class="flex gap-3 py-4 overflow-x-auto thumbnails-track">
-                                        <c:forEach var="image" items="${productImages}" varStatus="status">
+                                                    <c:forEach var="image" items="${productImages}" varStatus="status">
                                                         <div class="thumbnail-wrapper min-w-[72px] sm:min-w-[80px]">
-                                            <img src="${image.imageUrl}"
-                                                alt="${product.productName} - Image ${status.index + 1}"
+                                                            <img src="${image.imageUrl}"
+                                                                alt="${product.productName} - Image ${status.index + 1}"
                                                                 class="w-full aspect-square object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300 thumbnail-img"
                                                                 data-index="${status.index}"
                                                                 onclick="changeImage(this.src, this)">
                                                         </div>
-                                        </c:forEach>
+                                                    </c:forEach>
 
-                                        <c:if test="${empty productImages}">
-                                            <!-- Fallback images if no product images are available -->
+                                                    <c:if test="${empty productImages}">
+                                                        <!-- Fallback images if no product images are available -->
                                                         <div class="thumbnail-wrapper min-w-[72px] sm:min-w-[80px]">
-                                            <img src="${product.imageUrl}" alt="${product.productName}"
+                                                            <img src="${product.imageUrl}" alt="${product.productName}"
                                                                 class="w-full aspect-square object-cover rounded-md cursor-pointer opacity-100 transition duration-300 thumbnail-img active"
-                                                                data-index="0"
-                                                                onclick="changeImage(this.src, this)">
+                                                                data-index="0" onclick="changeImage(this.src, this)">
                                                         </div>
-                                        </c:if>
+                                                    </c:if>
                                                 </div>
                                             </div>
 
-                                            <button class="gallery-nav-btn next-btn absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md z-10">
+                                            <button
+                                                class="gallery-nav-btn next-btn absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md z-10">
                                                 <i class="fas fa-chevron-right"></i>
                                             </button>
                                         </div>
@@ -151,7 +174,7 @@
                                         <span class="ml-2 text-gray-600">4.7 | ${product.quantitySold} sold</span>
                                     </div>
 
-                                   
+
 
                                     <div class="mb-6">
                                         <h3 class="text-lg font-semibold mb-2">MÀU SẮC: <span id="selectedColor2"
@@ -210,7 +233,8 @@
                                         </form>
 
                                         <!-- Nút BUY NOW -->
-                                        <form action="${ctx}/order/orderfix" method="get" id="buyNowForm2" class="flex-1">
+                                        <form action="${ctx}/order/orderfix" method="get" id="buyNowForm2"
+                                            class="flex-1">
                                             <input type="hidden" name="variantId" id="selectedVariantId2" />
                                             <input type="hidden" name="quantity" id="quantityInput2" value="1" />
                                             <button type="submit" id="buyNowButton2" disabled
@@ -234,19 +258,23 @@
                                                     class="fab fa-pinterest-p"></i></a>
                                         </div>
                                     </div>
-                                     <!-- Collapsible Description Section -->
-                                     <div class="product-description-container mb-6 border border-gray-200 rounded-lg overflow-hidden">
-                                        <button id="descriptionToggle" class="description-toggle w-full flex items-center justify-between bg-gray-50 px-4 py-3 hover:bg-gray-100 transition-all duration-300">
+                                    <!-- Collapsible Description Section -->
+                                    <div
+                                        class="product-description-container mb-6 border border-gray-200 rounded-lg overflow-hidden">
+                                        <button id="descriptionToggle"
+                                            class="description-toggle w-full flex items-center justify-between bg-gray-50 px-4 py-3 hover:bg-gray-100 transition-all duration-300">
                                             <span class="font-semibold text-gray-800">MÔ TẢ SẢN PHẨM</span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform transition-transform duration-300 description-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-5 w-5 transform transition-transform duration-300 description-arrow"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 9l-7 7-7-7" />
                                             </svg>
                                         </button>
-                                        <div id="descriptionContent" class="description-content px-4 overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+                                        <div id="descriptionContent"
+                                            class="description-content px-4 overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
                                             <div class="py-4 description-inner">
                                                 <p class="text-gray-700 whitespace-pre-line">${product.description}</p>
-                                                
-                                                
                                             </div>
                                         </div>
                                     </div>
@@ -261,18 +289,18 @@
                                 // Update main image
                                 const mainImage = document.getElementById('mainImage');
                                 mainImage.src = src;
-                                
+
                                 // Update active thumbnail
                                 document.querySelectorAll('.thumbnail-img').forEach(img => {
                                     img.classList.remove('active', 'opacity-100');
                                     img.classList.add('opacity-60');
                                 });
-                                
+
                                 if (thumbnailElement) {
                                     thumbnailElement.classList.add('active', 'opacity-100');
                                     thumbnailElement.classList.remove('opacity-60');
                                 }
-                                
+
                                 // Reset zoom
                                 if (window.isZoomActive) {
                                     toggleZoom();
@@ -284,52 +312,52 @@
                                 // Initialize variables
                                 window.isZoomActive = false;
                                 window.isFullscreen = false;
-                                
+
                                 // 3D Button
                                 document.getElementById('view3dButton').addEventListener('click', function () {
                                     const productId = document.querySelector('.image-zoom-container').getAttribute('data-product-id');
                                     window.location.href = "/product/image3d?id=" + productId;
                                 });
-                                
+
                                 // Initialize gallery navigation
                                 initGalleryNavigation();
-                                
+
                                 // Initialize zoom functionality
                                 initZoomFeature();
-                                
+
                                 // Initialize fullscreen feature
                                 initFullscreenFeature();
-                                
+
                                 // Set first thumbnail as active by default
                                 const firstThumbnail = document.querySelector('.thumbnail-img');
                                 if (firstThumbnail) {
                                     firstThumbnail.classList.add('active', 'opacity-100');
                                     firstThumbnail.classList.remove('opacity-60');
                                 }
-                                
+
                                 // Initialize collapsible description
                                 initCollapsibleDescription();
                             });
-                            
+
                             function initCollapsibleDescription() {
                                 const toggle = document.getElementById('descriptionToggle');
                                 const content = document.getElementById('descriptionContent');
                                 const arrow = document.querySelector('.description-arrow');
                                 const inner = document.querySelector('.description-inner');
-                                
+
                                 if (!toggle || !content || !arrow || !inner) return;
-                                
+
                                 toggle.addEventListener('click', () => {
                                     // Toggle arrow rotation
                                     arrow.classList.toggle('active');
-                                    
+
                                     // Toggle content visibility
                                     if (content.classList.contains('active')) {
                                         // Close the content
                                         content.style.maxHeight = '0px';
                                         content.classList.remove('active');
                                         inner.classList.remove('active');
-                                        
+
                                         // Add slight delay before removing active class from inner content
                                         setTimeout(() => {
                                             inner.classList.remove('active');
@@ -338,7 +366,7 @@
                                         // Open the content
                                         content.classList.add('active');
                                         content.style.maxHeight = inner.offsetHeight + 'px';
-                                        
+
                                         // Add slight delay before adding active class to inner content
                                         setTimeout(() => {
                                             inner.classList.add('active');
@@ -346,36 +374,36 @@
                                     }
                                 });
                             }
-                            
+
                             function initGalleryNavigation() {
                                 const track = document.querySelector('.thumbnails-track');
                                 const prevBtn = document.querySelector('.prev-btn');
                                 const nextBtn = document.querySelector('.next-btn');
-                                
+
                                 if (!track || !prevBtn || !nextBtn) return;
-                                
+
                                 // Show/hide navigation buttons based on scroll position
                                 function updateNavButtons() {
                                     prevBtn.style.display = track.scrollLeft > 0 ? 'flex' : 'none';
-                                    nextBtn.style.display = 
+                                    nextBtn.style.display =
                                         track.scrollLeft < (track.scrollWidth - track.clientWidth - 10) ? 'flex' : 'none';
                                 }
-                                
+
                                 // Initial button state
                                 updateNavButtons();
-                                
+
                                 // Scroll event
                                 track.addEventListener('scroll', updateNavButtons);
-                                
+
                                 // Button click handlers
                                 prevBtn.addEventListener('click', () => {
                                     track.scrollBy({ left: -200, behavior: 'smooth' });
                                 });
-                                
+
                                 nextBtn.addEventListener('click', () => {
                                     track.scrollBy({ left: 200, behavior: 'smooth' });
                                 });
-                                
+
                                 // Keyboard navigation
                                 document.addEventListener('keydown', (e) => {
                                     if (e.key === 'ArrowLeft') {
@@ -385,38 +413,38 @@
                                     }
                                 });
                             }
-                            
+
                             function navigateImages(direction) {
                                 const thumbnails = Array.from(document.querySelectorAll('.thumbnail-img'));
                                 const activeIndex = thumbnails.findIndex(img => img.classList.contains('active'));
-                                
+
                                 if (activeIndex === -1) return;
-                                
+
                                 let newIndex;
                                 if (direction === 'next') {
                                     newIndex = (activeIndex + 1) % thumbnails.length;
                                 } else {
                                     newIndex = (activeIndex - 1 + thumbnails.length) % thumbnails.length;
                                 }
-                                
+
                                 const nextThumb = thumbnails[newIndex];
                                 changeImage(nextThumb.src, nextThumb);
-                                
+
                                 // Ensure the thumbnail is visible
                                 nextThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                             }
-                            
+
                             function initZoomFeature() {
                                 const mainImage = document.getElementById('mainImage');
                                 const zoomContainer = document.querySelector('.image-zoom-container');
                                 const zoomLens = document.querySelector('.zoom-lens');
                                 const zoomToggle = document.getElementById('zoomToggle');
-                                
+
                                 if (!mainImage || !zoomContainer || !zoomLens || !zoomToggle) return;
-                                
+
                                 // Toggle zoom on button click
                                 zoomToggle.addEventListener('click', toggleZoom);
-                                
+
                                 // Mouse events for zoom
                                 zoomContainer.addEventListener('mousemove', handleZoomMouseMove);
                                 zoomContainer.addEventListener('mouseleave', () => {
@@ -434,20 +462,20 @@
                                     }
                                 });
                             }
-                            
+
                             function toggleZoom() {
                                 const zoomContainer = document.querySelector('.image-zoom-container');
                                 const zoomLens = document.querySelector('.zoom-lens');
                                 const zoomToggle = document.getElementById('zoomToggle');
                                 const mainImage = document.getElementById('mainImage');
-                                
+
                                 window.isZoomActive = !window.isZoomActive;
-                                
+
                                 if (window.isZoomActive) {
                                     zoomContainer.classList.add('zoom-active');
                                     zoomLens.style.display = 'block';
                                     zoomToggle.innerHTML = '<i class="fas fa-search-minus"></i>';
-                                    
+
                                     // Create zoom result window
                                     let zoomResult = document.querySelector('.zoom-result');
                                     if (!zoomResult) {
@@ -455,13 +483,13 @@
                                         zoomResult.className = 'zoom-result';
                                         zoomContainer.appendChild(zoomResult);
                                     }
-                                    
+
                                     zoomResult.style.backgroundImage = `url(${mainImage.src})`;
-                                    
+
                                     // Preload high-res image for better zoom quality
                                     const hiResImg = new Image();
                                     hiResImg.src = mainImage.src;
-                                    hiResImg.onload = function() {
+                                    hiResImg.onload = function () {
                                         const zoomResult = document.querySelector('.zoom-result');
                                         if (zoomResult) {
                                             zoomResult.style.backgroundImage = `url(${hiResImg.src})`;
@@ -471,7 +499,7 @@
                                     zoomContainer.classList.remove('zoom-active');
                                     zoomLens.style.display = 'none';
                                     zoomToggle.innerHTML = '<i class="fas fa-search-plus"></i>';
-                                    
+
                                     // Remove zoom result window
                                     const zoomResult = document.querySelector('.zoom-result');
                                     if (zoomResult) {
@@ -479,81 +507,81 @@
                                     }
                                 }
                             }
-                            
+
                             function handleZoomMouseMove(e) {
                                 if (!window.isZoomActive) return;
-                                
+
                                 const zoomContainer = document.querySelector('.image-zoom-container');
                                 const zoomLens = document.querySelector('.zoom-lens');
                                 const zoomResult = document.querySelector('.zoom-result');
                                 const mainImage = document.getElementById('mainImage');
-                                
+
                                 if (!zoomLens || !zoomResult || !mainImage) return;
-                                
+
                                 // Get relative cursor position
                                 const rect = zoomContainer.getBoundingClientRect();
                                 const x = e.clientX - rect.left;
                                 const y = e.clientY - rect.top;
-                                
+
                                 // Calculate lens position
                                 const lensWidth = zoomLens.offsetWidth;
                                 const lensHeight = zoomLens.offsetHeight;
                                 let lensX = x - lensWidth / 2;
                                 let lensY = y - lensHeight / 2;
-                                
+
                                 // Constrain lens to image bounds
                                 lensX = Math.max(0, Math.min(zoomContainer.offsetWidth - lensWidth, lensX));
                                 lensY = Math.max(0, Math.min(zoomContainer.offsetHeight - lensHeight, lensY));
-                                
+
                                 // Position lens
                                 zoomLens.style.left = `${lensX}px`;
                                 zoomLens.style.top = `${lensY}px`;
-                                
+
                                 // Calculate background position for zoom result
                                 const ratioX = zoomResult.offsetWidth / lensWidth;
                                 const ratioY = zoomResult.offsetHeight / lensHeight;
                                 const bgX = lensX * ratioX;
                                 const bgY = lensY * ratioY;
-                                
+
                                 zoomResult.style.backgroundPosition = `-${bgX}px -${bgY}px`;
                                 zoomResult.style.backgroundSize = `${mainImage.offsetWidth * ratioX}px ${mainImage.offsetHeight * ratioY}px`;
                             }
-                            
+
                             function initFullscreenFeature() {
                                 const fullscreenToggle = document.getElementById('fullscreenToggle');
                                 if (!fullscreenToggle) return;
-                                
+
                                 fullscreenToggle.addEventListener('click', toggleFullscreen);
                             }
-                            
+
                             function toggleFullscreen() {
                                 const mainImage = document.getElementById('mainImage');
-                                
+
                                 if (!window.isFullscreen) {
                                     // Create fullscreen overlay
                                     const overlay = document.createElement('div');
                                     overlay.className = 'fullscreen-overlay';
-                                    
+
                                     const closeBtn = document.createElement('button');
                                     closeBtn.className = 'fullscreen-close';
                                     closeBtn.innerHTML = '<i class="fas fa-times"></i>';
                                     closeBtn.addEventListener('click', toggleFullscreen);
-                                    
+
                                     const fsImage = document.createElement('img');
                                     fsImage.src = mainImage.src;
                                     fsImage.className = 'fullscreen-image';
-                                    
+
                                     overlay.appendChild(closeBtn);
                                     overlay.appendChild(fsImage);
                                     document.body.appendChild(overlay);
                                     document.body.style.overflow = 'hidden';
-                                    
+
                                     // Function to handle fullscreen navigation
                                     function fullscreenNavigate(direction) {
                                         navigateImages(direction);
                                         fsImage.src = document.getElementById('mainImage').src;
                                     }
-                                    
+
                                     // Add navigation buttons
                                     const prevBtn = document.createElement('button');
                                     prevBtn.className = 'fullscreen-nav prev';
@@ -562,7 +590,7 @@
                                         e.stopPropagation();
                                         fullscreenNavigate('prev');
                                     });
-                                    
+
                                     const nextBtn = document.createElement('button');
                                     nextBtn.className = 'fullscreen-nav next';
                                     nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
@@ -570,10 +598,10 @@
                                         e.stopPropagation();
                                         fullscreenNavigate('next');
                                     });
-                                    
+
                                     overlay.appendChild(prevBtn);
                                     overlay.appendChild(nextBtn);
-                                    
+
                                     // Keyboard navigation in fullscreen
                                     const keyHandler = (e) => {
                                         if (e.key === 'Escape') {
@@ -584,10 +612,10 @@
                                             fullscreenNavigate('next');
                                         }
                                     };
-                                    
+
                                     document.addEventListener('keydown', keyHandler);
                                     window.fullscreenKeyHandler = keyHandler; // Store for removal
-                                    
+
                                     window.isFullscreen = true;
                                 } else {
                                     // Remove fullscreen overlay
@@ -596,12 +624,12 @@
                                         overlay.remove();
                                     }
                                     document.body.style.overflow = '';
-                                    
+
                                     // Remove keyboard event listener
                                     if (window.fullscreenKeyHandler) {
                                         document.removeEventListener('keydown', window.fullscreenKeyHandler);
                                     }
-                                    
+
                                     window.isFullscreen = false;
                                 }
                             }
@@ -613,7 +641,7 @@
                                 productIdField.setAttribute('data-product-id', '${product.productId}');
                                 productIdField.style.display = 'none';
                                 document.body.appendChild(productIdField);
-                                
+
                                 document.querySelectorAll('.color-option2').forEach(function (el) {
                                     const bgColor = el.getAttribute('data-bg-color');
                                     if (bgColor) {
@@ -839,6 +867,87 @@
                                     }
                                 });
                             });
+
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // Function to translate text using AWS Translate API
+                                async function translateText(text, targetLang) {
+                                    try {
+                                        const response = await fetch('/api/translate/text', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                text: text,
+                                                sourceLang: 'vi',
+                                                targetLang: targetLang
+                                            })
+                                        });
+
+                                        const data = await response.json();
+                                        if (data.error) {
+                                            console.error('Translation error:', data.error);
+                                            return text;
+                                        }
+                                        return data.translatedText;
+                                    } catch (error) {
+                                        console.error('Translation request failed:', error);
+                                        return text;
+                                    }
+                                }
+
+                                // Store original Vietnamese text
+                                const originalTexts = {
+                                    productName: "${product.productName}",
+                                    productDesc: "${product.description}"
+                                };
+
+                                // Function to update product text content
+                                async function updateProductTranslations(targetLang) {
+                                    const nameElement = document.querySelector('h2.text-3xl.font-bold');
+                                    const descElement = document.querySelector('.description-inner p');
+
+                                    if (targetLang === 'en') {
+                                        // Translate to English
+                                        const translatedName = await translateText(originalTexts.productName, 'en');
+                                        const translatedDesc = await translateText(originalTexts.productDesc, 'en');
+
+                                        nameElement.textContent = translatedName;
+                                        descElement.textContent = translatedDesc;
+                                    } else {
+                                        // Reset to original Vietnamese text
+                                        nameElement.textContent = originalTexts.productName;
+                                        descElement.textContent = originalTexts.productDesc;
+                                    }
+                                }
+
+                                // Add click event listeners to language switcher links
+                                document.addEventListener('click', function (e) {
+                                    const langLink = e.target.closest('a[href*="lang="]');
+                                    if (langLink) {
+                                        const langParam = new URLSearchParams(langLink.href.split('?')[1]).get('lang');
+                                        if (langParam) {
+                                            // Store the selected language
+                                            localStorage.setItem('selectedLang', langParam);
+                                        }
+                                    }
+                                });
+
+                                // Check URL parameters for language on page load
+                                const urlParams = new URLSearchParams(window.location.search);
+                                const langParam = urlParams.get('lang');
+                                if (langParam === 'en') {
+                                    updateProductTranslations('en');
+                                }
+
+                                // Handle browser back/forward navigation
+                                window.addEventListener('popstate', function () {
+                                    const urlParams = new URLSearchParams(window.location.search);
+                                    const langParam = urlParams.get('lang');
+                                    updateProductTranslations(langParam || 'vi');
+                                });
+                            });
+
                         </script>
                     </div>
 
@@ -847,29 +956,30 @@
                         .product-gallery {
                             position: relative;
                         }
-                        
+
                         .main-image-container {
                             position: relative;
                             overflow: hidden;
                             border-radius: 0.5rem;
                             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                            height: 500px; /* Fixed height for consistency */
+                            height: 500px;
+                            /* Fixed height for consistency */
                         }
-                        
+
                         .image-zoom-container {
                             position: relative;
                             width: 100%;
                             height: 100%;
                             overflow: hidden;
                         }
-                        
+
                         #mainImage {
                             width: 100%;
                             height: 100%;
                             object-fit: contain;
                             transition: transform 0.5s ease;
                         }
-                        
+
                         .zoom-lens {
                             position: absolute;
                             border: 2px solid #fff;
@@ -879,9 +989,9 @@
                             cursor: move;
                             display: none;
                             pointer-events: none;
-                            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+                            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
                         }
-                        
+
                         .zoom-result {
                             position: absolute;
                             top: 0;
@@ -891,34 +1001,34 @@
                             border: 2px solid #ddd;
                             background-repeat: no-repeat;
                             background-color: white;
-                            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
                             z-index: 100;
                             margin-left: 15px;
                             display: block;
                             pointer-events: none;
                         }
-                        
+
                         .thumbnails-container {
                             position: relative;
                             margin-top: 15px;
                         }
-                        
+
                         .thumbnails-scroll {
                             position: relative;
                             padding: 0 30px;
                         }
-                        
+
                         .thumbnails-track {
                             scroll-behavior: smooth;
                             -ms-overflow-style: none;
                             scrollbar-width: none;
                             justify-content: center;
                         }
-                        
+
                         .thumbnails-track::-webkit-scrollbar {
                             display: none;
                         }
-                        
+
                         .thumbnail-wrapper {
                             position: relative;
                             border: 2px solid transparent;
@@ -926,20 +1036,20 @@
                             overflow: hidden;
                             transition: all 0.3s ease;
                         }
-                        
+
                         .thumbnail-img.active {
                             opacity: 1 !important;
                         }
-                        
+
                         .thumbnail-wrapper:hover {
                             transform: translateY(-2px);
                         }
-                        
-                        .thumbnail-img.active + .thumbnail-wrapper {
+
+                        .thumbnail-img.active+.thumbnail-wrapper {
                             border-color: #000;
-                            box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+                            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
                         }
-                        
+
                         .gallery-nav-btn {
                             display: none;
                             align-items: center;
@@ -949,12 +1059,12 @@
                             cursor: pointer;
                             transition: all 0.3s ease;
                         }
-                        
+
                         .gallery-nav-btn:hover {
                             background-color: white;
                             transform: scale(1.1);
                         }
-                        
+
                         /* Fullscreen styles */
                         .fullscreen-overlay {
                             position: fixed;
@@ -962,25 +1072,25 @@
                             left: 0;
                             width: 100%;
                             height: 100%;
-                            background-color: rgba(0,0,0,0.9);
+                            background-color: rgba(0, 0, 0, 0.9);
                             z-index: 9999;
                             display: flex;
                             align-items: center;
                             justify-content: center;
                         }
-                        
+
                         .fullscreen-image {
                             max-width: 90%;
                             max-height: 90%;
                             object-fit: contain;
                         }
-                        
+
                         .fullscreen-close {
                             position: absolute;
                             top: 20px;
                             right: 20px;
                             color: white;
-                            background: rgba(0,0,0,0.5);
+                            background: rgba(0, 0, 0, 0.5);
                             border: none;
                             width: 40px;
                             height: 40px;
@@ -993,17 +1103,17 @@
                             transition: all 0.3s ease;
                             z-index: 10000;
                         }
-                        
+
                         .fullscreen-close:hover {
-                            background: rgba(255,255,255,0.2);
+                            background: rgba(255, 255, 255, 0.2);
                             transform: scale(1.1);
                         }
-                        
+
                         .fullscreen-nav {
                             position: absolute;
                             top: 50%;
                             transform: translateY(-50%);
-                            background: rgba(255,255,255,0.2);
+                            background: rgba(255, 255, 255, 0.2);
                             color: white;
                             width: 50px;
                             height: 50px;
@@ -1017,78 +1127,80 @@
                             transition: all 0.3s ease;
                             z-index: 10000;
                         }
-                        
+
                         .fullscreen-nav:hover {
-                            background: rgba(255,255,255,0.4);
+                            background: rgba(255, 255, 255, 0.4);
                         }
-                        
+
                         .fullscreen-nav.prev {
                             left: 20px;
                         }
-                        
+
                         .fullscreen-nav.next {
                             right: 20px;
                         }
-                        
+
                         /* Image hover effect */
                         .main-image-container:hover #mainImage:not(.zoom-active) {
                             transform: scale(1.03);
                         }
-                        
+
                         /* Collapsible Description Styles */
                         .product-description-container {
-                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
                             transition: all 0.3s ease;
                         }
-                        
+
                         .product-description-container:hover {
-                            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+                            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
                         }
-                        
+
                         .description-toggle {
                             cursor: pointer;
                             user-select: none;
                         }
-                        
+
                         .description-toggle:hover .description-arrow {
                             color: #000;
                         }
-                        
+
                         .description-arrow {
                             color: #666;
                         }
-                        
+
                         .description-arrow.active {
                             transform: rotate(180deg);
                         }
-                        
+
                         .description-content {
                             transition: max-height 0.5s ease, padding 0.3s ease;
                         }
-                        
+
                         .description-content.active {
-                            max-height: 1000px; /* Large enough to contain content */
+                            max-height: 1000px;
+                            /* Large enough to contain content */
                         }
-                        
+
                         .description-inner {
                             opacity: 0;
                             transform: translateY(10px);
                             transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
                         }
-                        
+
                         .description-inner.active {
                             opacity: 1;
                             transform: translateY(0);
                         }
-                        
+
                         /* Responsive adjustments */
                         @media (max-width: 768px) {
                             .main-image-container {
                                 height: 350px;
                             }
-                            
+
                             .zoom-result {
-                                display: none !important; /* Disable zoom result on mobile */
+                                display: none !important;
+                                /* Disable zoom result on mobile */
                             }
                         }
 
@@ -1123,7 +1235,7 @@
                     <!-- footer -->
                     <jsp:include page="../layout/footer.jsp" />
 
-                    <div class="container mx-auto px-4 py-8 bg-white">
+                    <div class="container mx-auto px-4 py-8 bg-white hidden">
                         <h2 class="text-2xl font-bold mb-4">Danh sách hình ảnh sản phẩm</h2>
                         <div class="overflow-x-auto">
                             <table class="min-w-full bg-white border border-gray-300">
@@ -1181,5 +1293,20 @@
                         </div>
                     </div>
                 </body>
+                <div id="google_translate_element"></div>
+
+                <script type="text/javascript">
+                    function googleTranslateElementInit() {
+                        new google.translate.TranslateElement({
+                            pageLanguage: 'vi', // Ngôn ngữ gốc của trang
+                            includedLanguages: 'en,vi,ja,fr,zh-CN', // Các ngôn ngữ muốn hỗ trợ
+                            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                        }, 'google_translate_element');
+                    }
+                </script>
+
+                <script type="text/javascript"
+                    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+                    </script>
 
                 </html>

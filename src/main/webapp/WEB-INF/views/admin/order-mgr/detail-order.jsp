@@ -127,7 +127,7 @@
                                                             <p><strong>Customer ID:</strong>
                                                                 ${order.customer.customerId}</p>
                                                             <p><strong>Shipping Address:</strong>
-                                                                ${order.shippingAddress}</p>
+                                                                ${order.shippingAddress.getFullAddress()}</p>
                                                         </div>
                                                     </div>
                                                 </div>

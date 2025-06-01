@@ -1,5 +1,6 @@
 package local.example.demo.repository;
 
+import local.example.demo.model.entity.Customer;
 import local.example.demo.model.entity.Order;
 
 import java.util.Date;
@@ -17,6 +18,9 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
     @Query("SELECT o FROM Order o WHERE o.customer.customerId = :customerId")
     List<Order> findByCustomerId(@Param("customerId") Integer customerId);
+
+    @Query("SELECT o FROM Order o WHERE o.customer = :customer")
+    List<Order> findByCustomer(@Param("customer") Customer customer);
 
     @Query("SELECT o FROM Order o WHERE o.customer.customerId = :customerId")
     Page<Order> findByCustomerIdPaged(@Param("customerId") Integer customerId, Pageable pageable);

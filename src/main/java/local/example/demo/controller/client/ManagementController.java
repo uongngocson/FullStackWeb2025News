@@ -8,8 +8,11 @@ import local.example.demo.model.entity.Order;
 import local.example.demo.service.AccountService;
 import local.example.demo.service.CustomerService;
 import local.example.demo.service.OrderService;
+import local.example.demo.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -23,7 +26,10 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -31,6 +37,7 @@ import java.util.List;
 public class ManagementController {
     private final CustomerService customerService;
     private final OrderService orderService;
+    private final ReviewService reviewService;
     private final AccountService accountService;
 
     @GetMapping("/profile")
@@ -217,8 +224,27 @@ public class ManagementController {
             return "client/auth/error";
         }
 
+        // Lấy danh sách sản phẩm đã được đánh giá bởi khách hàng
+        Set<Long> reviewedProducts = new HashSet<>();
+
+        // Lấy tất cả productId từ orderDetails
+        List<Long> productIds = orderDetails.stream()
+                .map(OrderDetailDTO::getProductId)
+                .collect(Collectors.toList());
+
+        // Kiểm tra từng sản phẩm xem đã được đánh giá chưa
+        for (Long productId : productIds) {
+            if (reviewService.hasCustomerReviewedProduct(customer.getCustomerId(), productId.intValue())) {
+                reviewedProducts.add(productId);
+            }
+        }
+
+        System.out.println("Sản phẩm đã được đánh giá: " + reviewedProducts);
+
+        System.out.println("Lấy chi tiết đơn hàng thành công cho orderId: " + orderId);
+        System.out.println("orderDetails: " + orderDetails);
         model.addAttribute("orderDetails", orderDetails);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("reviewedProducts", reviewedProducts);
         return "client/auth/order-details";
     }
 

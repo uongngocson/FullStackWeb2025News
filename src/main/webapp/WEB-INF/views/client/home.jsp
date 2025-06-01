@@ -12,7 +12,9 @@
                     <title>DDTS | Luxury fashion</title>
                     <script src="https://cdn.tailwindcss.com"></script>
                     <c:set var="ctx" value="${pageContext.request.contextPath}" />
-                    <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
+                    <link rel="icon"
+                        href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png"
+                        type="image/x-icon">
 
                     <!-- Google Fonts -->
                     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -115,7 +117,23 @@
                         }
                     </style>
                 </head>
-                
+
+                <div id="google_translate_element"></div>
+
+                <script type="text/javascript">
+                    function googleTranslateElementInit() {
+                        new google.translate.TranslateElement({
+                            pageLanguage: 'vi', // Ngôn ngữ gốc của trang
+                            includedLanguages: 'en,vi,ja,fr,zh-CN', // Các ngôn ngữ muốn hỗ trợ
+                            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                        }, 'google_translate_element');
+                    }
+                </script>
+
+                <script type="text/javascript"
+                    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+                    </script>
+
 
                 <body class="bg-white text-black font-sans">
 
@@ -531,5 +549,20 @@
                         });
                     </script>
                 </body>
+                <div id="google_translate_element"></div>
+
+                <script type="text/javascript">
+                    function googleTranslateElementInit() {
+                        new google.translate.TranslateElement({
+                            pageLanguage: 'vi', // Ngôn ngữ gốc của trang
+                            includedLanguages: 'en,vi,ja,fr,zh-CN', // Các ngôn ngữ muốn hỗ trợ
+                            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                        }, 'google_translate_element');
+                    }
+                </script>
+
+                <script type="text/javascript"
+                    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+                    </script>
 
                 </html>

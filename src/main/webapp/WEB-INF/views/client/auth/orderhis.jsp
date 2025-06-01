@@ -53,8 +53,13 @@
                                 <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
                                     <div class="mx-auto max-w-5xl">
                                         <div class="gap-4 sm:flex sm:items-center sm:justify-between">
-                                            <h2 class="text-xl font-semibold text-black sm:text-2xl">Lịch sử đơn hàng
-                                            </h2>
+                                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
+                                                Lịch sử đơn hàng</h2>
+                                            <a href="${pageContext.request.contextPath}/review/all"
+                                                class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg">
+                                                <i class="uil uil-star"></i>
+                                                <span>Xem tất cả đánh giá</span>
+                                            </a>
                                         </div>
 
                                         <!-- Success or Error Messages -->

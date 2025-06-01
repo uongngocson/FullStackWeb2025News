@@ -186,7 +186,7 @@
                                                                 <div class="card-header bg-primary text-white">
                                                                     <div class="d-flex align-items-center">
                                                                         <h5 class="card-title mb-0 text-white">Chi tiết
-                                                                            phiếu nhậpp</h5>
+                                                                            phiếu nhập</h5>
                                                                         <button type="button"
                                                                             class="btn btn-light btn-sm ms-auto"
                                                                             id="addDetail">

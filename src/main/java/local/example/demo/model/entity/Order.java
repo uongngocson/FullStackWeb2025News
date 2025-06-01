@@ -29,7 +29,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String orderId;
 
     // attributes
