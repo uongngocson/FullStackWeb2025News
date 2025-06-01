@@ -36,21 +36,6 @@
                 </script>
 
                 </head>
-                <div id="google_translate_element"></div>
-
-                <script type="text/javascript">
-                    function googleTranslateElementInit() {
-                        new google.translate.TranslateElement({
-                            pageLanguage: 'vi', // Ngôn ngữ gốc của trang
-                            includedLanguages: 'en,vi,ja,fr,zh-CN', // Các ngôn ngữ muốn hỗ trợ
-                            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-                        }, 'google_translate_element');
-                    }
-                </script>
-
-                <script type="text/javascript"
-                    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-                    </script>
 
                 <body class="bg-white">
                     <!-- navbar -->
@@ -72,7 +57,7 @@
                                                 <span class="text-sm font-medium">XEM 3D</span>
                                             </button>
                                             <div class="image-zoom-container" data-product-id="${product.productId}">
-                                                <img src="${product.imageUrl}" alt="${product.productName}"
+                                                <img src="${product.getPrimaryImageUrl()}" alt="${product.productName}"
                                                     class="w-full h-auto object-cover transition-transform duration-500 ease-out"
                                                     id="mainImage">
                                                 <div class="zoom-lens"></div>
@@ -112,7 +97,8 @@
                                                     <c:if test="${empty productImages}">
                                                         <!-- Fallback images if no product images are available -->
                                                         <div class="thumbnail-wrapper min-w-[72px] sm:min-w-[80px]">
-                                                            <img src="${product.imageUrl}" alt="${product.productName}"
+                                                            <img src="${product.getPrimaryImageUrl()}"
+                                                                alt="${product.productName}"
                                                                 class="w-full aspect-square object-cover rounded-md cursor-pointer opacity-100 transition duration-300 thumbnail-img active"
                                                                 data-index="0" onclick="changeImage(this.src, this)">
                                                         </div>
@@ -141,40 +127,49 @@
                                         <span class="text-gray-500 line-through">$399.99</span>
                                     </div>
                                     <div class="flex items-center mb-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            class="size-6 text-yellow-500">
-                                            <path fill-rule="evenodd"
-                                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            class="size-6 text-yellow-500">
-                                            <path fill-rule="evenodd"
-                                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            class="size-6 text-yellow-500">
-                                            <path fill-rule="evenodd"
-                                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            class="size-6 text-yellow-500">
-                                            <path fill-rule="evenodd"
-                                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            class="size-6 text-yellow-500">
-                                            <path fill-rule="evenodd"
-                                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <span class="ml-2 text-gray-600">4.7 | ${product.quantitySold} sold</span>
+                                        <c:forEach begin="1" end="5" varStatus="star">
+                                            <c:choose>
+                                                <c:when test="${star.index <= averageRating}">
+                                                    <!-- Full star -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                        fill="currentColor" class="size-6 text-yellow-500">
+                                                        <path fill-rule="evenodd"
+                                                            d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </c:when>
+                                                <c:when test="${star.index - 0.5 <= averageRating}">
+                                                    <!-- Half star -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                        class="size-6 text-yellow-500">
+                                                        <defs>
+                                                            <linearGradient id="half-fill" x1="0%" y1="0%" x2="100%"
+                                                                y2="0%">
+                                                                <stop offset="50%"
+                                                                    style="stop-color:currentColor;stop-opacity:1" />
+                                                                <stop offset="50%"
+                                                                    style="stop-color:rgb(229 231 235);stop-opacity:1" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <path fill="url(#half-fill)" fill-rule="evenodd"
+                                                            d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <!-- Empty star -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                        fill="currentColor" class="size-6 text-gray-200">
+                                                        <path fill-rule="evenodd"
+                                                            d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                        <span class="ml-2 text-gray-600">${averageRating} | ${product.quantitySold}
+                                            sold</span>
                                     </div>
-
-
 
                                     <div class="mb-6">
                                         <h3 class="text-lg font-semibold mb-2">MÀU SẮC: <span id="selectedColor2"
@@ -275,6 +270,8 @@
                                             class="description-content px-4 overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
                                             <div class="py-4 description-inner">
                                                 <p class="text-gray-700 whitespace-pre-line">${product.description}</p>
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -867,87 +864,6 @@
                                     }
                                 });
                             });
-
-                            document.addEventListener('DOMContentLoaded', function () {
-                                // Function to translate text using AWS Translate API
-                                async function translateText(text, targetLang) {
-                                    try {
-                                        const response = await fetch('/api/translate/text', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify({
-                                                text: text,
-                                                sourceLang: 'vi',
-                                                targetLang: targetLang
-                                            })
-                                        });
-
-                                        const data = await response.json();
-                                        if (data.error) {
-                                            console.error('Translation error:', data.error);
-                                            return text;
-                                        }
-                                        return data.translatedText;
-                                    } catch (error) {
-                                        console.error('Translation request failed:', error);
-                                        return text;
-                                    }
-                                }
-
-                                // Store original Vietnamese text
-                                const originalTexts = {
-                                    productName: "${product.productName}",
-                                    productDesc: "${product.description}"
-                                };
-
-                                // Function to update product text content
-                                async function updateProductTranslations(targetLang) {
-                                    const nameElement = document.querySelector('h2.text-3xl.font-bold');
-                                    const descElement = document.querySelector('.description-inner p');
-
-                                    if (targetLang === 'en') {
-                                        // Translate to English
-                                        const translatedName = await translateText(originalTexts.productName, 'en');
-                                        const translatedDesc = await translateText(originalTexts.productDesc, 'en');
-
-                                        nameElement.textContent = translatedName;
-                                        descElement.textContent = translatedDesc;
-                                    } else {
-                                        // Reset to original Vietnamese text
-                                        nameElement.textContent = originalTexts.productName;
-                                        descElement.textContent = originalTexts.productDesc;
-                                    }
-                                }
-
-                                // Add click event listeners to language switcher links
-                                document.addEventListener('click', function (e) {
-                                    const langLink = e.target.closest('a[href*="lang="]');
-                                    if (langLink) {
-                                        const langParam = new URLSearchParams(langLink.href.split('?')[1]).get('lang');
-                                        if (langParam) {
-                                            // Store the selected language
-                                            localStorage.setItem('selectedLang', langParam);
-                                        }
-                                    }
-                                });
-
-                                // Check URL parameters for language on page load
-                                const urlParams = new URLSearchParams(window.location.search);
-                                const langParam = urlParams.get('lang');
-                                if (langParam === 'en') {
-                                    updateProductTranslations('en');
-                                }
-
-                                // Handle browser back/forward navigation
-                                window.addEventListener('popstate', function () {
-                                    const urlParams = new URLSearchParams(window.location.search);
-                                    const langParam = urlParams.get('lang');
-                                    updateProductTranslations(langParam || 'vi');
-                                });
-                            });
-
                         </script>
                     </div>
 
@@ -1293,20 +1209,5 @@
                         </div>
                     </div>
                 </body>
-                <div id="google_translate_element"></div>
-
-                <script type="text/javascript">
-                    function googleTranslateElementInit() {
-                        new google.translate.TranslateElement({
-                            pageLanguage: 'vi', // Ngôn ngữ gốc của trang
-                            includedLanguages: 'en,vi,ja,fr,zh-CN', // Các ngôn ngữ muốn hỗ trợ
-                            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-                        }, 'google_translate_element');
-                    }
-                </script>
-
-                <script type="text/javascript"
-                    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-                    </script>
 
                 </html>

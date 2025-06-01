@@ -18,7 +18,9 @@
                         <link rel="stylesheet"
                             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                         <link rel="stylesheet" href="${ctx}/resources/assets/client/css/category.css">
-                        <link rel="icon" href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png" type="image/x-icon">
+                        <link rel="icon"
+                            href="https://image.similarpng.com/file/similarpng/very-thumbnail/2021/01/Fashion-shop-logo-design-on-transparent-background-PNG.png"
+                            type="image/x-icon">
 
 
 
@@ -628,7 +630,8 @@
                                                         <div class="relative overflow-hidden mb-4 h-96">
                                                             <!-- Product Image -->
                                                             <%-- Sử dụng đường dẫn tương đối hoặc tuyệt đối phù hợp --%>
-                                                                <img src="${p.imageUrl}" alt="${p.productName}"
+                                                                <img src="${p.getPrimaryImageUrl()}"
+                                                                    alt="${p.productName}"
                                                                     class="w-full h-full object-cover transition duration-500 group-hover:opacity-75">
 
                                                                 <!-- Dark Overlay (appears on hover) -->

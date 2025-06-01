@@ -59,7 +59,7 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = { CustomerInUseException.class })
     public void deleteCustomerById(Integer customerId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng có ID: " + customerId));
@@ -86,8 +86,7 @@ public class CustomerService {
         cartRepository.deleteByCustomer_CustomerId(customerId);
         accountDiscountCodeRepository.deleteByCustomer_CustomerId(customerId);
 
-        // Optional: Xóa Account nếu nó không còn được sử dụng bởi bất kỳ Customer nào
-        // khác
+        // Xóa Account nếu nó không còn được sử dụng bởi bất kỳ Customer nào khác
         Account account = customer.getAccount();
         if (account != null && !customerRepository.existsByAccount(account)) {
             accountRepository.delete(account);
@@ -190,7 +189,7 @@ public class CustomerService {
         try {
             if (fileUploadS3Service.isValidFile(image)) {
                 String nameImageFile = fileUploadS3Service.uploadFile(image, "customers");
-                updatedCustomer.setImageUrl(nameImageFile);
+                currentCustomer.setImageUrl(nameImageFile);
             }
         } catch (IOException e) {
             e.printStackTrace();

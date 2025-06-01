@@ -27,7 +27,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<Account> findByLoginNameWithRole(@Param("loginName") String loginName);
 
     // Corrected Query
-    @Query("SELECT a FROM Account a WHERE a.role.roleName ='EMPLOYEE' AND a.role.roleName ='ADMIN' AND a.accountId NOT IN (SELECT e.account.accountId FROM Employee e WHERE e.account IS NOT NULL)")
+    @Query("SELECT a FROM Account a WHERE (a.role.roleName ='EMPLOYEE' OR a.role.roleName ='ADMIN') AND a.accountId NOT IN (SELECT e.account.accountId FROM Employee e WHERE e.account IS NOT NULL)")
     List<Account> findAccountsNotLinkedToEmployee();
 
 }

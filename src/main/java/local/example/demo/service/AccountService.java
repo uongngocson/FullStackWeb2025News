@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import local.example.demo.model.dto.RegisterDTO;
 import local.example.demo.exception.AccountInUseException;
 import local.example.demo.model.entity.Account;
@@ -30,12 +30,14 @@ import jakarta.mail.internet.MimeMessage;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AccountService {
 
+    private final PasswordEncoder passwordEncoder;
     private final AccountRepository accountRepository;
     private final RoleService roleService;
-    private final CustomerRepository customerRepository; // Inject CustomerRepository
-    private final EmployeeRepository employeeRepository; // Inject EmployeeRepository
+    private final CustomerRepository customerRepository;
+    private final EmployeeRepository employeeRepository;
 
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
@@ -45,13 +47,23 @@ public class AccountService {
         return accountRepository.findById(id).orElse(null);
     }
 
-    private final PasswordEncoder passwordEncoder;
-
+    @Transactional
     public void saveAccount(Account account) {
+        // Nếu là tài khoản mới
+
+        if (accountRepository.existsByLoginName(account.getLoginName())) {
+            throw new AccountInUseException("Tên login đã tồn tại");
+        }
+
         accountRepository.save(account);
     }
 
-    @Transactional // Thêm @Transactional để đảm bảo tính nhất quán
+    @Transactional
+    public void updateAccount(Account account) {
+        accountRepository.save(account);
+    }
+
+    @Transactional(rollbackFor = { AccountInUseException.class })
     public void deleteAccountById(Integer id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found with ID: " + id));
@@ -59,14 +71,14 @@ public class AccountService {
         // Kiểm tra liên kết với Customer
         Customer customer = customerRepository.findByAccount(account);
         if (customer != null) {
-            throw new AccountInUseException("Cannot delete account: It is associated with customer "
+            throw new AccountInUseException("Không thể xóa! Tài khoản đã được sử dụng bởi khách hàng - "
                     + customer.getFirstName() + " " + customer.getLastName());
         }
 
         // Kiểm tra liên kết với Employee
         Employee employee = employeeRepository.findByAccount(account);
         if (employee != null) {
-            throw new AccountInUseException("Cannot delete account: It is associated with employee "
+            throw new AccountInUseException("Không thể xóa! Tài khoản đã được sử dụng bởi nhân viên"
                     + employee.getFirstName() + " " + employee.getLastName());
         }
 

@@ -18,7 +18,6 @@ import jakarta.validation.Valid;
 import local.example.demo.exception.SupplierInUseException;
 import local.example.demo.model.entity.Product;
 import local.example.demo.model.entity.Supplier;
-import local.example.demo.service.FileService;
 import local.example.demo.service.FileUploadS3Service;
 import local.example.demo.service.ProductService;
 import local.example.demo.service.SupplierService;
@@ -30,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 public class SupplierMgrController {
     private final SupplierService supplierService;
     private final ProductService productService;
-    private final FileService fileService;
     private final FileUploadS3Service fileUploadS3Service;
 
     // Example method to get the list of Suppliers
@@ -79,7 +77,7 @@ public class SupplierMgrController {
     // Example method to handle the creation of a new supplier
     @PostMapping("save")
     public String saveSupplier(@ModelAttribute("supplier") @Valid Supplier supplier, BindingResult bindingResult,
-            @RequestParam("logoFile") MultipartFile logoFile) {
+            @RequestParam("logoFile") MultipartFile logoFile, RedirectAttributes redirectAttributes) {
 
         // Check for existing supplier name considering create vs update
         Supplier existingSupplierByName = supplierService.findSupplierByName(supplier.getSupplierName());
@@ -106,7 +104,11 @@ public class SupplierMgrController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        if (supplier.getSupplierId() != null) {
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật nhà cung cấp thành công");
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "Thêm mới nhà cung cấp thành công");
+        }
         // Save the supplier to the database
         supplierService.saveSupplier(supplier);
         return "redirect:/admin/supplier-mgr/list";

@@ -268,4 +268,50 @@ public class ProductService {
         return productRepository.findProductsBySupplierId(supplierId);
     }
 
+    public Page<Product> findSortedProducts(
+            Optional<Integer> categoryId,
+            Optional<Boolean> type,
+            Optional<String> sortByOpt,
+            Pageable pageable) {
+
+        Specification<Product> spec = Specification.where(null);
+
+        // Áp dụng bộ lọc danh mục và loại
+        if (categoryId.isPresent()) {
+            spec = spec.and(categoryIdEquals(categoryId.get()));
+        }
+        if (type.isPresent()) {
+            spec = spec.and(typeEquals(type.get()));
+        }
+
+        // Xử lý sắp xếp (chỉ priceAsc và priceDesc)
+        String sortBy = sortByOpt.orElse("priceAsc");
+        Sort sort = "priceDesc".equals(sortBy)
+                ? Sort.by(Sort.Direction.DESC, "price")
+                : Sort.by(Sort.Direction.ASC, "price");
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        // Gán spec vào biến final để sử dụng trong lambda
+        final Specification<Product> finalSpec = spec;
+
+        Specification<Product> specification = (root, query, cb) -> finalSpec.toPredicate(root, query, cb);
+
+        return productRepository.findAll(specification, sortedPageable);
+    }
+
+    // Find products by type and category
+    public Page<Product> findProductsByTypeAndCategory(Boolean type, Integer categoryId, Pageable pageable) {
+        Specification<Product> spec = Specification.where(typeEquals(type))
+                .and(categoryIdEquals(categoryId));
+        return productRepository.findAll(spec, pageable);
+    }
+
+    // Check if a category has products for a specific gender
+    public boolean hasProductsForCategoryAndType(Integer categoryId, Boolean type) {
+        Specification<Product> spec = Specification.where(categoryIdEquals(categoryId))
+                .and(typeEquals(type));
+        return productRepository.count(spec) > 0;
+    }
+
 }

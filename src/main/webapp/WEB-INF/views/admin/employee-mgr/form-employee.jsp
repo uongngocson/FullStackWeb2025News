@@ -277,7 +277,7 @@
                                                                 <form:errors path="hireDate" cssClass="text-danger" />
                                                             </div>
                                                         </div> -->
-
+                                                        <form:hidden path="hireDate" />
                                                         <!-- Salary -->
                                                         <div class="col-md-6">
                                                             <div class="form-group">

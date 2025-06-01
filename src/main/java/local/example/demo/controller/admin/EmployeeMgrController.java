@@ -1,5 +1,6 @@
 package local.example.demo.controller.admin;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -22,8 +23,7 @@ import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Employee;
 import local.example.demo.service.AccountService;
 import local.example.demo.service.EmployeeService;
-import local.example.demo.service.FileService;
-
+import local.example.demo.service.FileUploadS3Service;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -31,8 +31,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/employee-mgr/")
 public class EmployeeMgrController {
     private final EmployeeService employeeService;
-    private final FileService fileService;
     private final AccountService accountService;
+    private final FileUploadS3Service fileUploadS3Service;
 
     @GetMapping("list")
     public String getEmployeesList() {
@@ -94,18 +94,28 @@ public class EmployeeMgrController {
 
     // save employee
     @PostMapping("save")
-    public String saveEmployee(@ModelAttribute("employee") @Valid Employee employee, BindingResult bindingResult,
-            @RequestParam("imageFile") MultipartFile imageFile, Model model) {
+    public String saveEmployee(@ModelAttribute("employee") @Valid Employee employee,
+            BindingResult bindingResult,
+            @RequestParam("imageFile") MultipartFile imageFile,
+            RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "admin/employee-mgr/form-employee";
         }
-
-        if (fileService.isValidFile(imageFile)) {
-            String imageUrl = fileService.handleSaveUploadFile(imageFile, "employee");
-            employee.setImageUrl("/resources/images-upload/employee/" + imageUrl);
+        try {
+            if (fileUploadS3Service.isValidFile(imageFile)) {
+                String nameImageFile = fileUploadS3Service.uploadFile(imageFile, "employees");
+                employee.setImageUrl(nameImageFile);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
+        if (employee.getEmployeeId() != null) {
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin nhân viên thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "Thêm mới nhân viên thành công!");
+        }
         employeeService.saveEmployee(employee);
+
         return "redirect:/admin/employee-mgr/list";
     }
 

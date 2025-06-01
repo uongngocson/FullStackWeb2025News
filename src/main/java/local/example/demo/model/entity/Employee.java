@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -47,7 +48,7 @@ public class Employee {
     @NotNull(message = "Date of birth cannot be blank")
     private LocalDate dateOfBirth;
 
-    private boolean gender = true;
+    private boolean gender;
 
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email must be valid")
@@ -57,12 +58,12 @@ public class Employee {
     private String phone;
 
     @NotNull(message = "Hire date cannot be blank")
-    private LocalDate hireDate = LocalDate.now();
+    private LocalDate hireDate;
 
     @NotNull(message = "Salary cannot be blank")
     private BigDecimal salary;
 
-    private boolean status = true;
+    private boolean status;
 
     // relationships
     @OneToOne
@@ -72,7 +73,6 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "manager_id")
-    @NotNull(message = "Manager cannot be blank")
     private Employee manager;
 
     public Date getHireDateAsDate() {
@@ -85,6 +85,12 @@ public class Employee {
         if (this.dateOfBirth == null)
             return null;
         return Date.from(this.dateOfBirth.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.status = true;
+        this.hireDate = LocalDate.now();
     }
 
 }

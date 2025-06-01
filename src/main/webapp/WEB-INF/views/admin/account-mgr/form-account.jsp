@@ -52,6 +52,17 @@
                                                 <div class="card-title">${account.accountId != null ? 'Update Account' :
                                                     'Create New Account'}</div>
                                             </div>
+                                            <!-- Add success/error message display -->
+                                            <c:if test="${not empty successMessage}">
+                                                <div class="alert alert-success" role="alert">
+                                                    ${successMessage}
+                                                </div>
+                                            </c:if>
+                                            <c:if test="${not empty errorMessage}">
+                                                <div class="alert alert-danger" role="alert">
+                                                    ${errorMessage}
+                                                </div>
+                                            </c:if>
                                             <form:form action="/admin/account-mgr/save" method="post"
                                                 modelAttribute="account">
                                                 <div class="card-body">

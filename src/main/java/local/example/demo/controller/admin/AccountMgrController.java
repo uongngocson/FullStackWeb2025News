@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import local.example.demo.model.entity.Account;
@@ -52,32 +53,83 @@ public class AccountMgrController {
     }
 
     @PostMapping("/save")
-    public String saveAccount(@ModelAttribute("account") @Valid Account account, BindingResult result, Model model) {
+    public String saveAccount(@ModelAttribute("account") @Valid Account account,
+            BindingResult result,
+            Model model,
+            RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             // Handle validation errors
             model.addAttribute("roles", roleService.getAllRoles());
             return "admin/account-mgr/form-account";
         }
 
-        if (account.getAccountId() == null) {
-            account.setPassword(passwordEncoder.encode(account.getPassword()));
-            accountService.saveAccount(account);
-        } else {
-            // This is an existing account, handle password update conditionally
-            Account existingAccount = accountService.getAccountById(account.getAccountId());
-            if (existingAccount != null) {
-                // Update other fields
-                existingAccount.setLoginName(account.getLoginName());
-                existingAccount.setRole(account.getRole());
-
-                // Check if password is changed
-                if (!account.getPassword().isEmpty() && !account.getPassword().equals(existingAccount.getPassword())) {
-                    existingAccount.setPassword(passwordEncoder.encode(account.getPassword()));
+        try {
+            if (account.getAccountId() == null) {
+                // Trường hợp thêm mới
+                account.setPassword(passwordEncoder.encode(account.getPassword()));
+                try {
+                    accountService.saveAccount(account);
+                    redirectAttributes.addFlashAttribute("successMessage", "Thêm mới tài khoản thành công!");
+                } catch (AccountInUseException e) {
+                    model.addAttribute("roles", roleService.getAllRoles());
+                    model.addAttribute("errorMessage", e.getMessage());
+                    return "admin/account-mgr/form-account";
                 }
-                accountService.saveAccount(existingAccount);
+            } else {
+                // Trường hợp cập nhật
+                Account existingAccount = accountService.getAccountById(account.getAccountId());
+                if (existingAccount != null) {
+                    if (!account.getLoginName().equals(existingAccount.getLoginName())) {
+                        // Update other fields
+                        existingAccount.setLoginName(account.getLoginName());
+                        existingAccount.setRole(account.getRole());
+
+                        // Check if password is changed
+                        if (!account.getPassword().isEmpty()
+                                && !account.getPassword().equals(existingAccount.getPassword())) {
+                            existingAccount.setPassword(passwordEncoder.encode(account.getPassword()));
+                        }
+                        try {
+                            accountService.saveAccount(account);
+                            redirectAttributes.addFlashAttribute("successMessage",
+                                    "Cập nhật thông tin tài khoản thành công!");
+                        } catch (AccountInUseException e) {
+                            model.addAttribute("roles", roleService.getAllRoles());
+                            model.addAttribute("errorMessage", e.getMessage());
+                            return "admin/account-mgr/form-account";
+                        }
+                    } else {
+                        // Update other fields
+                        existingAccount.setLoginName(account.getLoginName());
+                        existingAccount.setRole(account.getRole());
+
+                        // Check if password is changed
+                        if (!account.getPassword().isEmpty()
+                                && !account.getPassword().equals(existingAccount.getPassword())) {
+                            existingAccount.setPassword(passwordEncoder.encode(account.getPassword()));
+                        }
+                        accountService.updateAccount(existingAccount);
+                        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật tài khoản thành công!");
+                    }
+                }
             }
+            return "redirect:/admin/account-mgr/list";
+        } catch (AccountInUseException e) {
+            // Xử lý lỗi login name trùng
+            model.addAttribute("roles", roleService.getAllRoles());
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/account-mgr/form-account";
+        } catch (IllegalArgumentException e) {
+            // Xử lý lỗi không tìm thấy tài khoản
+            model.addAttribute("roles", roleService.getAllRoles());
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/account-mgr/form-account";
+        } catch (Exception e) {
+            // Xử lý các lỗi khác
+            model.addAttribute("roles", roleService.getAllRoles());
+            model.addAttribute("errorMessage", "Có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại!");
+            return "admin/account-mgr/form-account";
         }
-        return "redirect:/admin/account-mgr/list";
     }
 
     @PostMapping("delete/{accountId}")

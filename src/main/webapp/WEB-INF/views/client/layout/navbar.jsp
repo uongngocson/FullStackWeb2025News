@@ -100,8 +100,7 @@
                                                     HOME
                                                 </a>
                                             </li>
-                                            <!-- thời trang nam -->
-
+                                            <!-- Thời trang nam -->
                                             <li>
                                                 <button
                                                     :class="{ 'bg-neutral-100' : navigationMenu=='fashionMen', 'hover:bg-neutral-100' : navigationMenu!='fashionMen' }"
@@ -109,7 +108,8 @@
                                                     @mouseleave="navigationMenuLeave()"
                                                     class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md hover:text-neutral-900 focus:outline-none disabled:opacity-50 disabled:pointer-events-none bg-background hover:bg-neutral-100 group w-max">
                                                     <span>
-                                                        <a href="/product/item-male" class="active">
+                                                        <a href="${pageContext.request.contextPath}/gender-product/men"
+                                                            class="active">
                                                             <spring:message code="navbar.men" />
                                                         </a>
                                                     </span>
@@ -124,7 +124,7 @@
                                                 </button>
                                             </li>
 
-                                            <!-- thời trang nữ -->
+                                            <!-- Thời trang nữ -->
                                             <li>
                                                 <button
                                                     :class="{ 'bg-neutral-100' : navigationMenu=='women-section', 'hover:bg-neutral-100' : navigationMenu!='women-section' }"
@@ -132,7 +132,8 @@
                                                     @mouseleave="navigationMenuLeave()"
                                                     class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md hover:text-neutral-900 focus:outline-none disabled:opacity-50 disabled:pointer-events-none bg-background hover:bg-neutral-100 group w-max">
                                                     <span>
-                                                        <a href="/product/item-female" class="active">
+                                                        <a href="${pageContext.request.contextPath}/gender-product/women"
+                                                            class="active">
                                                             <spring:message code="navbar.women" />
                                                         </a>
                                                     </span>

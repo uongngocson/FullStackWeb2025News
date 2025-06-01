@@ -1,11 +1,9 @@
 package local.example.demo.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import local.example.demo.exception.EmployeeInUseException;
 import local.example.demo.model.entity.Account;
 import local.example.demo.model.entity.Employee;
@@ -16,27 +14,25 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final PurchaseReceiptRepository purchaseReceiptRepository;
 
-    // get all employees
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
 
-    // get employee by id
     public Employee getEmployeeById(Integer id) {
         return employeeRepository.findByEmployeeId(id);
     }
 
-    // save employee
+    @Transactional
     public Employee saveEmployee(Employee employee) {
         return employeeRepository.save(employee);
     }
 
-    // delete employee
+    @Transactional(rollbackFor = { EmployeeInUseException.class })
     public void deleteEmployee(Integer id) {
         if (purchaseReceiptRepository.existsByEmployee(employeeRepository.findByEmployeeId(id))) {
             throw new EmployeeInUseException("Nhân viên này đã tạo phiếu nhập, Không thể xóa.");
@@ -44,7 +40,6 @@ public class EmployeeService {
         employeeRepository.deleteById(id);
     }
 
-    // get employee by account
     public Employee getEmployeeByAccount(Account account) {
         return employeeRepository.findByAccount(account);
     }

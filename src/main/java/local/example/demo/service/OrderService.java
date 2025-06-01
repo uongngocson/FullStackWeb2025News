@@ -287,7 +287,7 @@ public class OrderService {
         if (!order.getOrderStatus().equals("PENDING")) {
             throw new IllegalArgumentException("Chỉ có thể hủy đơn hàng ở trạng thái PENDING");
         }
-        order.setOrderStatus("Cancel"); // Cập nhật trạng thái thành "Cancel"
+        order.setOrderStatus("CANCELLED"); // Cập nhật trạng thái thành "Cancel"
         orderRepository.save(order);
     }
 

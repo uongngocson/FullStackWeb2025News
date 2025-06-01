@@ -379,8 +379,8 @@
                                                             <button type="submit" class="btn btn-success">
                                                                 <i class="fa fa-save mr-1"></i> ${customer.customerId
                                                                 != null ? 'Update' : 'Add'}</button>
-                                                            <button type="reset" class="btn btn-primary"><i
-                                                                    class="fa fa-redo mr-1"></i> Reset</button>
+                                                            <!-- <button type="reset" class="btn btn-primary"><i
+                                                                    class="fa fa-redo mr-1"></i> Reset</button> -->
                                                             <a href="/admin/customer-mgr/list" class="btn btn-danger"><i
                                                                     class="fa fa-times mr-1"></i> Cancel</a>
                                                         </div>

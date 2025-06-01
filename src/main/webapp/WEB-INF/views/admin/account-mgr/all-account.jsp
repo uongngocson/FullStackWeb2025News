@@ -77,60 +77,81 @@
                                         </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h4 class="card-title">Account List</h4>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <%-- Thêm class "table-striped table-bordered" nếu muốn --%>
-                                                        <table id="accountsTable" class="display table table-hover">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>NO</th>
-                                                                    <th>Login Name</th>
-                                                                    <th>Role</th>
-                                                                    <th style="width: 10%;">Actions</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <c:forEach var="account" items="${accounts}"
-                                                                    varStatus="loop">
+                                <%-- Display Success and Error Messages --%>
+                                    <c:if test="${not empty successMessage}">
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            ${successMessage}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${not empty errorMessage}">
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            ${errorMessage}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    </c:if>
+
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Account List</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <%-- Thêm class "table-striped table-bordered" nếu muốn --%>
+                                                            <table id="accountsTable" class="display table table-hover">
+                                                                <thead>
                                                                     <tr>
-                                                                        <td>${loop.index + 1}</td> <%-- Sửa lỗi hiển thị
-                                                                            NO --%>
-                                                                            <td>${account.loginName}</td>
-                                                                            <td>${account.role.roleName}</td>
-                                                                            <td>
-                                                                                <div class="form-button-action">
-                                                                                    <%-- Sử dụng class này cho layout
-                                                                                        nút đẹp hơn --%>
-                                                                                        <a href="<c:url value='/admin/account-mgr/update/${account.accountId}'/>"
-                                                                                            data-bs-toggle="tooltip"
-                                                                                            title="Edit Account"
-                                                                                            class="btn btn-link btn-primary btn-lg">
-                                                                                            <i class="fa fa-edit"></i>
-                                                                                        </a>
-                                                                                        <button type="button"
-                                                                                            data-bs-toggle="tooltip"
-                                                                                            title="Delete Account"
-                                                                                            class="btn btn-link btn-danger"
-                                                                                            onclick="deleteAccount('${account.accountId}')">
-                                                                                            <i class="fa fa-times"></i>
-                                                                                        </button>
-                                                                                </div>
-                                                                            </td>
+                                                                        <th>NO</th>
+                                                                        <th>Login Name</th>
+                                                                        <th>Role</th>
+                                                                        <th style="width: 10%;">Actions</th>
                                                                     </tr>
-                                                                </c:forEach>
-                                                            </tbody>
-                                                        </table>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <c:forEach var="account" items="${accounts}"
+                                                                        varStatus="loop">
+                                                                        <tr>
+                                                                            <td>${loop.index + 1}</td> <%-- Sửa lỗi hiển
+                                                                                thị NO --%>
+                                                                                <td>${account.loginName}</td>
+                                                                                <td>${account.role.roleName}</td>
+                                                                                <td>
+                                                                                    <div class="form-button-action">
+                                                                                        <%-- Sử dụng class này cho
+                                                                                            layout nút đẹp hơn --%>
+                                                                                            <a href="<c:url value='/admin/account-mgr/update/${account.accountId}'/>"
+                                                                                                data-bs-toggle="tooltip"
+                                                                                                title="Edit Account"
+                                                                                                class="btn btn-link btn-primary btn-lg">
+                                                                                                <i
+                                                                                                    class="fa fa-edit"></i>
+                                                                                            </a>
+                                                                                            <button type="button"
+                                                                                                data-bs-toggle="tooltip"
+                                                                                                title="Delete Account"
+                                                                                                class="btn btn-link btn-danger"
+                                                                                                onclick="deleteAccount('${account.accountId}')">
+                                                                                                <i
+                                                                                                    class="fa fa-times"></i>
+                                                                                            </button>
+                                                                                    </div>
+                                                                                </td>
+                                                                        </tr>
+                                                                    </c:forEach>
+                                                                </tbody>
+                                                            </table>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
                         <jsp:include page="../layout/footer.jsp" />
@@ -175,8 +196,8 @@
 
                     function deleteAccount(accountId) {
                         swal({
-                            title: 'Are you sure?',
-                            text: "You won't be able to revert this!",
+                            title: 'XÁC NHẬN',
+                            text: "Bạn có chắc chắn muốn xóa tài khoản này không?",
                             type: 'warning',
                             buttons: {
                                 cancel: {
@@ -200,7 +221,7 @@
                                         }
                                     },
                                     success: function (response) {
-                                        swal("Deleted!", "The account has been deleted.", {
+                                        swal("THÔNG BÁO!", "Tài khoản đã được xóa thành công!", {
                                             icon: "success",
                                             buttons: {
                                                 confirm: {
