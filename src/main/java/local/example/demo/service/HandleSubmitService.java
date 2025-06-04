@@ -99,6 +99,7 @@ public class HandleSubmitService {
            .append("@payment_id = ").append(orderData.getPayment_id()).append(", ")
            .append("@TotalAmount = ").append(orderData.getTotalAmount()).append(", ")
            .append("@OrderItems = @OrderItems, ")
+           .append("@payment_status = ").append(orderData.isPayment_status() ? "1" : "0").append(", ")
            .append("@AddressId = ").append(orderData.getAddressId()).append(", ")
            .append("@recipient_name = N'").append(orderData.getRecipient_name()).append("', ")
            .append("@recipient_phone = '").append(orderData.getRecipient_phone()).append("', ")

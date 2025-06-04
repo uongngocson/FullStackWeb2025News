@@ -43,48 +43,47 @@ public class ReviewController {
      */
     @GetMapping("/all")
     public String getAllReviews(Model model) {
-        // Lấy thông tin người dùng đã đăng nhập
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            return "redirect:/login";
-        }
-        
-        // Lấy customer từ username
-        Customer customer = customerService.findByUsername(authentication.getName());
-        if (customer == null) {
-            return "redirect:/login";
-        }
-        
-        // Debug log
-        System.out.println("Customer found: " + customer.getCustomerId() + " - " + customer.getFirstName() + " " + customer.getLastName());
-        
-        // Lấy tất cả đánh giá của khách hàng
-        List<Review> reviews = reviewService.getReviewsByCustomerId(customer.getCustomerId());
-        System.out.println("Reviews found: " + (reviews != null ? reviews.size() : "null"));
-        
-        if (reviews != null && !reviews.isEmpty()) {
-            for (Review review : reviews) {
-                System.out.println("Review ID: " + review.getReviewId() + ", Product: " + 
-                    (review.getProduct() != null ? review.getProduct().getProductId() : "null") + 
-                    ", Date: " + review.getReviewDate());
+        try {
+            // Sử dụng phương thức fetchCurrentLoggedInCustomer để lấy thông tin khách hàng đã đăng nhập
+            Customer customer = customerService.fetchCurrentLoggedInCustomer();
+            if (customer == null) {
+                return "redirect:/login";
             }
-        }
-        
-        // Lấy thông tin sản phẩm cho mỗi đánh giá
-        Map<Integer, Product> productMap = new HashMap<>();
-        if (reviews != null && !reviews.isEmpty()) {
-            for (Review review : reviews) {
-                if (review.getProduct() != null) {
-                    productMap.put(review.getProduct().getProductId(), review.getProduct());
+            
+            // Debug log
+            System.out.println("Customer found: " + customer.getCustomerId() + " - " + customer.getFirstName() + " " + customer.getLastName());
+            
+            // Lấy tất cả đánh giá của khách hàng
+            List<Review> reviews = reviewService.getReviewsByCustomerId(customer.getCustomerId());
+            System.out.println("Reviews found: " + (reviews != null ? reviews.size() : "null"));
+            
+            if (reviews != null && !reviews.isEmpty()) {
+                for (Review review : reviews) {
+                    System.out.println("Review ID: " + review.getReviewId() + ", Product: " + 
+                        (review.getProduct() != null ? review.getProduct().getProductId() : "null") + 
+                        ", Date: " + review.getReviewDate());
                 }
             }
+            
+            // Lấy thông tin sản phẩm cho mỗi đánh giá
+            Map<Integer, Product> productMap = new HashMap<>();
+            if (reviews != null && !reviews.isEmpty()) {
+                for (Review review : reviews) {
+                    if (review.getProduct() != null) {
+                        productMap.put(review.getProduct().getProductId(), review.getProduct());
+                    }
+                }
+            }
+            
+            model.addAttribute("reviews", reviews);
+            model.addAttribute("productMap", productMap);
+            model.addAttribute("customer", customer);
+            
+            return "client/auth/allreview";
+        } catch (Exception e) {
+            System.out.println("Error getting reviews: " + e.getMessage());
+            return "redirect:/login";
         }
-        
-        model.addAttribute("reviews", reviews);
-        model.addAttribute("productMap", productMap);
-        model.addAttribute("customer", customer);
-        
-        return "client/auth/allreview";
     }
     
     /**
@@ -95,41 +94,39 @@ public class ReviewController {
             @RequestParam("reviewId") Integer reviewId,
             RedirectAttributes redirectAttributes) {
         
-        // Lấy thông tin người dùng đã đăng nhập
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Bạn cần đăng nhập để thực hiện thao tác này.");
-            return "redirect:/login";
-        }
-        
-        // Lấy customer từ username
-        Customer customer = customerService.findByUsername(authentication.getName());
-        if (customer == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy thông tin khách hàng.");
+        try {
+            // Sử dụng phương thức fetchCurrentLoggedInCustomer để lấy thông tin khách hàng đã đăng nhập
+            Customer customer = customerService.fetchCurrentLoggedInCustomer();
+            if (customer == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn cần đăng nhập để thực hiện thao tác này.");
+                return "redirect:/login";
+            }
+            
+            // Kiểm tra xem đánh giá có thuộc về khách hàng này không
+            Review review = reviewService.getReviewById(reviewId);
+            if (review == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy đánh giá.");
+                return "redirect:/review/all";
+            }
+            
+            if (!review.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền xóa đánh giá này.");
+                return "redirect:/review/all";
+            }
+            
+            // Xóa đánh giá
+            boolean deleted = reviewService.deleteReview(reviewId);
+            if (deleted) {
+                redirectAttributes.addFlashAttribute("successMessage", "Đã xóa đánh giá thành công.");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa đánh giá. Vui lòng thử lại sau.");
+            }
+            
+            return "redirect:/review/all";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi: " + e.getMessage());
             return "redirect:/review/all";
         }
-        
-        // Kiểm tra xem đánh giá có thuộc về khách hàng này không
-        Review review = reviewService.getReviewById(reviewId);
-        if (review == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy đánh giá.");
-            return "redirect:/review/all";
-        }
-        
-        if (!review.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền xóa đánh giá này.");
-            return "redirect:/review/all";
-        }
-        
-        // Xóa đánh giá
-        boolean deleted = reviewService.deleteReview(reviewId);
-        if (deleted) {
-            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa đánh giá thành công.");
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa đánh giá. Vui lòng thử lại sau.");
-        }
-        
-        return "redirect:/review/all";
     }
     
     /**
@@ -143,40 +140,33 @@ public class ReviewController {
             @RequestParam(value = "reviewImage", required = false) MultipartFile reviewImage,
             RedirectAttributes redirectAttributes) {
         
-        // Lấy thông tin người dùng đã đăng nhập
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Bạn cần đăng nhập để thực hiện thao tác này.");
-            return "redirect:/login";
-        }
-        
-        // Lấy customer từ username
-        Customer customer = customerService.findByUsername(authentication.getName());
-        if (customer == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy thông tin khách hàng.");
-            return "redirect:/review/all";
-        }
-        
-        // Kiểm tra xem đánh giá có thuộc về khách hàng này không
-        Review review = reviewService.getReviewById(reviewId);
-        if (review == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy đánh giá.");
-            return "redirect:/review/all";
-        }
-        
-        if (!review.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền cập nhật đánh giá này.");
-            return "redirect:/review/all";
-        }
-        
-        // Validate rating
-        if (rating == null || rating < 1 || rating > 5) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Đánh giá không hợp lệ. Vui lòng chọn từ 1 đến 5 sao.");
-            return "redirect:/review/all";
-        }
-        
-        // Cập nhật đánh giá
         try {
+            // Sử dụng phương thức fetchCurrentLoggedInCustomer để lấy thông tin khách hàng đã đăng nhập
+            Customer customer = customerService.fetchCurrentLoggedInCustomer();
+            if (customer == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn cần đăng nhập để thực hiện thao tác này.");
+                return "redirect:/login";
+            }
+            
+            // Kiểm tra xem đánh giá có thuộc về khách hàng này không
+            Review review = reviewService.getReviewById(reviewId);
+            if (review == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy đánh giá.");
+                return "redirect:/review/all";
+            }
+            
+            if (!review.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền cập nhật đánh giá này.");
+                return "redirect:/review/all";
+            }
+            
+            // Validate rating
+            if (rating == null || rating < 1 || rating > 5) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Đánh giá không hợp lệ. Vui lòng chọn từ 1 đến 5 sao.");
+                return "redirect:/review/all";
+            }
+            
+            // Cập nhật đánh giá
             Review updatedReview = reviewService.updateReview(reviewId, rating, comment, reviewImage);
             if (updatedReview != null) {
                 redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật đánh giá thành công.");
@@ -206,22 +196,11 @@ public class ReviewController {
             RedirectAttributes redirectAttributes) {
 
         try {
-            // Lấy thông tin người dùng đã đăng nhập từ Spring Security
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            // Sử dụng phương thức fetchCurrentLoggedInCustomer để lấy thông tin khách hàng đã đăng nhập
+            Customer customer = customerService.fetchCurrentLoggedInCustomer();
+            if (customer == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Bạn cần đăng nhập để đánh giá sản phẩm.");
                 return "redirect:/login";
-            }
-            
-            // Lấy username từ thông tin xác thực
-            String username = authentication.getName();
-            System.out.println("Authenticated username: " + username);
-            
-            // Lấy customer từ username
-            Customer customer = customerService.findByUsername(username);
-            if (customer == null) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy thông tin khách hàng.");
-                return "redirect:/management/historyorder";
             }
             
             // Sử dụng customerId từ customer object

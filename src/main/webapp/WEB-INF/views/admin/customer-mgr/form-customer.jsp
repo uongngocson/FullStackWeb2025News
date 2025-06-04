@@ -367,10 +367,14 @@
                                                                     <div class="mt-2">
                                                                         <div id="imagePreview" class="img-preview">
                                                                             <c:if test="${not empty customer.imageUrl}">
-                                                                                <img src="${customer.imageUrl}"
-                                                                                    alt="Profile Image"
-                                                                                    class="img-thumbnail mt-2"
-                                                                                    style="max-height: 150px;">
+                                                                                <c:choose>
+                                                                                    <c:when test="${customer.imageUrl.startsWith('http')}">
+                                                                                        <img src="${customer.imageUrl}" alt="Customer Avatar" class="preview-image">
+                                                                                    </c:when>
+                                                                                    <c:otherwise>
+                                                                                        <img src="${ctx}${customer.imageUrl}" alt="Customer Avatar" class="preview-image">
+                                                                                    </c:otherwise>
+                                                                                </c:choose>
                                                                             </c:if>
                                                                         </div>
                                                                     </div>

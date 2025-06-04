@@ -176,7 +176,7 @@
                                                         </p>
                                                     </div>
                                                     <div class="flex justify-between items-center w-full">
-                                                        <p class="text-base leading-4 text-gray-800">Shipping</p>
+                                                        <p class="text-base leading-4 text-gray-800">Shipping+ tax</p>
                                                         <p class="text-base leading-4 text-gray-600">
                                                             $
                                                             <fmt:formatNumber value="${shipping}" pattern="#,##0.00" />
@@ -232,7 +232,7 @@
                                             <div class="flex flex-col justify-start items-start flex-shrink-0">
                                                 <div
                                                     class="flex justify-center w-full md:justify-start items-center space-x-4 py-8 border-b border-gray-200">
-                                                    <img src="${ctx}/resources/assets/client/images/user-avatar.jpg"
+                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/2048px-User_icon_2.svg.png"
                                                         alt="avatar" class="w-16 h-16 rounded-full object-cover" />
                                                     <div class="flex justify-start items-start flex-col space-y-2">
                                                         <p

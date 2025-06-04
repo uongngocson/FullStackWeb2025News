@@ -130,14 +130,19 @@ public class AccountService {
 
             // Lấy ảnh đại diện từ Facebook
             try {
-                Map<String, Object> pictureData = (Map<String, Object>) ((Map<String, Object>) principal
-                        .getAttribute("picture")).get("data");
-                String avatarUrl = (String) pictureData.get("url");
-                if (avatarUrl != null)
-                    customer.setImageUrl(avatarUrl);
+                Map<String, Object> pictureObj = principal.getAttribute("picture");
+                if (pictureObj != null && pictureObj instanceof Map) {
+                    Map<String, Object> pictureData = (Map<String, Object>) ((Map<String, Object>) pictureObj).get("data");
+                    if (pictureData != null) {
+                        String avatarUrl = (String) pictureData.get("url");
+                        if (avatarUrl != null) {
+                            customer.setImageUrl(avatarUrl);
+                        }
+                    }
+                }
             } catch (Exception e) {
                 // Trường hợp Facebook không trả ảnh
-                System.out.println("Không lấy được ảnh đại diện từ Facebook.");
+                System.out.println("Không lấy được ảnh đại diện từ Facebook: " + e.getMessage());
             }
         }
 
@@ -154,26 +159,69 @@ public class AccountService {
 
         if ("google".equalsIgnoreCase(provider)) {
             id = principal.getAttribute("sub");
+            // Đảm bảo email luôn có giá trị khi đăng nhập bằng Google
+            if (email == null || email.isBlank()) {
+                throw new IllegalStateException("Email is required for Google authentication");
+            }
         } else if ("facebook".equalsIgnoreCase(provider)) {
             id = principal.getAttribute("id");
             isFacebook = true;
+            
+            // Log để debug
+            System.out.println("Facebook login - ID: " + id);
+            System.out.println("Facebook login - Email: " + email);
+            System.out.println("Facebook login - Name: " + principal.getAttribute("name"));
         }
 
-        // Tìm account theo email (nếu có), nếu không thì fallback qua id
-        Account account = (email != null && !email.isBlank())
-                ? accountRepository.findByLoginName(email)
-                : null;
-
-        if (account == null) {
+        // Tìm tài khoản theo email hoặc ID
+        Account account = null;
+        
+        // Nếu có email, thử tìm theo email trước
+        if (email != null && !email.isBlank()) {
+            account = accountRepository.findByLoginName(email);
+        }
+        
+        // Nếu không tìm thấy bằng email và đây là Facebook, thử tìm bằng ID
+        if (account == null && isFacebook && id != null) {
             account = accountRepository.findByLoginName(id);
         }
 
-        if (account != null)
+        if (account != null) {
+            System.out.println("Found existing account: " + account.getLoginName());
             return account;
+        }
 
-        // Nếu không có thì tạo mới
-        String loginName = (email != null && !email.isBlank()) ? email : id;
-        String rawPassword = (isFacebook ? "oauthFB" : "oauthGG") + id;
+        // Tạo tài khoản mới
+        String loginName;
+        if (email != null && !email.isBlank()) {
+            // Ưu tiên sử dụng email làm loginName
+            loginName = email;
+        } else if (isFacebook && id != null) {
+            // Nếu không có email và là Facebook, sử dụng ID
+            loginName = id;
+        } else {
+            throw new IllegalStateException("Cannot create account: No email or ID available");
+        }
+        
+        String rawPassword;
+        if ("google".equalsIgnoreCase(provider) && email != null && email.length() >= 7) {
+            // Lấy 7 ký tự đầu của email làm mật khẩu cho Google
+            rawPassword = email.substring(0, 7);
+        } else if ("google".equalsIgnoreCase(provider)) {
+            // Trường hợp email ngắn hơn 7 ký tự (hiếm gặp)
+            rawPassword = email;
+        } else if (isFacebook && id != null && id.length() >= 7) {
+            // Lấy 7 ký tự đầu của ID Facebook làm mật khẩu
+            rawPassword = id.substring(0, 7);
+        } else if (isFacebook && id != null) {
+            // Trường hợp ID Facebook ngắn hơn 7 ký tự (hiếm gặp)
+            rawPassword = id;
+        } else {
+            // Fallback - tạo mật khẩu ngẫu nhiên
+            rawPassword = generateRandomPassword();
+        }
+        
+        System.out.println("Creating new account with login name: " + loginName);
         String encodedPassword = passwordEncoder.encode(rawPassword);
 
         Account newAccount = new Account();

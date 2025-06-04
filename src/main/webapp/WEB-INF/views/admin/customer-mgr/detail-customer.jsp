@@ -168,9 +168,10 @@
                                                 <div class="card-body text-center">
                                                     <div class="profile-img-container">
 
-                                                        <img src="${not empty customer.imageUrl  ? customer.imageUrl : (ctx.concat(customer.gender ? '/resources/images-upload/customer/avatar-default-male.jpg' 
-                                                                                                          : '/resources/images-upload/customer/avatar-default-female.jpg'))}"
-                                                            class="profile-img" alt="${customer.firstName}">
+                                                        <img src="${not empty customer.imageUrl  
+                                                        ? (customer.imageUrl.startsWith('http') ? customer.imageUrl : ctx.concat(customer.imageUrl)) 
+                                                        : (ctx.concat(customer.gender ? '/resources/images-upload/customer/avatar-default-male.jpg' : '/resources/images-upload/customer/avatar-default-female.jpg'))}"
+                                                            alt="Customer Avatar" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                                                         <div
                                                             class="profile-badge ${customer.status ? 'bg-success' : 'bg-danger'}">
                                                             <i

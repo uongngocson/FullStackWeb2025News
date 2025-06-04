@@ -478,11 +478,14 @@
                                             <div class=""> <!-- Tăng padding lên -->
                                                 <div class="flex flex-col items-center">
                                                     <c:if test="${not empty customer.imageUrl}">
-                                                        <div>
-                                                            <p class="text-gray-500 text-sm">Profile Image</p>
-                                                            <img src="${ctx}${customer.imageUrl}" alt="Profile Image"
-                                                                class="w-24 h-24 rounded-full object-cover">
-                                                        </div>
+                                                        <c:choose>
+                                                            <c:when test="${customer.imageUrl.startsWith('http')}">
+                                                                <img src="${customer.imageUrl}" alt="Profile Image" class="w-10 h-10 rounded-full object-cover border-2 border-white">
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <img src="${ctx}${customer.imageUrl}" alt="Profile Image" class="w-10 h-10 rounded-full object-cover border-2 border-white">
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </c:if>
                                                     <div class="text-center font-semibold text-gray-800 text-lg mt-3">
                                                         <c:out value="${sessionScope.fullName}" />
@@ -985,8 +988,537 @@
                             form.submit();
                         }
                     </script>
+                    
+                    <!-- AJAX Navigation Script -->
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Main content container where we'll load the AJAX content
+                            const mainContentId = 'ajax-main-content';
+                            
+                            // Create main content container if it doesn't exist
+                            if (!document.getElementById(mainContentId)) {
+                                const mainContent = document.createElement('div');
+                                mainContent.id = mainContentId;
+                                
+                                // Find the appropriate place to insert the main content container
+                                // Right after the header
+                                const header = document.querySelector('header');
+                                if (header && header.nextSibling) {
+                                    document.body.insertBefore(mainContent, header.nextSibling);
+                                } else {
+                                    document.body.appendChild(mainContent);
+                                }
+                                
+                                // Move all content after header into the main content container
+                                let currentNode = mainContent.nextSibling;
+                                const nodesToMove = [];
+                                
+                                while (currentNode && currentNode !== document.querySelector('script:last-of-type').previousElementSibling) {
+                                    nodesToMove.push(currentNode);
+                                    currentNode = currentNode.nextSibling;
+                                }
+                                
+                                nodesToMove.forEach(node => {
+                                    if (node.nodeName !== 'SCRIPT') {
+                                        mainContent.appendChild(node);
+                                    }
+                                });
+                            }
+                            
+                            // Store the current URL to detect navigation changes
+                            let currentUrl = window.location.href;
+                            
+                            // Function to load content via AJAX
+                            function loadContent(url, pushState = true) {
+                                // Show loading indicator
+                                const loadingIndicator = document.createElement('div');
+                                loadingIndicator.id = 'ajax-loading-indicator';
+                                loadingIndicator.innerHTML = '<div class="flex justify-center items-center p-10"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div></div>';
+                                
+                                const mainContent = document.getElementById(mainContentId);
+                                if (mainContent) {
+                                    // Only show loading indicator for non-fragment navigation
+                                    if (!url.includes('#')) {
+                                        mainContent.innerHTML = '';
+                                        mainContent.appendChild(loadingIndicator);
+                                    }
+                                }
+                                
+                                // Store original URL for error handling
+                                const originalUrl = url;
+                                
+                                // Add cache busting parameter to prevent caching issues
+                                const cacheBuster = '_=' + new Date().getTime();
+                                url = url.includes('?') ? `${url}&${cacheBuster}` : `${url}?${cacheBuster}`;
+                                
+                                // Make the AJAX request with proper headers and credentials
+                                fetch(url, {
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest',
+                                        'Accept': 'text/html, */*',
+                                        'Cache-Control': 'no-cache, no-store, must-revalidate'
+                                    },
+                                    credentials: 'same-origin', // Include cookies for session maintenance
+                                    cache: 'no-store' // Prevent caching
+                                })
+                                .then(response => {
+                                    // Check for redirects (could indicate session timeout or auth issues)
+                                    if (response.redirected) {
+                                        window.location.href = response.url;
+                                        return null;
+                                    }
+                                    
+                                    if (!response.ok) {
+                                        throw new Error(`Network response error: ${response.status} ${response.statusText}`);
+                                    }
+                                    
+                                    // Get both the response text and the final URL (in case of redirects)
+                                    return response.text().then(text => ({
+                                        html: text,
+                                        finalUrl: response.url
+                                    }));
+                                })
+                                .then(data => {
+                                    // If the request was aborted or redirected
+                                    if (!data) return;
+                                    
+                                    const { html, finalUrl } = data;
+                                    
+                                    // Verify we actually got HTML content
+                                    if (!html || html.trim() === '') {
+                                        console.error('Empty response received');
+                                        window.location.href = originalUrl;
+                                        return;
+                                    }
+                                    
+                                    // Check if the response contains an error page or login page
+                                    if (html.includes('<title>Error</title>') || 
+                                        html.includes('<title>Login</title>') ||
+                                        html.includes('login-form')) {
+                                        console.log('Received error or login page, redirecting');
+                                        window.location.href = originalUrl;
+                                        return;
+                                    }
+                                    
+                                    // Create a temporary element to parse the HTML
+                                    const parser = new DOMParser();
+                                    const doc = parser.parseFromString(html, 'text/html');
+                                    
+                                    // Verify we have a proper document
+                                    if (!doc || !doc.body) {
+                                        console.error('Invalid HTML document received');
+                                        window.location.href = originalUrl;
+                                        return;
+                                    }
+                                    
+                                    // Extract the main content from the response
+                                    // This assumes there's a specific container in your pages
+                                    // You may need to adjust this selector based on your page structure
+                                    const newContent = doc.querySelector('body > *:not(header):not(script)');
+                                    
+                                    // Verify we found content
+                                    if (!newContent) {
+                                        console.error('Could not find main content in the response');
+                                        window.location.href = originalUrl;
+                                        return;
+                                    }
+                                    
+                                    // Check if the response contains actual data by looking for expected elements
+                                    // Adjust these selectors based on your page structure
+                                    const hasContent = doc.body.textContent.trim().length > 0;
+                                    
+                                    if (!hasContent) {
+                                        console.error('Response appears to be empty or invalid');
+                                        window.location.href = originalUrl;
+                                        return;
+                                    }
+                                    
+                                    // Update the page title
+                                    const title = doc.querySelector('title');
+                                    if (title) {
+                                        document.title = title.textContent;
+                                    }
+                                    
+                                    // Update the main content
+                                    if (mainContent) {
+                                        mainContent.innerHTML = '';
+                                        
+                                        // First collect all scripts to execute them later
+                                        const scriptsToExecute = [];
+                                        const externalScriptsToLoad = [];
+                                        
+                                        // Process scripts first
+                                        Array.from(doc.querySelectorAll('script')).forEach(script => {
+                                            if (!script.src && script.textContent && !script.textContent.includes('document.addEventListener(\'DOMContentLoaded\'')) {
+                                                scriptsToExecute.push(script.textContent);
+                                            } else if (script.src) {
+                                                // Check if script already exists
+                                                const scriptExists = Array.from(document.querySelectorAll('script')).some(
+                                                    s => s.src === script.src
+                                                );
+                                                
+                                                if (!scriptExists) {
+                                                    externalScriptsToLoad.push(script);
+                                                }
+                                            }
+                                        });
+                                        
+                                        // Extract and preserve any server-side data embedded in the page
+                                        // This is crucial for maintaining state between AJAX loads
+                                        const dataElements = [];
+                                        
+                                        // Find elements with data attributes or model attributes
+                                        doc.querySelectorAll('[data-model], [data-items], [data-value], [data-id], [data-product-id], [data-category-id]').forEach(el => {
+                                            dataElements.push(el.cloneNode(true));
+                                        });
+                                        
+                                        // Find server-side variables in script tags (common pattern)
+                                        const dataScripts = Array.from(doc.querySelectorAll('script')).filter(script => 
+                                            !script.src && script.textContent && 
+                                            (script.textContent.includes('var ') || 
+                                             script.textContent.includes('let ') || 
+                                             script.textContent.includes('const '))
+                                        );
+                                        
+                                        // Clone all content nodes and append them
+                                        Array.from(doc.body.children).forEach(child => {
+                                            if (child.tagName !== 'HEADER' && !child.matches('script')) {
+                                                const clonedNode = child.cloneNode(true);
+                                                
+                                                // Handle forms with CSRF tokens
+                                                const forms = clonedNode.querySelectorAll('form');
+                                                forms.forEach(form => {
+                                                    // For forms that need to submit normally (not AJAX)
+                                                    if (form.method === 'post' || form.getAttribute('data-ajax') === 'false') {
+                                                        form.setAttribute('data-ajax', 'false');
+                                                    }
+                                                    
+                                                    // Ensure CSRF tokens are preserved
+                                                    const csrfInput = form.querySelector('input[name="_csrf"]');
+                                                    if (csrfInput) {
+                                                        // Make sure we have the latest CSRF token
+                                                        const currentCsrfMeta = document.querySelector('meta[name="_csrf"]');
+                                                        if (currentCsrfMeta) {
+                                                            csrfInput.value = currentCsrfMeta.getAttribute('content');
+                                                        }
+                                                    }
+                                                });
+                                                
+                                                mainContent.appendChild(clonedNode);
+                                            }
+                                        });
+                                        
+                                        // Re-inject any data elements that might have been missed
+                                        dataElements.forEach(el => {
+                                            // Find a matching element in the new DOM to replace or append to
+                                            const selector = el.id ? `#${el.id}` : 
+                                                           (el.className ? `.${el.className.split(' ').join('.')}` : null);
+                                            
+                                            if (selector) {
+                                                const target = mainContent.querySelector(selector);
+                                                if (target) {
+                                                    // Copy data attributes
+                                                    Array.from(el.attributes).forEach(attr => {
+                                                        if (attr.name.startsWith('data-')) {
+                                                            target.setAttribute(attr.name, attr.value);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                        
+                                        // Execute inline scripts in correct order
+                                        scriptsToExecute.forEach(scriptContent => {
+                                            try {
+                                                const scriptElement = document.createElement('script');
+                                                scriptElement.textContent = scriptContent;
+                                                document.body.appendChild(scriptElement);
+                                            } catch (e) {
+                                                console.error('Error executing script:', e);
+                                            }
+                                        });
+                                        
+                                        // Execute data scripts first to ensure data is available
+                                        dataScripts.forEach(script => {
+                                            try {
+                                                const scriptElement = document.createElement('script');
+                                                scriptElement.textContent = script.textContent;
+                                                document.body.appendChild(scriptElement);
+                                            } catch (e) {
+                                                console.error('Error executing data script:', e);
+                                            }
+                                        });
+                                        
+                                        // Load external scripts
+                                        let scriptsLoaded = 0;
+                                        const totalExternalScripts = externalScriptsToLoad.length;
+                                        
+                                        function checkAllScriptsLoaded() {
+                                            scriptsLoaded++;
+                                            if (scriptsLoaded === totalExternalScripts) {
+                                                // All scripts loaded, now initialize any components
+                                                setTimeout(() => {
+                                                    initializeComponents();
+                                                    
+                                                    // Double-check if content is still empty and reload if necessary
+                                                    if (mainContent.textContent.trim().length === 0) {
+                                                        console.warn('Content appears empty after loading, reloading page...');
+                                                        window.location.href = originalUrl;
+                                                    }
+                                                }, 100); // Small delay to ensure DOM is updated
+                                            }
+                                        }
+                                        
+                                        // Load external scripts if any
+                                        if (totalExternalScripts > 0) {
+                                            externalScriptsToLoad.forEach(script => {
+                                                const newScript = document.createElement('script');
+                                                Array.from(script.attributes).forEach(attr => {
+                                                    newScript.setAttribute(attr.name, attr.value);
+                                                });
+                                                
+                                                newScript.onload = function() {
+                                                    console.log('External script loaded:', script.src);
+                                                    checkAllScriptsLoaded();
+                                                };
+                                                
+                                                newScript.onerror = function() {
+                                                    console.error('Error loading script:', script.src);
+                                                    checkAllScriptsLoaded();
+                                                };
+                                                
+                                                document.body.appendChild(newScript);
+                                            });
+                                        } else {
+                                            // No external scripts, initialize components immediately
+                                            setTimeout(() => {
+                                                initializeComponents();
+                                                
+                                                // Double-check if content is still empty
+                                                if (mainContent.textContent.trim().length === 0) {
+                                                    console.warn('Content appears empty after loading, reloading page...');
+                                                    window.location.href = originalUrl;
+                                                }
+                                            }, 100); // Small delay to ensure DOM is updated
+                                        }
+                                        
+                                        // Update browser history if needed
+                                        if (pushState) {
+                                            // Use the original URL without cache busting for history
+                                            history.pushState({url: originalUrl}, document.title, originalUrl);
+                                            currentUrl = originalUrl;
+                                        }
+                                        
+                                        // Scroll to top
+                                        window.scrollTo(0, 0);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error loading content:', error);
+                                    // Fallback to normal navigation
+                                    window.location.href = originalUrl;
+                                });
+                            }
+                            
+                            // Function to initialize components and attach event listeners
+                            function initializeComponents() {
+                                // Reinitialize Alpine.js components if Alpine is loaded
+                                if (window.Alpine) {
+                                    // For Alpine.js v2
+                                    if (typeof window.Alpine.initializeComponent === 'function') {
+                                        document.querySelectorAll('[x-data]').forEach(el => {
+                                            window.Alpine.initializeComponent(el);
+                                        });
+                                    } 
+                                    // For Alpine.js v3
+                                    else if (typeof window.Alpine.initTree === 'function') {
+                                        window.Alpine.initTree(document.body);
+                                    }
+                                }
+                                
+                                // Reattach event listeners for buttons
+                                document.querySelectorAll('button[type="submit"]').forEach(button => {
+                                    if (!button.getAttribute('data-ajax-initialized')) {
+                                        button.setAttribute('data-ajax-initialized', 'true');
+                                        
+                                        // Check if button is in a form
+                                        const form = button.closest('form');
+                                        if (form && form.getAttribute('data-ajax') !== 'false') {
+                                            // Make sure form submits work properly
+                                            button.addEventListener('click', function(e) {
+                                                if (form.getAttribute('data-ajax') !== 'false') {
+                                                    // Let the form submit normally
+                                                    return true;
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                                
+                                // Handle other buttons (not in forms)
+                                document.querySelectorAll('button:not([type="submit"])').forEach(button => {
+                                    if (!button.getAttribute('data-ajax-initialized') && !button.closest('[x-data]')) {
+                                        button.setAttribute('data-ajax-initialized', 'true');
+                                        
+                                        // Check if button has a click handler via onclick attribute
+                                        const onclickAttr = button.getAttribute('onclick');
+                                        if (onclickAttr) {
+                                            // We don't need to do anything, the onclick will be preserved
+                                        } else {
+                                            // For buttons without explicit handlers, ensure they're clickable
+                                            button.addEventListener('click', function(e) {
+                                                // Default button behavior
+                                                return true;
+                                            });
+                                        }
+                                    }
+                                });
+                                
+                                // Re-initialize any custom components or plugins
+                                // For example, if you use jQuery plugins:
+                                if (window.jQuery) {
+                                    // Reinitialize jQuery plugins here
+                                    if (jQuery.fn.select2) {
+                                        jQuery('.select2').select2();
+                                    }
+                                    
+                                    // Reinitialize any other jQuery plugins
+                                    // ...
+                                }
+                                
+                                // Handle any special cases for specific pages
+                                const currentPath = window.location.pathname;
+                                
+                                // Example: If on product detail page, initialize product image slider
+                                if (currentPath.includes('/product/detail')) {
+                                    // Initialize product sliders or other product page specific functionality
+                                    if (typeof initProductPage === 'function') {
+                                        initProductPage();
+                                    }
+                                }
+                                
+                                // Example: If on cart page, initialize quantity controls
+                                if (currentPath.includes('/user/cart')) {
+                                    // Attach event listeners to quantity buttons
+                                    document.querySelectorAll('.quantity-btn').forEach(btn => {
+                                        btn.addEventListener('click', function() {
+                                            // Your quantity change logic
+                                        });
+                                    });
+                                }
+                                
+                                // Trigger a custom event that page-specific scripts can listen for
+                                document.dispatchEvent(new CustomEvent('ajax-content-loaded', {
+                                    detail: { url: window.location.href }
+                                }));
+                            }
+                            
+                            // Intercept all navigation link clicks
+                            document.body.addEventListener('click', function(e) {
+                                // Find the closest anchor tag
+                                let target = e.target;
+                                while (target && target.tagName !== 'A') {
+                                    target = target.parentNode;
+                                    if (!target || target === document.body) break;
+                                }
+                                
+                                // Process only if it's a link
+                                if (target && target.tagName === 'A') {
+                                    const href = target.getAttribute('href');
+                                    
+                                    // Skip if:
+                                    // - No href
+                                    // - External link
+                                    // - JavaScript link
+                                    // - Download link
+                                    // - Mail link
+                                    // - Has target="_blank"
+                                    // - Is a login/logout link
+                                    if (!href || 
+                                        href.startsWith('http') && !href.startsWith(window.location.origin) ||
+                                        href.startsWith('javascript:') || 
+                                        href.startsWith('#') ||
+                                        target.getAttribute('download') || 
+                                        href.startsWith('mailto:') ||
+                                        target.getAttribute('target') === '_blank' ||
+                                        href.includes('login') ||
+                                        href.includes('logout') ||
+                                        target.closest('form') ||
+                                        target.getAttribute('data-ajax') === 'false') {
+                                        return; // Let the default behavior handle it
+                                    }
+                                    
+                                    // Special handling for navigation menu items
+                                    if (target.closest('[x-data]')) {
+                                        // Check if this is a navigation menu item with a dropdown
+                                        const navItem = target.closest('button');
+                                        if (navItem && navItem.getAttribute('@mouseover') && navItem.getAttribute('@mouseover').includes('navigationMenu')) {
+                                            // This is a dropdown trigger, don't intercept
+                                            return;
+                                        }
+                                        
+                                        // Check if this is a link inside a dropdown
+                                        const dropdownLink = target.closest('a[href][onclick]');
+                                        if (dropdownLink && dropdownLink.getAttribute('onclick') && 
+                                            dropdownLink.getAttribute('onclick').includes('navigationMenuClose')) {
+                                            // This is a dropdown item with a close action
+                                            // Let the onclick handle it first, then we'll navigate
+                                            e.preventDefault();
+                                            
+                                            // Execute the onclick (which closes the dropdown)
+                                            const onclickAttr = dropdownLink.getAttribute('onclick');
+                                            if (onclickAttr && onclickAttr.includes('navigationMenuClose')) {
+                                                // Call the navigationMenuClose function
+                                                const navMenu = target.closest('[x-data]').__x.$data;
+                                                if (navMenu && typeof navMenu.navigationMenuClose === 'function') {
+                                                    navMenu.navigationMenuClose();
+                                                }
+                                            }
+                                            
+                                            // Then load the content after a small delay
+                                            setTimeout(() => {
+                                                loadContent(href);
+                                            }, 100);
+                                            
+                                            return;
+                                        }
+                                    }
+                                    
+                                    // Prevent default link behavior
+                                    e.preventDefault();
+                                    
+                                    // Load the content via AJAX
+                                    loadContent(href);
+                                }
+                            });
+                            
+                            // Handle browser back/forward navigation
+                            window.addEventListener('popstate', function(e) {
+                                if (e.state && e.state.url) {
+                                    loadContent(e.state.url, false);
+                                } else {
+                                    loadContent(window.location.href, false);
+                                }
+                            });
+                            
+                            // Initialize history state
+                            history.replaceState({url: window.location.href}, document.title, window.location.href);
+                            
+                            // Add CSS for loading indicator
+                            const style = document.createElement('style');
+                            style.textContent = `
+                                #ajax-loading-indicator {
+                                    position: relative;
+                                    width: 100%;
+                                    padding: 2rem;
+                                    text-align: center;
+                                }
+                            `;
+                            document.head.appendChild(style);
+                        });
+                    </script>
                 </body>
 
                 </html>
                 <!-- Font Awesome -->
-                <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+                <script src="https://kit.fontawesome.com/73713bf219.js" crossorigin="anonymous"></script>

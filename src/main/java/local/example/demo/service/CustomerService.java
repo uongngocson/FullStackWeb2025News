@@ -16,6 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import local.example.demo.model.dto.RegisterDTO;
 import local.example.demo.model.entity.Account;
@@ -33,6 +39,7 @@ import local.example.demo.repository.CustomerRepository;
 import local.example.demo.repository.OrderRepository;
 import local.example.demo.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import local.example.demo.service.S3FileService;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +54,7 @@ public class CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final ReviewRepository reviewRepository;
     private final AccountDiscountCodeRepository accountDiscountCodeRepository;
+    private final S3FileService s3FileService;
 
     @Transactional(readOnly = true)
     public List<Customer> findAllCustomers() {
@@ -175,7 +183,7 @@ public class CustomerService {
 
     @Transactional
     public Customer updateCustomerProfile(Customer updatedCustomer, MultipartFile image) throws IOException {
-        Customer currentCustomer = getCurrentLoggedInCustomer();
+        Customer currentCustomer = fetchCurrentLoggedInCustomer();
         if (currentCustomer == null || !currentCustomer.getCustomerId().equals(updatedCustomer.getCustomerId())) {
             throw new IllegalStateException("Không có quyền chỉnh sửa hồ sơ này");
         }
@@ -193,15 +201,13 @@ public class CustomerService {
         currentCustomer.setGender(updatedCustomer.isGender());
 
         if (image != null && !image.isEmpty()) {
-            String uploadDir = "src/main/resources/static/resources/images-upload/customer/";
-            String fileName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir, fileName);
-
-            Files.createDirectories(filePath.getParent());
-
-            Files.write(filePath, image.getBytes());
-
-            currentCustomer.setImageUrl("/resources/images-upload/customer/" + fileName);
+            try {
+                // Upload image to S3 bucket in the "customers/" folder
+                String imageUrl = s3FileService.uploadFile(image, "customers/");
+                currentCustomer.setImageUrl(imageUrl);
+            } catch (IOException e) {
+                throw new IOException("Không thể tải lên ảnh đại diện: " + e.getMessage(), e);
+            }
         }
 
         return customerRepository.save(currentCustomer);
@@ -209,7 +215,7 @@ public class CustomerService {
 
     @Transactional
     public void changePassword(String oldPassword, String newPassword, String confirmPassword) {
-        Customer customer = getCurrentLoggedInCustomer();
+        Customer customer = fetchCurrentLoggedInCustomer();
         if (customer == null) {
             throw new IllegalStateException("Không có quyền thực hiện hành động này");
         }
@@ -254,12 +260,36 @@ public class CustomerService {
 
         // Tìm Customer trực tiếp dựa trên loginName
         Customer customer = customerRepository.findByAccountLoginName(username);
+        
+        // Nếu không tìm thấy customer và username có thể là Google subject ID
+        if (customer == null && username.matches("\\d+")) {
+            System.out.println("Trying to find customer by email using session...");
+            
+            // Lấy thông tin từ session
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpSession session = request.getSession(false);
+            
+            if (session != null) {
+                String email = (String) session.getAttribute("email");
+                if (email != null && !email.isBlank()) {
+                    System.out.println("Found email in session: " + email);
+                    Customer customerByEmail = customerRepository.findByEmail(email);
+                    if (customerByEmail != null) {
+                        System.out.println("Found customer by email from session: " + customerByEmail.getCustomerId());
+                        return customerByEmail;
+                    }
+                }
+            }
+            
+            throw new IllegalStateException("Customer not found for loginName: " + username + ". Please try logging in again with your Google account.");
+        }
+        
         if (customer == null) {
             System.out.println("Customer not found for loginName: " + username);
             throw new IllegalStateException("Customer not found for loginName: " + username);
         }
+        
         System.out.println("Found customer ID: " + customer.getCustomerId());
-
         return customer;
     }
 

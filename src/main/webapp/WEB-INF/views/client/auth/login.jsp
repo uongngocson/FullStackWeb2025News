@@ -80,14 +80,14 @@
                                 <div class="flex space-x-4">
                                     <button type="button"
                                         class="google-btn w-full py-3 border border-gray-200 rounded-sm flex items-center justify-center transition-all duration-300 bg-red-500 text-white">
-                                        <img src="../../../../resources/assets/client/images/google-brands.svg"
+                                        <img src="${ctx}/resources/assets/client/images/google-brands.svg"
                                             alt="Google Logo" class="w-4 h-4 mr-2">
                                         <a href="/oauth2/authorization/google"><span class="text-sm">Sign in with
                                                 Google</span></a>
                                     </button>
                                     <button type="button"
                                         class="facebook-btn w-full py-3 border border-gray-200 rounded-sm flex items-center justify-center transition-all duration-300 bg-blue-500 text-white">
-                                        <img src="../../../../resources/assets/client/images/facebook-f-brands.svg"
+                                        <img src="${ctx}/resources/assets/client/images/facebook-f-brands.svg"
                                             alt="Facebook Logo" class="w-4 h-4 mr-2">
                                         <a href="/oauth2/authorization/facebook"><span class="text-sm">Sign in with
                                                 Facebook</span></a>

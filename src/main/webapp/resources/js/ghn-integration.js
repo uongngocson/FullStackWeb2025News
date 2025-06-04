@@ -1283,7 +1283,7 @@ function updatePricing() {
     // Get the initial subtotal value from the cart-subtotal element
     // Extract the numeric value from the initial $${orderTotal} format
     const subtotalElement = document.getElementById('cart-subtotal');
-    let subtotal = 498.00; // Default fallback value
+    let subtotal = 0; // Default fallback value
     
     if (subtotalElement) {
         const subtotalText = subtotalElement.getAttribute('data-initial-value');
@@ -1354,6 +1354,10 @@ function prepareOrderDataForAPI() {
         const paymentId = document.getElementById('payment-method-1').classList.contains('selected') ? 1 : 
                            document.getElementById('payment-method-3').classList.contains('selected') ? 3 : 2;
         
+        // Set payment_status based on payment method
+        // true for online payments (VNPAY, MOMO), false for COD
+        const paymentStatus = paymentId === 1 || paymentId === 3;
+        
         // Get order items
         const orderItems = [];
         
@@ -1413,6 +1417,7 @@ function prepareOrderDataForAPI() {
         const orderData = {
             customer_id: customerId,
             payment_id: paymentId,
+            payment_status: paymentStatus, // Add payment_status parameter
             TotalAmount: totalAmount,
             OrderItems: orderItems,
             AddressId: selectedAddress.id,
@@ -1776,6 +1781,45 @@ async function checkForSpam(orderData) {
 }
 
 /**
+ * Store order data in session before redirecting to payment gateway
+ * @param {Object} orderData - The order data to store
+ * @returns {Promise} Promise resolving to API response
+ */
+function storeOrderDataInSession(orderData) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Create a copy of the order data to avoid modifying the original
+            const orderDataCopy = JSON.parse(JSON.stringify(orderData));
+            
+            // Call our API to store the order data in session
+            const response = await fetch('/api/payment/store-order-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderDataCopy)
+            });
+            
+            const responseData = await response.json();
+            
+            if (response.ok && responseData.success) {
+                console.log('Order data stored in session successfully');
+                resolve({
+                    success: true,
+                    message: 'Order data stored in session'
+                });
+            } else {
+                console.error('Failed to store order data in session:', responseData.message);
+                reject(new Error(responseData.message || 'Failed to store order data in session'));
+            }
+        } catch (error) {
+            console.error('Error storing order data in session:', error);
+            reject(error);
+        }
+    });
+}
+
+/**
  * Enhanced submitOrderToAPI function with anti-spam protection
  * @returns {Promise} Promise resolving to API response
  */
@@ -1818,6 +1862,93 @@ function submitOrderToAPI() {
             // Add session token to the order data
             orderData.sessionToken = antiSpamState.sessionToken;
             
+            // Check payment method first
+            const paymentMethod = orderData.payment_id;
+            
+            if (paymentMethod === 1) {
+                // Online payment - redirect to VNPAY
+                try {
+                    // Store order data in session before redirecting
+                    await storeOrderDataInSession(orderData);
+                    
+                    // Convert totalAmount to integer (remove decimal places)
+                    const totalAmountInteger = Math.round(orderData.TotalAmount);
+                    console.log('Redirecting to VNPAY with amount:', totalAmountInteger);
+                    
+                    // Mark as no longer processing
+                    antiSpamState.isProcessing = false;
+                    
+                    // Hide loading overlay
+                    if (loadingOverlay) {
+                        loadingOverlay.classList.remove('active');
+                    }
+                    
+                    // Return success response
+                    resolve({
+                        success: true,
+                        message: 'Redirecting to VNPAY payment gateway'
+                    });
+                    
+                    // Redirect to payment gateway
+                    window.location.href = `/api/payment/create_payment?amount=${totalAmountInteger}`;
+                    return;
+                } catch (error) {
+                    console.error('Error storing order data before VNPAY redirect:', error);
+                    showNotification('Error preparing payment: ' + error.message, 'error');
+                    
+                    // Mark as no longer processing
+                    antiSpamState.isProcessing = false;
+                    
+                    // Hide loading overlay
+                    if (loadingOverlay) {
+                        loadingOverlay.classList.remove('active');
+                    }
+                    
+                    reject(error);
+                    return;
+                }
+            } else if (paymentMethod === 3) {
+                // Online payment - redirect to MoMo
+                try {
+                    // Store order data in session before redirecting
+                    await storeOrderDataInSession(orderData);
+                    
+                    // Convert totalAmount to integer (remove decimal places)
+                    const totalAmountInteger = Math.round(orderData.TotalAmount);
+                    console.log('Redirecting to MoMo with amount:', totalAmountInteger);
+                    
+                    // Mark as no longer processing
+                    antiSpamState.isProcessing = false;
+                    
+                    // Keep loading overlay active during redirect
+                    
+                    // Return success response
+                    resolve({
+                        success: true,
+                        message: 'Redirecting to MoMo payment gateway'
+                    });
+                    
+                    // Redirect to MoMo payment gateway
+                    window.location.href = `/api/payment/create_momo_payment?amount=${totalAmountInteger}`;
+                    return;
+                } catch (error) {
+                    console.error('Error storing order data before MoMo redirect:', error);
+                    showNotification('Error preparing payment: ' + error.message, 'error');
+                    
+                    // Mark as no longer processing
+                    antiSpamState.isProcessing = false;
+                    
+                    // Hide loading overlay
+                    if (loadingOverlay) {
+                        loadingOverlay.classList.remove('active');
+                    }
+                    
+                    reject(error);
+                    return;
+                }
+            }
+            
+            // Only proceed with API submission for COD (payment_id = 2)
             // Submit order to API
             const response = await fetch('/api/handle/submit', {
                 method: 'POST',
@@ -1854,40 +1985,12 @@ function submitOrderToAPI() {
                     message: responseData.message || 'Order placed successfully'
                 });
                 
-                // Check payment method and redirect accordingly
-                const paymentMethod = orderData.payment_id;
+                // COD payment - redirect to order confirmation page
                 const orderId = responseData.orderId;
-                console.log('orderId-----------------------------', orderId);
-                
-                if (paymentMethod === 1) {
-                    // Online payment - redirect to VNPAY
-                    // Convert totalAmount to integer (remove decimal places)
-                    const totalAmountInteger = Math.round(orderData.TotalAmount);
-                    console.log('Redirecting to VNPAY with amount:', totalAmountInteger);
-                    
-                    // Redirect to payment gateway
-                    window.location.href = `/api/payment/create_payment?amount=${totalAmountInteger}`;
-                } else if (paymentMethod === 3) {
-                    // Online payment - redirect to MoMo
-                    // Convert totalAmount to integer (remove decimal places)
-                    const totalAmountInteger = Math.round(orderData.TotalAmount);
-                    console.log('Redirecting to MoMo with amount:', totalAmountInteger);
-                    
-                    // Add loading overlay to indicate processing
-                    const loadingOverlay = document.getElementById('loadingOverlay');
-                    if (loadingOverlay) {
-                        loadingOverlay.classList.add('active');
-                    }
-                    
-                    // Redirect to MoMo payment gateway
-                    window.location.href = `/api/payment/create_momo_payment?amount=${totalAmountInteger}`;
-                } else {
-                    // COD payment - redirect to order confirmation page
-                    console.log('COD payment selected, redirecting to order confirmation page');
-                    setTimeout(() => {
-                        window.location.href = "/order/confirmation/" + orderId;
-                    }, 1000);
-                }
+                console.log('COD payment selected, redirecting to order confirmation page');
+                setTimeout(() => {
+                    window.location.href = "/order/confirmation/" + orderId;
+                }, 1000);
             } else {
                 const errorMessage = responseData.message || 'Failed to place order';
                 showNotification(errorMessage, 'error');

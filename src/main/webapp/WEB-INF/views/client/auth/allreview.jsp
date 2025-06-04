@@ -18,12 +18,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/sontest.css">
     <link rel="icon" href="${pageContext.request.contextPath}/resources/assets/client/images/icon-adidas-logo.svg" type="image/icon type">
     <style>
-        body {
-           
-        }
+       
         
         .rating {
             display: flex;
@@ -48,7 +45,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 50;
+            z-index: 9999;
             padding: 1rem;
             overflow-y: auto;
         }
@@ -135,6 +132,14 @@
             background-color: #fbbf24;
             border-color: #f59e0b;
             color: #0f172a;
+        }
+        
+        #editReviewModal, #deleteConfirmModal {
+            z-index: 9999;
+        }
+        
+        #editReviewModal:not(.hidden), #deleteConfirmModal:not(.hidden) {
+            display: flex !important;
         }
     </style>
 </head>
@@ -411,6 +416,9 @@
     <script>
         // Edit Modal Functions
         function openEditModal(reviewId, rating, comment, imageUrl) {
+            console.log("Opening edit modal for review: " + reviewId);
+            
+            // Đặt giá trị cho các trường
             document.getElementById('editReviewId').value = reviewId;
             document.getElementById('editComment').value = comment;
             document.getElementById('editRating').value = parseInt(rating);
@@ -429,13 +437,20 @@
                 currentImageContainer.classList.add('hidden');
             }
             
-            // Show modal
-            document.getElementById('editReviewModal').classList.remove('hidden');
+            // Hiển thị modal
+            var modal = document.getElementById('editReviewModal');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
             document.body.classList.add('overflow-hidden');
+            
+            // Đảm bảo character count được cập nhật
+            countEditCharacters(document.getElementById('editComment'));
         }
         
         function closeEditModal() {
-            document.getElementById('editReviewModal').classList.add('hidden');
+            var modal = document.getElementById('editReviewModal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
             document.body.classList.remove('overflow-hidden');
             
             // Reset form
@@ -479,13 +494,21 @@
         
         // Delete Modal Functions
         function openDeleteModal(reviewId) {
+            console.log("Opening delete modal for review: " + reviewId);
+            
             document.getElementById('deleteReviewId').value = reviewId;
-            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+            
+            // Hiển thị modal
+            var modal = document.getElementById('deleteConfirmModal');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
             document.body.classList.add('overflow-hidden');
         }
         
         function closeDeleteModal() {
-            document.getElementById('deleteConfirmModal').classList.add('hidden');
+            var modal = document.getElementById('deleteConfirmModal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
             document.body.classList.remove('overflow-hidden');
         }
         
@@ -518,21 +541,47 @@
         
         // Initialize character count when editing a review
         document.addEventListener('DOMContentLoaded', function() {
-            // Set initial character count when edit modal is opened
-            const editButtons = document.querySelectorAll('.edit-review-btn');
-            if (editButtons) {
-                editButtons.forEach(function(button) {
-                    button.addEventListener('click', function() {
-                        // Set timeout to ensure the textarea is populated before counting
-                        setTimeout(function() {
-                            const editTextarea = document.getElementById('editComment');
-                            if (editTextarea) {
-                                countEditCharacters(editTextarea);
-                            }
-                        }, 100);
-                    });
+            console.log("DOM loaded, initializing modals and buttons");
+            
+            // Đảm bảo các nút edit có thể mở modal
+            document.querySelectorAll('button[onclick^="openEditModal"]').forEach(function(button) {
+                console.log("Found edit button");
+                button.addEventListener('click', function(event) {
+                    // Ngăn chặn hành vi mặc định nếu cần
+                    // event.preventDefault();
+                    console.log("Edit button clicked");
                 });
+            });
+            
+            // Đảm bảo các nút delete có thể mở modal
+            document.querySelectorAll('button[onclick^="openDeleteModal"]').forEach(function(button) {
+                console.log("Found delete button");
+                button.addEventListener('click', function(event) {
+                    // Ngăn chặn hành vi mặc định nếu cần
+                    // event.preventDefault();
+                    console.log("Delete button clicked");
+                });
+            });
+            
+            // Đảm bảo z-index của modal đủ cao
+            const editReviewModal = document.getElementById('editReviewModal');
+            if (editReviewModal) {
+                editReviewModal.style.zIndex = '9999';
             }
+            
+            // Đảm bảo modal delete cũng có z-index cao
+            const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+            if (deleteConfirmModal) {
+                deleteConfirmModal.style.zIndex = '9999';
+            }
+            
+            // Khởi tạo các nút rating trong modal edit
+            document.querySelectorAll('.edit-modal-rating-btn').forEach(function(button) {
+                const rating = parseInt(button.getAttribute('data-rating'));
+                button.addEventListener('click', function() {
+                    selectRating(rating);
+                });
+            });
         });
     </script>
 </body>

@@ -209,11 +209,9 @@
                                                                             <td>
                                                                                 <div class="customer-info">
                                                                                     <img src="${not empty customer.imageUrl 
-                                                                            ? customer.imageUrl 
-                                                                            : (ctx.concat(customer.gender ? '/resources/images-upload/customer/avatar-default-male.jpg' 
-                                                                                                         : '/resources/images-upload/customer/avatar-default-female.jpg'))}"
-                                                                                        class="customer-avatar"
-                                                                                        alt="Avatar">
+                                                                            ? (customer.imageUrl.startsWith('http') ? customer.imageUrl : ctx.concat(customer.imageUrl)) 
+                                                                            : (ctx.concat(customer.gender ? '/resources/images-upload/customer/avatar-default-male.jpg' : '/resources/images-upload/customer/avatar-default-female.jpg'))}"
+                                                                                        alt="Customer Avatar" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md">
                                                                                     <div class="customer-details">
                                                                                         <div class="customer-name">
                                                                                             ${customer.firstName}

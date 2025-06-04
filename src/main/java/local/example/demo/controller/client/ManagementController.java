@@ -77,15 +77,20 @@ public class ManagementController {
     @GetMapping("/profile/update")
     public String getUpdateProfilePage(Model model) {
         logger.debug("Processing GET /management/profile/update");
-        Customer customer = customerService.getCurrentLoggedInCustomer();
-        if (customer == null) {
-            logger.warn("No authenticated customer found, redirecting to login");
+        try {
+            Customer customer = customerService.fetchCurrentLoggedInCustomer();
+            if (customer == null) {
+                logger.warn("No authenticated customer found, redirecting to login");
+                return "redirect:/login";
+            }
+            logger.debug("Found customer ID: {}", customer.getCustomerId());
+
+            model.addAttribute("customer", customer);
+            return "client/auth/update_profile";
+        } catch (Exception e) {
+            logger.error("Error fetching customer profile: {}", e.getMessage());
             return "redirect:/login";
         }
-        logger.debug("Found customer ID: {}", customer.getCustomerId());
-
-        model.addAttribute("customer", customer);
-        return "client/auth/update_profile";
     }
 
     @PostMapping("/profile/update")
@@ -110,6 +115,10 @@ public class ManagementController {
             logger.error("Failed to update profile due to IO error: {}", e.getMessage());
             model.addAttribute("error", "Cập nhật hồ sơ thất bại: Lỗi khi xử lý ảnh.");
             return "client/auth/update_profile";
+        } catch (IllegalStateException e) {
+            logger.error("Failed to update profile due to authentication error: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+            return "redirect:/login";
         } catch (Exception e) {
             logger.error("Failed to update profile: {}", e.getMessage());
             model.addAttribute("error", "Cập nhật hồ sơ thất bại: " + e.getMessage());
@@ -195,7 +204,7 @@ public class ManagementController {
             System.out.println("Không tìm thấy khách hàng đăng nhập, chuyển hướng đến trang đăng nhập");
             return "redirect:/login";
         }
-        System.out.println("ID khách hàng đăng nhập: " + customer.getCustomerId());
+        System.out.println("ID khách hàng đăng nhậpppppppppppppppppppppppppppppppp: " + customer.getCustomerId());
 
         List<OrderDetailDTO> orderDetails = orderService.getOrderDetails(orderId);
         if (orderDetails.isEmpty()) {

@@ -8,6 +8,9 @@ public class HandleSubmitDTO {
     private Integer customer_id;
     private Integer payment_id;
     
+    @JsonProperty("payment_status")
+    private Boolean payment_status;
+    
     @JsonProperty("TotalAmount")
     private BigDecimal totalAmount;
     
@@ -75,6 +78,14 @@ public class HandleSubmitDTO {
 
     public void setPayment_id(Integer payment_id) {
         this.payment_id = payment_id;
+    }
+    
+    public Boolean isPayment_status() {
+        return payment_status;
+    }
+
+    public void setPayment_status(Boolean payment_status) {
+        this.payment_status = payment_status;
     }
 
     public BigDecimal getTotalAmount() {
