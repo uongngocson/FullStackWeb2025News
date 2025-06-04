@@ -53,7 +53,7 @@
                                             <i class="fas fa-cube"></i>
                                             <span class="text-sm font-medium">XEM 3D</span>
                                         </button>
-                                            <div class="image-zoom-container" data-product-id="${product.productId}">
+                                            <div id="productContainer" class="image-zoom-container" data-product-id="${product.productId}">
                                         <img src="${product.imageUrl}" alt="${product.productName}"
                                                     class="w-full h-auto object-cover transition-transform duration-500 ease-out"
                                             id="mainImage">
@@ -107,14 +107,14 @@
 
                                 <!-- Product Details -->
                                 <div class="w-full md:w-1/2 px-4">
-                                    <h2 class="text-3xl font-bold mb-2">${product.productName}</h2>
+                                    <h2 id="productName" class="text-3xl font-bold mb-2">${product.productName}</h2>
                                     <p class="text-gray-600 mb-4">SKU: WH1000XM4</p>
                                     <p class="text-gray-600 mb-4">TÌNH TRẠNG: <span id="stockStatus"
                                             class="text-green-600">Còn hàng</span> <span id="stockQuantity"
                                             class="text-blue-600 font-medium"></span></p>
 
                                     <div class="mb-4">
-                                        <span class="text-2xl font-bold mr-2">${product.price}</span>
+                                        <span id="productPrice" class="text-2xl font-bold mr-2">${product.price}</span>
                                         <span class="text-gray-500 line-through">$399.99</span>
                                     </div>
                                     <div class="flex items-center mb-4">
@@ -140,7 +140,7 @@
                                                 </c:choose>
                                             </c:forEach>
                                         </div>
-                                        <span class="ml-2 text-gray-600">${averageRating}| ${product.quantitySold} sold</span>
+                                        <span id="productRating" class="ml-2 text-gray-600">${averageRating}| ${product.quantitySold} sold</span>
                                     </div>
 
                                    
@@ -213,7 +213,7 @@
                                     </div>
 
                                     <div class="flex items-center gap-4 mb-8">
-                                        <button class="flex items-center text-sm text-gray-700 hover:text-black">
+                                        <button id="addToFavoritesBtn" class="flex items-center text-sm text-gray-700 hover:text-black">
                                             <i class="far fa-heart mr-2"></i> THÊM VÀO YÊU THÍCH
                                         </button>
                                         <div class="flex items-center gap-3">
@@ -236,7 +236,7 @@
                                         </button>
                                         <div id="descriptionContent" class="description-content px-4 overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
                                             <div class="py-4 description-inner">
-                                                <p class="text-gray-700 whitespace-pre-line">${product.description}</p>
+                                                <p id="productDescription" class="text-gray-700 whitespace-pre-line">${product.description}</p>
                                                 
                                                 
                                             </div>
@@ -830,7 +830,132 @@
                                         alert('Vui lòng chọn đầy đủ màu sắc và kích thước!');
                                     }
                                 });
+                                
+                                // Add to Favorites functionality
+                                document.getElementById('addToFavoritesBtn').addEventListener('click', function() {
+                                    addToFavorites();
+                                });
                             });
+                            
+                            // Add to Favorites function
+                            function addToFavorites() {
+                                try {
+                                    // Get product data from DOM elements using direct ID references
+                                    const productData = {
+                                        productId: document.getElementById('productContainer').getAttribute('data-product-id'),
+                                        productName: document.getElementById('productName').textContent.trim(),
+                                        price: document.getElementById('productPrice').textContent.trim(),
+                                        description: document.getElementById('productDescription') ? 
+                                            document.getElementById('productDescription').textContent.trim() : '',
+                                        imageUrl: document.getElementById('mainImage').src,
+                                        quantitySold: document.getElementById('productRating').textContent.split('|')[1].trim(),
+                                        dateAdded: new Date().toISOString()
+                                    };
+                                    
+                                    // Get selected variant data if available
+                                    const selectedVariant = getSelectedVariant();
+                                    if (selectedVariant) {
+                                        productData.selectedVariant = {
+                                            variantId: selectedVariant.productVariantId,
+                                            colorId: selectedVariant.color.colorId,
+                                            colorName: selectedVariant.color.colorName,
+                                            sizeId: selectedVariant.size.sizeId,
+                                            sizeName: selectedVariant.size.sizeName
+                                        };
+                                    }
+                                    
+                                    // Get all product images
+                                    const productImages = [];
+                                    document.querySelectorAll('.thumbnail-img').forEach(img => {
+                                        productImages.push({
+                                            imageUrl: img.src,
+                                            isActive: img.classList.contains('active')
+                                        });
+                                    });
+                                    productData.images = productImages;
+                                    
+                                    // Get favorites from localStorage or initialize empty array
+                                    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                                    
+                                    // Check if product already exists in favorites
+                                    const existingIndex = favorites.findIndex(item => item.productId === productData.productId);
+                                    
+                                    if (existingIndex >= 0) {
+                                        // Update existing product
+                                        favorites[existingIndex] = productData;
+                                        showToast('Sản phẩm đã được cập nhật trong danh sách yêu thích!');
+                                    } else {
+                                        // Add new product
+                                        favorites.push(productData);
+                                        showToast('Sản phẩm đã được thêm vào danh sách yêu thích!');
+                                    }
+                                    
+                                    // Save to localStorage
+                                    localStorage.setItem('favorites', JSON.stringify(favorites));
+                                    
+                                    // Update heart icon
+                                    const heartIcon = document.querySelector('#addToFavoritesBtn i');
+                                    heartIcon.classList.remove('far');
+                                    heartIcon.classList.add('fas');
+                                    heartIcon.classList.add('text-red-500');
+                                    
+                                } catch (error) {
+                                    console.error('Error adding to favorites:', error);
+                                    showToast('Đã xảy ra lỗi khi thêm vào yêu thích!', true);
+                                }
+                            }
+                            
+                            // Check if product is in favorites on page load
+                            document.addEventListener('DOMContentLoaded', function() {
+                                try {
+                                    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                                    const productId = document.getElementById('productContainer').getAttribute('data-product-id');
+                                    const isInFavorites = favorites.some(item => item.productId === productId);
+                                    
+                                    if (isInFavorites) {
+                                        const heartIcon = document.querySelector('#addToFavoritesBtn i');
+                                        heartIcon.classList.remove('far');
+                                        heartIcon.classList.add('fas');
+                                        heartIcon.classList.add('text-red-500');
+                                    }
+                                } catch (error) {
+                                    console.error('Error checking favorites status:', error);
+                                }
+                            });
+                            
+                            // Toast notification function
+                            function showToast(message, isError = false) {
+                                // Create toast element if it doesn't exist
+                                let toast = document.getElementById('toast-notification');
+                                if (!toast) {
+                                    toast = document.createElement('div');
+                                    toast.id = 'toast-notification';
+                                    toast.className = 'fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-y-[-100%] opacity-0';
+                                    document.body.appendChild(toast);
+                                }
+                                
+                                // Set toast style based on type
+                                if (isError) {
+                                    toast.className = 'fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-y-[-100%] opacity-0 bg-red-500 text-white';
+                                } else {
+                                    toast.className = 'fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-y-[-100%] opacity-0 bg-green-500 text-white';
+                                }
+                                
+                                // Set message
+                                toast.textContent = message;
+                                
+                                // Show toast
+                                setTimeout(() => {
+                                    toast.classList.remove('translate-y-[-100%]', 'opacity-0');
+                                    toast.classList.add('translate-y-0', 'opacity-100');
+                                }, 100);
+                                
+                                // Hide toast after 3 seconds
+                                setTimeout(() => {
+                                    toast.classList.remove('translate-y-0', 'opacity-100');
+                                    toast.classList.add('translate-y-[-100%]', 'opacity-0');
+                                }, 3000);
+                            }
                         </script>
                     </div>
 
